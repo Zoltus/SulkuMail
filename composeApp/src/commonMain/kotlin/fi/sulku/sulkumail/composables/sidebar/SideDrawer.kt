@@ -5,17 +5,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.material.icons.rounded.Inbox
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sulkumail.composeapp.generated.resources.Res
+import sulkumail.composeapp.generated.resources.google
 
 //todo to viewmodel&Dataclass
 data class Mail(
@@ -28,6 +31,7 @@ val mails = listOf(
     Mail("Mail2", "b@gmail.com")
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun SideDrawer(
@@ -36,6 +40,9 @@ fun SideDrawer(
     content: @Composable () -> Unit
 ) {
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
+
+    //All mails which are expanded:
+    val expandedMails = remember { mutableStateListOf<Mail>() }
 
     PermanentNavigationDrawer(
         content = content,
@@ -48,13 +55,10 @@ fun SideDrawer(
                 PermanentDrawerSheet(
                     modifier = Modifier.width(280.dp),
                 ) {
-                    //todo cleanup, combine to 1 list so no need to + index ect
-                    //todo some lazylist? so if many mails it scrolls?
-                    //todo custom draweritem composable
                     NavigationDrawerItem(
                         shape = MaterialTheme.shapes.small,
                         label = { Text(text = "+ New Mail") },
-                        // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
+                        icon = {},
                         selected = selectedItemIndex == 0,
                         badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
                         onClick = {
@@ -63,19 +67,68 @@ fun SideDrawer(
                         },
                     )
                     mails.forEachIndexed { index, mail ->
-                        //todo dropdown drawer thingy?
+                        val isExpanded = expandedMails.contains(mail)
+                        /*
+                        Mail type and commontypes for dif folder ect and create subitems from those
+                        Indox, Spam, Sent, Drafts, Deleted, Archive
+                         */
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,
                             //modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                            label = { Text(text = mail.title) },
-                            // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
+                            label = {
+                                Column {
+                                    Text(text = mail.title)
+                                    Text(
+                                        text = mail.email,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.google), contentDescription = "MailIcon",
+                                    modifier = Modifier.Companion.size(18.dp),
+                                )
+                            },
                             selected = index + 1 == selectedItemIndex,
-                            badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
+                            badge = { /*Unread amount?*/ },
                             onClick = {
                                 nav.navigate(mail.email)
-                                selectedItemIndex = index + 1
+                                // Handle mail expanding
+                                expandedMails.apply { if (isExpanded) remove(mail) else add(mail) }
                             },
                         )
+                        AnimatedVisibility(visible = isExpanded) {
+                            Column {
+                                NavigationDrawerItem(
+                                    shape = MaterialTheme.shapes.small,
+                                    label = { Text(text = mail.title) },
+                                    icon = {
+                                        Spacer(Modifier.width(20.dp))
+                                        Icon(imageVector = Icons.Rounded.Inbox, contentDescription = "Inbox")
+                                    },
+                                    selected = index + 1 == selectedItemIndex,
+                                    badge = { /*Unread amount?*/ },
+                                    onClick = {
+
+                                    },
+                                )
+                                NavigationDrawerItem(
+                                    shape = MaterialTheme.shapes.small,
+                                    label = { Text(text = mail.title) },
+                                    icon = {
+                                        // Add Spacer before icon so subMenu items are more aligned to right
+                                        Spacer(Modifier.width(20.dp))
+                                        Icon(imageVector = Icons.AutoMirrored.Rounded.Send, contentDescription = "Sent")
+                                    },
+                                    selected = index + 1 == selectedItemIndex,
+                                    badge = { /*Unread amount?*/ },
+                                    onClick = {
+
+                                    },
+                                )
+                            }
+                        }
                     }
 
                     //Moves items to bottom
@@ -83,6 +136,7 @@ fun SideDrawer(
                         modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.Bottom
                     ) {
+                        HorizontalDivider()
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,
                             label = { Text(text = "Manage Accounts") },

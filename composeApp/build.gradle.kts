@@ -71,7 +71,6 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             //implementation(libs.androidx.navigation.compose)
-           // implementation(libs.compose.ui.tooling.preview)
             //implementation(libs.bundles.ktor.common) in shared
             /*
             implementation(compose.desktop.currentOs) {

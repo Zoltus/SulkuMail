@@ -4,10 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -27,12 +28,15 @@ fun App() = AppTheme {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
         val nav: NavHostController = rememberNavController()
 
+        val loggedIn by remember { mutableStateOf(true) } //todo to vm
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(CustomColor.discordDark)
         ) {
-            //topBar(scope, drawerState)
+            TopBar(loggedIn, drawerState)
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
@@ -58,8 +62,12 @@ fun App() = AppTheme {
 }
 
 @Composable
+expect fun TopBar(loggedIn: Boolean, drawerState: DrawerState)
+
+
+@Composable
 fun MailScreen(email: String) {
-    Text("Email of the mail: $email")
+    Text("Email of theasd mail: $email")
 }
 
 @Composable

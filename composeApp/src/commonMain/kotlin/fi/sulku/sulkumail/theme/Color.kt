@@ -1,7 +1,6 @@
 package fi.sulku.sulkumail.theme
 
 import androidx.compose.ui.graphics.Color
-import fi.sulku.sulkumail.theme.CustomColor
 import fi.sulku.sulkumail.theme.CustomColor.discordBlue
 
 val onSurfaceVariant = Color(0xFFC8CAD4)        // Texts/checkbox/Search
