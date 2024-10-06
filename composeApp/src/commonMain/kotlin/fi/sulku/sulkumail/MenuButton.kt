@@ -1,24 +1,18 @@
 package fi.sulku.sulkumail
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @Composable
-fun MenuButton(loggedIn: Boolean, drawerState: DrawerState) {
+fun MenuButton(drawerState: DrawerState) {
     val scope = rememberCoroutineScope()
-
-    // Dont show menu button if user is not logged in
-    if (!loggedIn) {
-        return
-    }
 
     TextButton(
         shape = MaterialTheme.shapes.extraSmall,
@@ -32,7 +26,5 @@ fun MenuButton(loggedIn: Boolean, drawerState: DrawerState) {
         }
     ) {
         Icon(Icons.Rounded.Menu, contentDescription = null)
-        Spacer(modifier = Modifier.Companion.width(8.dp))
-        Text("Menu")
     }
 }

@@ -36,7 +36,9 @@ fun App() = AppTheme {
                 .fillMaxSize()
                 .background(CustomColor.discordDark)
         ) {
-            TopBar(loggedIn, drawerState)
+            // todo topbar remove from expect,
+            // todo add only from desktopmain & wasm access drawerstate from vm
+            //TopBar(loggedIn, drawerState)
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
@@ -52,7 +54,8 @@ fun App() = AppTheme {
                     //Routes for emails
                     mails.forEach { mail ->
                         composable(route = mail.email) {
-                            MailScreen(mail.email)
+                            //MailScreen(mail.email)
+                            SearchBarSample(drawerState)
                         }
                     }
                 }

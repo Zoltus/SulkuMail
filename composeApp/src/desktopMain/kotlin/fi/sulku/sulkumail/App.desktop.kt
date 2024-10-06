@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 @Composable
 actual fun TopBar(loggedIn: Boolean, drawerState: DrawerState) {
     Row {
-        MenuButton(loggedIn, drawerState)
+        //MenuButton(loggedIn, drawerState)
 
         Spacer(Modifier.weight(1f))
 
