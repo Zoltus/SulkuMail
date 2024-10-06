@@ -7,10 +7,11 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -67,6 +68,7 @@ fun SideDrawer(
                         items(mails) { mail ->
                             val isExpanded = expandedMails.contains(mail)
                             NavigationDrawerItem(
+                                selected = false,
                                 shape = MaterialTheme.shapes.small,
                                 label = {
                                     Column {
@@ -83,8 +85,10 @@ fun SideDrawer(
                                         modifier = Modifier.Companion.size(18.dp),
                                     )
                                 },
-                                selected = false,
-                                badge = { /*Unread amount?*/ },
+                                badge = {
+                                    val arrow = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+                                    Icon(arrow, contentDescription = "Expand folder arrow")
+                                },
                                 onClick = {
                                     nav.navigate(mail.email)
                                     // Handle mail expanding
