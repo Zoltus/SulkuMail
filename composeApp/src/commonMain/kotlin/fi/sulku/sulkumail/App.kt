@@ -39,6 +39,7 @@ fun App() = AppTheme {
             // todo topbar remove from expect,
             // todo add only from desktopmain & wasm access drawerstate from vm
             //TopBar(loggedIn, drawerState)
+
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,

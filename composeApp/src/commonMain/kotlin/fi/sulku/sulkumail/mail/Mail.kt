@@ -9,6 +9,7 @@ import androidx.compose.material.icons.rounded.Inbox
 import androidx.compose.ui.graphics.vector.ImageVector
 
 // todo temp
+//todo unread, and other uncommon folders
 enum class Folders(val label: String, val icon: ImageVector, val contentDesc: String) {
     Inbox("Inbox", Icons.Rounded.Inbox, "desc"),
     Spam("Spam", Icons.Rounded.Block, "desc"),
@@ -19,6 +20,7 @@ enum class Folders(val label: String, val icon: ImageVector, val contentDesc: St
 
 enum class MailProviderType {
     GMAIL, OUTLOOK
+    //todo here folders somehow?
 }
 
 // Todo auth?

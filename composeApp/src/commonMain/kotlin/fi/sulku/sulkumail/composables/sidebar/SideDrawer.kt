@@ -12,9 +12,11 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import fi.sulku.sulkumail.getPlatform
 import fi.sulku.sulkumail.mail.Folders
 import fi.sulku.sulkumail.mail.Mail
 import fi.sulku.sulkumail.mail.MailProviderType
@@ -39,112 +41,107 @@ fun SideDrawer(
 ) {
     //todo to vm
     //todo selectedMail and selected folder
-    var selectedMail by remember { mutableStateOf(mails[0]) }
-    var selectedFolder by remember { mutableStateOf(Folders.Inbox) }
+    val selectedMail = remember { mutableStateOf(mails[0]) }
+    val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
 
     //All mails which are expanded:
     val expandedMails = remember { mutableStateListOf<Mail>() }
+    val drawerConent = @Composable {
+        DrawerConent(drawerState, expandedMails, nav, selectedMail, selectedFolder)
+    }
 
-    PermanentNavigationDrawer(
-        content = content,
-        drawerContent = {
-            AnimatedVisibility(
-                visible = drawerState.isOpen,
-                enter = expandHorizontally(animationSpec = tween(durationMillis = 200)),
-                exit = shrinkHorizontally(animationSpec = tween(durationMillis = 200))
-            ) {
-                PermanentDrawerSheet(
-                    modifier = Modifier.width(280.dp),
-                ) {
-                    NavigationDrawerItem(
-                        shape = MaterialTheme.shapes.small,
-                        label = { Text(text = "+ New Mail") },
-                        icon = {},
-                        selected = false,
-                        badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-                        onClick = {},
-                    )
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(mails) { mail ->
-                            val isExpanded = expandedMails.contains(mail)
-                            NavigationDrawerItem(
-                                selected = false,
-                                shape = MaterialTheme.shapes.small,
-                                label = {
-                                    Column {
-                                        Text(text = mail.label)
-                                        Text(
-                                            text = mail.email,
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.google), contentDescription = "MailIcon",
-                                        modifier = Modifier.Companion.size(18.dp),
-                                    )
-                                },
-                                badge = {
-                                    val arrow = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-                                    Icon(arrow, contentDescription = "Expand folder arrow")
-                                },
-                                onClick = {
-                                    nav.navigate(mail.email)
-                                    // Handle mail expanding
-                                    expandedMails.apply { if (isExpanded) remove(mail) else add(mail) }
-                                },
-                            )
-                            AnimatedVisibility(visible = isExpanded) {
-                                Column {
-                                    Folders.entries.forEach {
-                                        val isSelected = selectedMail == mail && selectedFolder == it
-                                        NavigationDrawerItem(
-                                            shape = MaterialTheme.shapes.small,
-                                            label = { Text(text = it.label) },
-                                            icon = {
-                                                Spacer(Modifier.width(20.dp))
-                                                Icon(imageVector = it.icon, contentDescription = it.contentDesc)
-                                            },
-                                            selected = isSelected,
-                                            badge = { /*Unread amount?*/ },
-                                            onClick = {
-                                                selectedMail = mail
-                                                selectedFolder = it
-                                            },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+    if (getPlatform().isMobile) {
+        ModalNavigationDrawer(content = content, drawerContent = drawerConent)
+    } else {
+        PermanentNavigationDrawer(content = content, drawerContent = drawerConent)
+    }
+}
 
-                    //Moves items to bottom
-                    Column(
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        HorizontalDivider()
-                        NavigationDrawerItem(
-                            shape = MaterialTheme.shapes.small,
-                            label = { Text(text = "Manage Accounts") },
-                            // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
-                            selected = false,
-                            badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-                            onClick = {
-                            },
+@Composable
+private fun DrawerConent(
+    drawerState: DrawerState,
+    expandedMails: SnapshotStateList<Mail>,
+    nav: NavHostController,
+    selectedMail: MutableState<Mail>,
+    selectedFolder: MutableState<Folders>
+) {
+    AnimatedVisibility(
+        visible = drawerState.isOpen,
+        enter = expandHorizontally(animationSpec = tween(durationMillis = 200)),
+        exit = shrinkHorizontally(animationSpec = tween(durationMillis = 200))
+    ) {
+        PermanentDrawerSheet(
+            modifier = Modifier.width(280.dp),
+        ) {
+            DrawerTop()
+            DrawerMails(expandedMails, nav, selectedMail, selectedFolder)
+            //Moves items to bottom
+            Column(verticalArrangement = Arrangement.Bottom) {
+                DrawerBottom()
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ColumnScope.DrawerMails(
+    expandedMails: SnapshotStateList<Mail>,
+    nav: NavHostController,
+    selectedMail: MutableState<Mail>,
+    selectedFolder: MutableState<Folders>
+) {
+    LazyColumn(modifier = Modifier.weight(1f)) {
+        items(mails) { mail ->
+            val isExpanded = expandedMails.contains(mail)
+            NavigationDrawerItem(
+                selected = false,
+                shape = MaterialTheme.shapes.small,
+                label = {
+                    Column {
+                        Text(text = mail.label)
+                        Text(
+                            text = mail.email,
+                            style = MaterialTheme.typography.bodySmall
                         )
-
+                    }
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(Res.drawable.google), contentDescription = "MailIcon",
+                        modifier = Modifier.size(18.dp),
+                    )
+                },
+                badge = {
+                    val arrow = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+                    Icon(arrow, contentDescription = "Expand folder arrow")
+                },
+                onClick = {
+                    nav.navigate(mail.email)
+                    expandedMails.apply { if (isExpanded) remove(mail) else add(mail) }
+                },
+            )
+            AnimatedVisibility(visible = isExpanded) {
+                Column {
+                    Folders.entries.forEach {
+                        val isSelected = selectedMail.value == mail && selectedFolder.value == it
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,
-                            label = { Text(text = "Settings") },
-                            // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
-                            selected = false,
-                            badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-                            onClick = {},
+                            label = { Text(text = it.label) },
+                            icon = {
+                                Spacer(Modifier.width(20.dp))
+                                Icon(imageVector = it.icon, contentDescription = it.contentDesc)
+                            },
+                            selected = isSelected,
+                            badge = { /*Unread amount?*/ },
+                            onClick = {
+                                selectedMail.value = mail
+                                selectedFolder.value = it
+                            },
                         )
                     }
                 }
             }
         }
-    )
+    }
 }
