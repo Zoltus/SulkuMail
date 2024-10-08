@@ -52,59 +52,34 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.shared)
+            // Todo these to toml bundles? possible?
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(projects.shared)
-            implementation(libs.kotlinx.coroutines)
-
             implementation(compose.materialIconsExtended)
-            implementation(libs.coil)
-            implementation(libs.coil.network.ktor)
-            implementation(libs.composeIcons.featherIcons)
             api(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            //implementation(libs.androidx.navigation.compose)
-            //implementation(libs.bundles.ktor.common) in shared
-            /*
-            implementation(compose.desktop.currentOs) {
-                exclude("org.jetbrains.compose.material")
-            }
-             */
+            implementation(libs.bundles.frontend)
         }
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.ktor.client.android)
-
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
+            implementation(libs.bundles.android)
         }
-
-        val desktopMain by getting
-
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.java)
-        }
-
-        val wasmJsMain by getting
-
-        wasmJsMain.dependencies {
-
-        }
-
         appleMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+            implementation(libs.bundles.ios)
         }
-
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.bundles.desktop)
+            }
+        }
+        val wasmJsMain by getting {
+            dependencies { implementation(libs.bundles.wasm) }
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
+    alias(libs.plugins.kotlinxSerialization)
     application
 }
 
@@ -13,16 +14,5 @@ application {
 
 dependencies {
     implementation(projects.shared)
-    implementation(libs.logback)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.client.core)
-    //todo cio or some other and serializations ect
-    /*
-    implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.contentnegotiation)
-    implementation(libs.dotenv.kotlin)
-     */
-    //testImplementation(libs.ktor.server.tests)
-    testImplementation(libs.kotlin.test.junit)
+    implementation(libs.bundles.backend)
 }

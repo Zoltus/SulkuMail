@@ -46,16 +46,11 @@ kotlin {
     jvm()
 
     sourceSets {
-        jvmMain.dependencies {
-
-        }
         commonMain.dependencies {
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.bundles.ktor.common)
+            implementation(libs.bundles.shared)
         }
-        wasmJsMain.dependencies {
-
-        }
+        jvmMain.dependencies {}
+        wasmJsMain.dependencies {}
     }
 }
 
