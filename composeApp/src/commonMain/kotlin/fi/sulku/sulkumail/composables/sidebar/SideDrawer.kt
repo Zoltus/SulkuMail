@@ -23,7 +23,6 @@ val mails = listOf(
     Mail("Mail2", "b@gmail.com", MailProviderType.GMAIL)
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun SideDrawer(
