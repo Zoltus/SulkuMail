@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 actual fun TopBar(loggedIn: Boolean, drawerState: DrawerState) {
-    MenuButton(loggedIn, drawerState)
+    //MenuButton(loggedIn, drawerState)
 }
