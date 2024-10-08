@@ -24,7 +24,7 @@ backend = [
     "ktor-server-core",
     "ktor-server-netty",
     "ktor-server-websockets",
-    "ktor-client-java",
+    "ktor-client-cio",
     "kotlin-test-junit"
 ]
 shared = [
@@ -56,12 +56,12 @@ android = [
     "androidx-activity-compose",
     "androidx-lifecycle-viewmodel",
     "androidx-lifecycle-runtime-compose",
-    "ktor-client-android",
+    "ktor-client-cio",
     "koin-android",
     "koin-androidx-compose",
 ]
 ios = ["ktor-client-darwin"]
-desktop = ["kotlinx-coroutines-swing", "ktor-client-java"]
+desktop = ["kotlinx-coroutines-swing", "ktor-client-cio"]
 wasm = ["ktor-client-js"]
 
 [libraries]
@@ -94,7 +94,6 @@ ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.re
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # IOS
@@ -103,9 +102,8 @@ ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.r
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 # Wasm
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
-# Backend, Desktop
-ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref = "ktor" }
-
+# Android, Desktop, Backend
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 
 [plugins]
 # Backend
