@@ -13,6 +13,7 @@ application {
 }
 
 dependencies {
-    implementation(projects.shared)
+    implementation(projects.shared) //todo dont work?
     implementation(libs.bundles.backend)
+    implementation(libs.bundles.shared)
 }

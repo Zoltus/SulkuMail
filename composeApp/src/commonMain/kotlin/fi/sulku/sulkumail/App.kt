@@ -30,7 +30,6 @@ fun App() = AppTheme {
 
         val loggedIn by remember { mutableStateOf(true) } //todo to vm
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()

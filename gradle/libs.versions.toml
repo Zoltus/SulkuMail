@@ -21,21 +21,24 @@ dotenv-kotlin = "6.4.1"
 [bundles]
 backend = [
     "logback",
-    "dotenv-kotlin",
     "ktor-server-core",
     "ktor-server-netty",
+    "ktor-server-websockets",
     "ktor-client-java",
     "kotlin-test-junit"
 ]
 shared = [
     "kotlinx-datetime",
+    "dotenv-kotlin",
     # Ktor
     "ktor-client-core",
-    #"ktor-client-logging",
+    "ktor-client-logging",
     "ktor-client-json",
     "ktor-client-serialization",
     "ktor-client-content-negotiation",
-    "ktor-serialization-kotlinx-json"
+    "ktor-serialization-kotlinx-json",
+    # For listening auth todo remove core and netty? or just netty?
+    # todo in both? remove?
 ]
 frontend = [
     "kotlinx-coroutines",
@@ -44,9 +47,10 @@ frontend = [
     "composeIcons-featherIcons",
     "koin-compose",
     "koin-compose-viewmodel",
+    "ktor-client-websockets",
     # Todo is this needed for frontend aswell since its already in android?
-    "androidx-lifecycle-viewmodel",
-    "androidx-lifecycle-runtime-compose",
+    # "androidx-lifecycle-viewmodel",
+    # "androidx-lifecycle-runtime-compose",
 ]
 android = [
     "androidx-activity-compose",
@@ -58,7 +62,7 @@ android = [
 ]
 ios = ["ktor-client-darwin"]
 desktop = ["kotlinx-coroutines-swing", "ktor-client-java"]
-wasm = [] # "ktor-client-java"
+wasm = ["ktor-client-js"]
 
 [libraries]
 # Server
@@ -66,7 +70,7 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version
 # Shared
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-#ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
@@ -74,6 +78,7 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 # Backend
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv-kotlin" }
 # FrontEnd
@@ -84,6 +89,7 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 # Android
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
@@ -95,8 +101,11 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 # Desktop
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
-# Backend, Desktop and Wasm
+# Wasm
+ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
+# Backend, Desktop
 ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref = "ktor" }
+
 
 [plugins]
 # Backend

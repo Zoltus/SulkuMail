@@ -52,7 +52,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.shared)
+            implementation(projects.shared) //todo
+            implementation(libs.bundles.shared)
+            implementation(libs.bundles.frontend)
             // Todo these to toml bundles? possible?
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -62,7 +64,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
             api(libs.koin.core)
-            implementation(libs.bundles.frontend)
+
         }
         androidMain.dependencies {
             implementation(compose.preview)

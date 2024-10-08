@@ -13,8 +13,16 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 fun main() {
     embeddedServer(
@@ -29,9 +37,34 @@ val clientId: String = dotenv["DISCORD_CLIENT_ID"]
 val clientSecret: String = dotenv["DISCORD_CLIENT_SECRET"]
 val redirectUri: String = dotenv["DISCORD_REDIRECT_URI"]
 
+val userSessions = ConcurrentHashMap<String, DefaultWebSocketSession>()
+
+@OptIn(DelicateCoroutinesApi::class)
 fun Application.module() {
+    install(WebSockets) {
+        pingPeriod = 15.toDuration(DurationUnit.MINUTES)
+    }
 
     routing {
+        webSocket("/ws/{userId}") {
+            val userId =
+                call.parameters["userId"] ?: return@webSocket close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No userId"))
+            userSessions[userId] = this
+
+
+            try {
+                incoming.consumeEach { frame ->
+                    if (frame is Frame.Text) {
+                        val receivedText = frame.readText()
+                        // Handle incoming messages if needed
+                        this.send("testFromBackend, backend received: $receivedText")
+                    }
+                }
+            } finally {
+                userSessions.remove(userId)
+            }
+        }
+
         get("/") {
             call.respondText("Ktor: ")
         }
@@ -42,23 +75,33 @@ fun Application.module() {
             call.respondRedirect(discordAuthUrl)
         }
 
-        post("") {
-
-        }
-
         get("/auth/discord/callback") {
+            log.info("\n\na@@@@@@@@@@@@@@@@")
             //todo check "verified":true so discout account is verified
             val code = call.request.queryParameters["code"]
             if (code != null) {
                 val fetchAccessToken: AccessTokenResponse = fetchAccessToken(code)
-                println("\n\nfetchAccessToken : $fetchAccessToken")
+                log.info("\n\nfetchAccessToken : $fetchAccessToken")
                 val userData: String = getUserData(fetchAccessToken) // todo model for this
                 val data = toUserData(userData)
+                //todo temp test send to all
+                GlobalScope.launch {
+                    for (userSession in userSessions.values) {
+                        userSession.send(Frame.Text(Json.encodeToString(data)))
+                    }
+                }
+                log.info("\n\n222@@@@@@@@@@@Logged In")
                 call.respond(data)
+
             } else {
                 call.respondText("Authorization failed", status = HttpStatusCode.BadRequest)
+                log.info("\n\n333@@@@@@@@@@@@@@@@")
             }
             client.close()
+        }
+
+        post("") {
+
         }
     }
 }
