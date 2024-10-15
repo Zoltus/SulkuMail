@@ -70,10 +70,6 @@ fun App() = AppTheme {
 }
 
 @Composable
-expect fun TopBar(loggedIn: Boolean, drawerState: DrawerState)
-
-
-@Composable
 fun MailScreen(email: String) {
     Text("Email of theasd mail: $email")
 }
