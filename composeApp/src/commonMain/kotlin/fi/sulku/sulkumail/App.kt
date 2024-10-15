@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import fi.sulku.sulkumail.composables.login.Login
 import fi.sulku.sulkumail.composables.sidebar.SideDrawer
 import fi.sulku.sulkumail.composables.sidebar.mails
 import fi.sulku.sulkumail.theme.AppTheme
@@ -42,16 +43,20 @@ fun App() = AppTheme {
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
-                    startDestination = "welcome",
+                    startDestination = "login",
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(1.dp)
                 ) {
-                    //Route for welcome screen
+                    // Route for welcome screen
                     composable(route = "welcome") {
                         WelcomeScreen()
                     }
-                    //Routes for emails
+                    // Login
+                    composable(route = "login") {
+                        Login()
+                    }
+                    // Routes for emails
                     mails.forEach { mail ->
                         composable(route = mail.email) {
                             //MailScreen(mail.email)
