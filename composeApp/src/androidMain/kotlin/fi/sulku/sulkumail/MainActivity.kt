@@ -10,7 +10,8 @@ import fi.sulku.sulkumail.koin.initKoin
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initKoin()
+        //supabase.handleDeeplinks(intent)
+        //initKoin() ??
         setContent {
             App()
         }

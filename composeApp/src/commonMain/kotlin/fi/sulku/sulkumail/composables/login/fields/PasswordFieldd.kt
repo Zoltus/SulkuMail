@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import fi.sulku.sulkumail.composables.login.Validation
 
 @Composable
-fun PasswordField(input: String, passwordVisible: MutableState<Boolean>, onValueChange: (String) -> Unit) {
+fun PasswordFieldd(input: String, passwordVisible: MutableState<Boolean>, onValueChange: (String) -> Unit) {
     InputField(
         label = "Password",
         input = input,

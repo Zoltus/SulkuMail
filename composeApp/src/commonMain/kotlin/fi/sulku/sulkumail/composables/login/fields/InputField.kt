@@ -35,6 +35,6 @@ fun InputField(
         singleLine = true
     )
     if (isValid) {
-        Text(validation!!.errorMsg, color = MaterialTheme.colorScheme.error) // todo remove !!
+        Text(validation.errorMsg, color = MaterialTheme.colorScheme.error)
     }
 }

@@ -26,9 +26,9 @@ fun SocialArea() {
 
     OrSeparator()
     Row {
-        SocialButton("Google", Res.drawable.google, 16.dp, rainbowBrush, Color.Unspecified) {}
+       // SocialButton("Google", Res.drawable.google, 16.dp, rainbowBrush, Color.Unspecified) {}
         Spacer(modifier = Modifier.width(16.dp))
-        SocialButton("Discord", Res.drawable.discord, 32.dp, Color(0xFF5865F2), Color(0xFF5865F2)) {}
+        //SocialButton("Discord", Res.drawable.discord, 32.dp, Color(0xFF5865F2), Color(0xFF5865F2)) {}
     }
 }
 

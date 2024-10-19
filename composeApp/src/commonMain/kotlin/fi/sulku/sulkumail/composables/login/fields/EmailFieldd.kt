@@ -9,7 +9,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import fi.sulku.sulkumail.composables.login.Validation
 
 @Composable
-fun EmailField(input: String, onValueChange: (String) -> Unit) {
+fun EmailFieldd(input: String, onValueChange: (String) -> Unit) {
     InputField(
         label = "Email",
         input = input,
