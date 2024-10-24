@@ -2,7 +2,6 @@ package fi.sulku.sulkumail
 
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
-import io.ktor.client.engine.java.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -23,6 +22,7 @@ import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import kotlin.time.toJavaDuration
 
 fun main() {
     embeddedServer(
@@ -42,7 +42,7 @@ val userSessions = ConcurrentHashMap<String, DefaultWebSocketSession>()
 @OptIn(DelicateCoroutinesApi::class)
 fun Application.module() {
     install(WebSockets) {
-        pingPeriod = 15.toDuration(DurationUnit.MINUTES)
+        pingPeriod = 10.toDuration(DurationUnit.MINUTES).toJavaDuration()
     }
 
     routing {
@@ -51,17 +51,17 @@ fun Application.module() {
                 call.parameters["userId"] ?: return@webSocket close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No userId"))
             userSessions[userId] = this
 
-
             try {
+                //Catch frames sent by user
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
-                        val receivedText = frame.readText()
-                        // Handle incoming messages if needed
-                        this.send("testFromBackend, backend received: $receivedText")
+                       val receivedText = frame.readText()
+                        this.send("Echo: $receivedText")
                     }
                 }
             } finally {
                 userSessions.remove(userId)
+                log.error("\nUser $userId disconnected")
             }
         }
 
@@ -87,7 +87,7 @@ fun Application.module() {
                 //todo temp test send to all
                 GlobalScope.launch {
                     for (userSession in userSessions.values) {
-                        userSession.send(Frame.Text(Json.encodeToString(data)))
+                        userSession.send(Json.encodeToString(data))
                     }
                 }
                 log.info("\n\n222@@@@@@@@@@@Logged In")
@@ -109,7 +109,7 @@ fun Application.module() {
 //todo move to clientside
 val json = Json { ignoreUnknownKeys = true }
 
-val client = HttpClient(Java) {
+val client = HttpClient {
     install(ContentNegotiation) { json }
 }
 //client.close()
