@@ -16,6 +16,8 @@ koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
 dotenv-kotlin = "6.4.2"
 supabase = "3.0.0"
+aws-cognito = "3.678.0"
+google-oauth = "1.36.0"
 
 [bundles]
 
@@ -25,7 +27,10 @@ backend = [
     "ktor-server-netty",
     "ktor-server-websockets",
     "ktor-client-cio",
-    "kotlin-test-junit"
+    "kotlin-test-junit",
+    "ktor-server-auth-jwt",
+    "aws-cognito",
+    "google-oauth"
 ]
 shared = [
     "kotlinx-datetime",
@@ -68,8 +73,6 @@ desktop = ["kotlinx-coroutines-swing", "ktor-client-cio"]
 wasm = ["ktor-client-js"]
 
 [libraries]
-# Server
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 # Shared
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
@@ -78,12 +81,16 @@ ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref =
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-# Backend
+# Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv-kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
+aws-cognito = { module = "software.amazon.awssdk:cognitoidentityprovider", version.ref = "aws-cognito" }
+google-oauth = { module = "com.google.oauth-client:google-oauth-client", version.ref = "google-oauth" }
 # FrontEnd
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
