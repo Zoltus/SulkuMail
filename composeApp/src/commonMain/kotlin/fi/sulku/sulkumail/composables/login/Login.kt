@@ -10,12 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.composables.login.buttons.LoginButton
 import fi.sulku.sulkumail.composables.login.buttons.RegisterButton
 import fi.sulku.sulkumail.composables.login.buttons.SocialArea
 import fi.sulku.sulkumail.composables.login.fields.FirstNameField
 import fi.sulku.sulkumail.composables.login.fields.LastNameField
+import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import io.github.jan.supabase.auth.providers.Discord
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.compose.auth.ui.ProviderButtonContent
@@ -24,6 +26,7 @@ import io.github.jan.supabase.compose.auth.ui.email.EmailField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
 import io.github.jan.supabase.compose.auth.ui.password.rememberPasswordRuleList
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
@@ -36,11 +39,16 @@ fun Login() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val authVm = koinViewModel<AuthViewModel>()
+    val authErrorMsg by authVm.authErrorMsg.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
     ) {
+        // Auth Error message
+        authErrorMsg?.let{ Text(text = it, color = Color.Red) }
         // Only on Register
         if (isRegistering.value) {
             FirstNameField(firstName) { firstName = it }
@@ -52,7 +60,7 @@ fun Login() {
             value = email,
             onValueChange = { email = it },
             label = { Text("E-Mail") },
-            mandatory = email.isNotBlank()
+            mandatory = email.isNotBlank(),
         )
         //todo remove random padding?
         PasswordField(
@@ -73,7 +81,6 @@ fun Login() {
 
         OutlinedButton(
             onClick = {
-
             }, //Login with Google,
             content = { ProviderButtonContent(Google) }
         )

@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,24 +21,42 @@ import fi.sulku.sulkumail.composables.sidebar.SideDrawer
 import fi.sulku.sulkumail.composables.sidebar.mails
 import fi.sulku.sulkumail.theme.AppTheme
 import fi.sulku.sulkumail.theme.CustomColor
+import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.KoinContext
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() = AppTheme {
-
     KoinContext {
-        //val scope = rememberCoroutineScope()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
         val nav: NavHostController = rememberNavController()
 
-        val loggedIn by remember { mutableStateOf(true) } //todo to vm
+        val authVm = koinViewModel<AuthViewModel>()
+        val isLoggedIn: Boolean by authVm.isLoggedIn.collectAsState()
+        LaunchedEffect(isLoggedIn) {
+            println("Islogged: $isLoggedIn")
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(CustomColor.discordDark)
         ) {
+
+            if (isLoggedIn) {
+                Text("You are logged in")
+                Button(onClick = {
+                    authVm.signOut()
+                }) {
+                    Text("Logout")
+                }
+                return@KoinContext
+            } else {
+                Login()
+                return@KoinContext
+            }
+
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
