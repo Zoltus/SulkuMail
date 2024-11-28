@@ -14,7 +14,7 @@ val supabaseModule = module {
             supabaseKey = BuildConfig.SUPABASE_ANON_KEY
         ) {
             defaultLogLevel = LogLevel.DEBUG
-            install(Auth.Companion) {
+            install(Auth) {
                 /*
                 The deeplink scheme used for the implicit and PKCE flow. When null, deeplinks won't be used as redirect urls
                 Note: Deeplinks are only used as redirect urls on Android and Apple platforms. Other platforms will use their own default redirect url.
@@ -46,9 +46,6 @@ val supabaseModule = module {
                 appleNativeLogin()
             }*/
             // install(Postgrest)
-            install(Auth.Companion) {
-
-            }
             // install(Realtime)
         }
     }
