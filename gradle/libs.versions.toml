@@ -20,6 +20,7 @@ buildConfig = "5.5.1"
 [bundles]
 
 shared = [
+    "kotlinx-coroutines-core",
     "kotlinx-datetime",
     # Ktor
     "ktor-client-core",
@@ -31,12 +32,12 @@ shared = [
     # For listening auth todo remove core and netty? or just netty?
 ]
 backend = [
-    "kotlinx-coroutines",
+    "kotlinx-coroutines-core",
     "logback",
     "ktor-server-core",
     "ktor-server-netty",
     "ktor-server-content-negotiation",
-    "ktor-server-auth-jwt", #
+    "ktor-server-auth-jwt",
     "ktor-client-cio",
     "kotlin-test-junit",
 ]
@@ -48,9 +49,6 @@ frontend = [
     "koin-compose-viewmodel",
     "supabase-composeauth",
     "supabase-composables",
-    # Todo is this needed for frontend aswell since its already in android?
-    # "androidx-lifecycle-viewmodel",
-    # "androidx-lifecycle-runtime-compose",
 ]
 android = [
     "androidx-activity-compose",
@@ -62,9 +60,9 @@ android = [
     "kotlinx-coroutines-android",
     # "googleid-android",
 ]
-ios = ["ktor-client-darwin", "kotlinx-coroutines"]
-desktop = ["ktor-client-cio", "kotlinx-coroutines-swing"] # , "kotlinx-coroutines-swing"
-wasm = ["ktor-client-js", "kotlinx-coroutines"]
+ios = ["ktor-client-darwin"]
+desktop = ["ktor-client-cio", "kotlinx-coroutines-swing"]
+wasm = ["ktor-client-js"]
 
 [libraries]
 # googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
@@ -86,7 +84,7 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
 # FrontEnd
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
@@ -97,7 +95,6 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 supabase-composeauth = { group = "io.github.jan-tennert.supabase", name = "compose-auth", version.ref = "supabase" }
 # Android
-
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
@@ -105,12 +102,12 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # IOS
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
-# Desktop
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 # Wasm
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 # Android, Desktop, Backend
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+# Desktop
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 # Backend
