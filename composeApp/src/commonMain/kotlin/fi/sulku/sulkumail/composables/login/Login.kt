@@ -16,25 +16,21 @@ import fi.sulku.sulkumail.composables.login.buttons.RegisterButton
 import fi.sulku.sulkumail.composables.login.buttons.SocialArea
 import fi.sulku.sulkumail.composables.login.fields.FirstNameField
 import fi.sulku.sulkumail.composables.login.fields.LastNameField
-import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Discord
 import io.github.jan.supabase.auth.providers.Google
-import io.github.jan.supabase.auth.status.SessionSource
-import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.compose.auth.ui.ProviderButtonContent
 import io.github.jan.supabase.compose.auth.ui.annotations.AuthUiExperimental
 import io.github.jan.supabase.compose.auth.ui.email.EmailField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
 import io.github.jan.supabase.compose.auth.ui.password.rememberPasswordRuleList
-import io.github.jan.supabase.createSupabaseClient
 import kotlinx.coroutines.launch
 
 
 @OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Login() {
+    val scope = rememberCoroutineScope()
     var isRegistering = remember { mutableStateOf(true) }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -78,31 +74,13 @@ fun Login() {
         RegisterButton(isRegistering)
         SocialArea()
 
-        val scope = rememberCoroutineScope()
-        //todo to env
-        val supabase = createSupabaseClient(
-            supabaseUrl = "https://obvebhxdnmbnzjbinsgw.supabase.co",
-            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9idmViaHhkbm1ibnpqYmluc2d3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyODM5ODc1OSwiZXhwIjoyMDQzOTc0NzU5fQ.tTjla5vP5CjFmSUFjcfrB-ILmbVKlXlaYqssuLCyi5E"
-        ) {
-            install(Auth) {
-                host = "sulkumail"
-                scheme = "login"
 
-                // On Android only, you can set OAuth and SSO logins to open in a custom tab, rather than an external browser:
-                // defaultExternalAuthAction = ExternalAuthAction.CustomTabs() //defaults to ExternalAuthAction.ExternalBrowser
-            }
-            /*install(ComposeAuth) { // ios/android native google auth
-                googleNativeLogin(serverClientId = "google-client-id")
-                appleNativeLogin()
-            }*/
-            //install(Postgrest)
-        }
 
         OutlinedButton(
             onClick = {
                 scope.launch {
                     //https://supabase.com/docs/reference/kotlin/auth-getuser
-                    supabase.auth.signInWith(Discord)
+                   // supabase.auth.signInWith(Discord)
                     // val session = supabase.auth.currentSessionOrNull()
                     //val user = supabase.auth.retrieveUserForCurrentSession(updateSession = true)
 
@@ -114,13 +92,13 @@ fun Login() {
             onClick = {
                 //Redirects to:
                 scope.launch {
-                    supabase.auth.signInWith(Discord)
+                 //   supabase.auth.signInWith(Discord)
                 }
             }, //Login with Twitch,
             content = { ProviderButtonContent(Discord) }
         )
 
-        scope.launch {
+/*        scope.launch {
             supabase.auth.sessionStatus.collect {
                 when (it) {
                     is SessionStatus.Authenticated -> {
@@ -155,20 +133,7 @@ fun Login() {
                     }
                 }
             }
-        }
+        }*/
     }
 }
-
-/*
-val json = Json { ignoreUnknownKeys = true }
-
-val client = HttpClient() {
-    install(ContentNegotiation) { json }
-}
-
-val dotenv = dotenv()
-val clientId: String = dotenv["DISCORD_CLIENT_ID"]
-val clientSecret: String = dotenv["DISCORD_CLIENT_SECRET"]
-val redirectUri: String = dotenv["DISCORD_REDIRECT_URI"]
-*/
 

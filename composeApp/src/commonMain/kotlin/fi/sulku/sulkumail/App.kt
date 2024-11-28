@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import fi.sulku.sulkumail.composables.login.Login
 import fi.sulku.sulkumail.composables.sidebar.SideDrawer
 import fi.sulku.sulkumail.composables.sidebar.mails
 import fi.sulku.sulkumail.theme.AppTheme
@@ -24,6 +24,7 @@ import org.koin.compose.KoinContext
 
 @Composable
 fun App() = AppTheme {
+
     KoinContext {
         //val scope = rememberCoroutineScope()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
@@ -45,17 +46,18 @@ fun App() = AppTheme {
                         .padding(1.dp)
                 ) {
                     composable<WelcomeRoute> {
-                        nav.navigate(WelcomeRoute)
+                        //onNav = nav.navigate(WelcomeRoute)
+                        Login()
                     }
                     // Login
                     composable<LoginRoute> {
-                        nav.navigate(LoginRoute)
+                        Login()
                     }
                     // Routes for emails
                     mails.forEach { mail ->
                         composable<MailRoute> { backStackEntry ->
                             val mailRoute: MailRoute = backStackEntry.toRoute()
-                            MailRoute(mailRoute.email)
+                            //MailRoute(mailRoute.email)
                             SearchBarSample(drawerState)
                         }
                         /*
@@ -84,15 +86,6 @@ object WelcomeRoute
 @Serializable
 object LoginRoute
 
-@Composable
-fun MailScreen(email: String) {
-    Text("Email of theasd mail: $email")
-}
-
-@Composable
-fun WelcomeScreen() {
-    Text("Welcome to Sulkumail")
-}
 
 
 

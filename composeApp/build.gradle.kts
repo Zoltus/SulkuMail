@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,6 +11,15 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.buildConfig)
+}
+
+buildConfig {
+    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+    buildConfigField("SUPABASE_URL", properties.getProperty("SUPABASE_URL"))
+    buildConfigField("SUPABASE_ANON_KEY", properties.getProperty("SUPABASE_ANON_KEY"))
 }
 
 kotlin {
@@ -51,7 +61,8 @@ kotlin {
         }
     }
 
-   // todo linuxX64() //linuxArm64()
+    // todo linuxX64() //linuxArm64()
+
 
     sourceSets {
         commonMain.dependencies {
@@ -67,7 +78,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
             api(libs.koin.core)
-
         }
         androidMain.dependencies {
             implementation(compose.preview)
@@ -118,6 +128,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     dependencies {

@@ -5,36 +5,22 @@ android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
-androidx-lifecycle = "2.8.3"
-compose-plugin = "1.7.0"
-kotlin = "2.0.20"
+androidx-lifecycle = "2.8.4"
+compose-plugin = "1.7.1"
+kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
-ktor = "3.0.0-rc-1"
+ktor = "3.0.1"
 logback = "1.5.8"
 composeIcons = "1.1.1"
 koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
-dotenv-kotlin = "6.4.2"
 supabase = "3.0.0"
-aws-cognito = "3.678.0"
-google-oauth = "1.36.0"
+buildConfig = "5.5.1"
 
 [bundles]
 
-backend = [
-    "logback",
-    "ktor-server-core",
-    "ktor-server-netty",
-    "ktor-server-websockets",
-    "ktor-client-cio",
-    "kotlin-test-junit",
-    "ktor-server-auth-jwt",
-    "aws-cognito",
-    "google-oauth"
-]
 shared = [
     "kotlinx-datetime",
-    "dotenv-kotlin",
     # Ktor
     "ktor-client-core",
     "ktor-client-logging",
@@ -43,17 +29,23 @@ shared = [
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
     # For listening auth todo remove core and netty? or just netty?
-    # todo in both? remove?
+]
+backend = [
+    "kotlinx-coroutines",
+    "logback",
+    "ktor-server-core",
+    "ktor-server-netty",
+    "ktor-server-content-negotiation",
+    "ktor-server-auth-jwt", #
+    "ktor-client-cio",
+    "kotlin-test-junit",
 ]
 frontend = [
-    "kotlinx-coroutines",
     "coil",
     "coil-network-ktor",
     "composeIcons-featherIcons",
     "koin-compose",
     "koin-compose-viewmodel",
-    "ktor-client-websockets",
-    "ktor-utils",
     "supabase-composeauth",
     "supabase-composables",
     # Todo is this needed for frontend aswell since its already in android?
@@ -67,12 +59,17 @@ android = [
     "ktor-client-cio",
     "koin-android",
     "koin-androidx-compose",
+    "kotlinx-coroutines-android",
+    # "googleid-android",
 ]
-ios = ["ktor-client-darwin"]
-desktop = ["kotlinx-coroutines-swing", "ktor-client-cio"]
-wasm = ["ktor-client-js"]
+ios = ["ktor-client-darwin", "kotlinx-coroutines"]
+desktop = ["ktor-client-cio", "kotlinx-coroutines-swing"] # , "kotlinx-coroutines-swing"
+wasm = ["ktor-client-js", "kotlinx-coroutines"]
 
 [libraries]
+# googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+
 # Shared
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
@@ -84,13 +81,10 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 # Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
-ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv-kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
-aws-cognito = { module = "software.amazon.awssdk:cognitoidentityprovider", version.ref = "aws-cognito" }
-google-oauth = { module = "com.google.oauth-client:google-oauth-client", version.ref = "google-oauth" }
 # FrontEnd
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
@@ -99,14 +93,11 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
-# Todo is this needes stiLL?
-ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
-ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor" }
 # Auth Field composables and authentication
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 supabase-composeauth = { group = "io.github.jan-tennert.supabase", name = "compose-auth", version.ref = "supabase" }
-
 # Android
+
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
@@ -131,6 +122,7 @@ kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 # All Shared
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 # FrontEndShared
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }

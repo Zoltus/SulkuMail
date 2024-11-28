@@ -1,2 +1,0 @@
-package fi.sulku.sulkumail
-
