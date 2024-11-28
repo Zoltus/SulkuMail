@@ -24,13 +24,11 @@ import io.github.jan.supabase.compose.auth.ui.email.EmailField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
 import io.github.jan.supabase.compose.auth.ui.password.rememberPasswordRuleList
-import kotlinx.coroutines.launch
 
 
 @OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Login() {
-    val scope = rememberCoroutineScope()
     var isRegistering = remember { mutableStateOf(true) }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -48,7 +46,6 @@ fun Login() {
             FirstNameField(firstName) { firstName = it }
             LastNameField(lastName) { lastName = it }
         }
-        //https://supabase.com/docs/guides/auth/auth-identity-linking?queryGroups=language&language=kotlin#manual-linking-beta
         // Login
         EmailField(
             modifier = Modifier.padding(0.dp),
@@ -74,66 +71,18 @@ fun Login() {
         RegisterButton(isRegistering)
         SocialArea()
 
-
-
         OutlinedButton(
             onClick = {
-                scope.launch {
-                    //https://supabase.com/docs/reference/kotlin/auth-getuser
-                   // supabase.auth.signInWith(Discord)
-                    // val session = supabase.auth.currentSessionOrNull()
-                    //val user = supabase.auth.retrieveUserForCurrentSession(updateSession = true)
 
-                }
             }, //Login with Google,
             content = { ProviderButtonContent(Google) }
         )
         OutlinedButton(
             onClick = {
-                //Redirects to:
-                scope.launch {
-                 //   supabase.auth.signInWith(Discord)
-                }
+
             }, //Login with Twitch,
             content = { ProviderButtonContent(Discord) }
         )
-
-/*        scope.launch {
-            supabase.auth.sessionStatus.collect {
-                when (it) {
-                    is SessionStatus.Authenticated -> {
-                        println("Received new authenticated session.")
-                        when (it.source) { //Check the source of the session
-                            SessionSource.External -> println("External")
-                            is SessionSource.Refresh -> println("Refresh")
-                            is SessionSource.SignIn -> println("Sign in")
-                            is SessionSource.AnonymousSignIn -> println("Anonymous sign in")
-                            is SessionSource.SignUp -> println("Sign up")
-                            SessionSource.Storage -> println("Storage")
-                            SessionSource.Unknown -> println("Unknown")
-                            is SessionSource.UserChanged -> println("User changed")
-                            is SessionSource.UserIdentitiesChanged -> println("User identities changed")
-                        }
-                    }
-
-                    SessionStatus.Initializing -> {
-                        println("Initializing")
-                    }
-
-                    is SessionStatus.RefreshFailure -> {
-                        println("Refresh failure ${it.cause}") //Either a network error or a internal server error
-                    }
-
-                    is SessionStatus.NotAuthenticated -> {
-                        if (it.isSignOut) {
-                            println("User signed out")
-                        } else {
-                            println("User not signed in")
-                        }
-                    }
-                }
-            }
-        }*/
     }
 }
 

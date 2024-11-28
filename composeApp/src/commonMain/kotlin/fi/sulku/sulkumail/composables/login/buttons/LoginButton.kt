@@ -3,7 +3,7 @@ package fi.sulku.sulkumail.composables.login.buttons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import fi.sulku.sulkumail.di.AuthViewModel
+import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

@@ -1,41 +1,45 @@
 package fi.sulku.sulkumail.di
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
-import kotlinx.coroutines.launch
+/*
+                    //https://supabase.com/docs/reference/kotlin/auth-getuser
+                   // supabase.auth.signInWith(Discord)
+                    // val session = supabase.auth.currentSessionOrNull()
+                    //val user = supabase.auth.retrieveUserForCurrentSession(updateSession = true)
 
-class AuthViewModel(private val supabaseClient: SupabaseClient) : ViewModel() {
+  scope.launch {
+            supabase.auth.sessionStatus.collect {
+                when (it) {
+                    is SessionStatus.Authenticated -> {
+                        println("Received new authenticated session.")
+                        when (it.source) { //Check the source of the session
+                            SessionSource.External -> println("External")
+                            is SessionSource.Refresh -> println("Refresh")
+                            is SessionSource.SignIn -> println("Sign in")
+                            is SessionSource.AnonymousSignIn -> println("Anonymous sign in")
+                            is SessionSource.SignUp -> println("Sign up")
+                            SessionSource.Storage -> println("Storage")
+                            SessionSource.Unknown -> println("Unknown")
+                            is SessionSource.UserChanged -> println("User changed")
+                            is SessionSource.UserIdentitiesChanged -> println("User identities changed")
+                        }
+                    }
 
-    fun signUp(email: String, password: String) {
-        viewModelScope.launch {
-            try {
-                println("Registering")
-                supabaseClient.auth.signUpWith(Email) {
-                    this.email = email
-                    this.password = password
+                    SessionStatus.Initializing -> {
+                        println("Initializing")
+                    }
+
+                    is SessionStatus.RefreshFailure -> {
+                        println("Refresh failure ${it.cause}") //Either a network error or a internal server error
+                    }
+
+                    is SessionStatus.NotAuthenticated -> {
+                        if (it.isSignOut) {
+                            println("User signed out")
+                        } else {
+                            println("User not signed in")
+                        }
+                    }
                 }
-                println("Registered")
-            } catch (e: Exception) {
-                println("Error: $e")
             }
         }
-    }
-
-   fun signIn(email: String, password: String) {
-        viewModelScope.launch {
-            try {
-                println("signing in")
-                supabaseClient.auth.signInWith(Email) {
-                    this.email = email
-                    this.password = password
-                }
-                println("signed in")
-            } catch (e: Exception) {
-                println("Error: $e")
-            }
-        }
-    }
-}
+ */
