@@ -8,15 +8,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun OrSeparator() {
-    Row(verticalAlignment = Alignment.Companion.CenterVertically) {
-        HorizontalDivider(modifier = Modifier.Companion.weight(1f))
-        Spacer(modifier = Modifier.Companion.width(8.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        HorizontalDivider(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(8.dp))
         Text("Or")
-        Spacer(modifier = Modifier.Companion.width(8.dp))
-        HorizontalDivider(modifier = Modifier.Companion.weight(1f))
+        Spacer(modifier = Modifier.width(8.dp))
+        HorizontalDivider(modifier = Modifier.weight(1f))
     }
 }

@@ -69,7 +69,6 @@ kotlin {
             implementation(projects.shared) //todo
             implementation(libs.bundles.shared)
             implementation(libs.bundles.frontend)
-            // Todo these to toml bundles? possible?
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
