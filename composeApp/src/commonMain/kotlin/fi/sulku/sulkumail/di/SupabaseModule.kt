@@ -32,7 +32,7 @@ val supabaseModule = module {
                 autoSaveToStorage = true
                 autoLoadFromStorage = true
                 // platformGoTrueConfig()
-                flowType = FlowType.PKCE //tod
+                flowType = FlowType.PKCE //todo?
                 // On Android only, you can set OAuth and SSO logins to open in a custom tab, rather than an external browser:
                 // defaultExternalAuthAction = ExternalAuthAction.CustomTabs() //defaults to ExternalAuthAction.ExternalBrowser
                 /*

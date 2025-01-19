@@ -16,6 +16,7 @@ koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
 supabase = "3.0.0"
 buildConfig = "5.5.1"
+webView = "1.9.40"
 
 [bundles]
 
@@ -49,6 +50,7 @@ frontend = [
     "koin-compose-viewmodel",
     "supabase-composeauth",
     "supabase-composables",
+    "compose-webview" # Captcha
 ]
 android = [
     "androidx-activity-compose",
@@ -76,6 +78,7 @@ ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref =
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+compose-webview=  { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "webView" }
 # Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }

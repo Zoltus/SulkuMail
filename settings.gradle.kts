@@ -12,6 +12,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://jogamp.org/deployment/maven") //todo only desktop target needs this https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md
     }
 }
 

@@ -7,16 +7,16 @@ import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LoginButton(email: String, password: String, isRegistering: Boolean, enabled: Boolean) {
+fun LoginButton(email: String, password: String, captchaToken: String?, isRegistering: Boolean, enabled: Boolean) {
     val authVm = koinViewModel<AuthViewModel>()
 
     Button(
         enabled = enabled,
         onClick = {
             if (isRegistering) {
-                authVm.signUp(email, password)
+                authVm.signUp(email, password, captchaToken)
             } else {
-                authVm.signIn(email, password)
+                authVm.signIn(email, password, captchaToken)
             }
         }) {
         val text = if (isRegistering) "Register" else "Login"
