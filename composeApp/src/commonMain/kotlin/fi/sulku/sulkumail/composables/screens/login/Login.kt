@@ -73,7 +73,7 @@ fun Login() {
         LoginButton(
             email = email,
             password = password,
-            isRegistering = isRegistering.value,
+            isRegistering = isRegistering,
             enabled = formState.validForm
         )
         RegisterSwitchButton(isRegistering)

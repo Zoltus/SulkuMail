@@ -50,13 +50,15 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
         }
     }
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, onSignUp : () -> Unit) {
+        //todo loading circle
         catchingAuthAction {
             println("Registering")
             supabase.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
             }
+            onSignUp()
             println("Registered")
         }
     }
