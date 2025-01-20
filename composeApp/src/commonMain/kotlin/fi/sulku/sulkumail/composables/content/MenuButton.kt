@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail
+package fi.sulku.sulkumail.composables.content
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu

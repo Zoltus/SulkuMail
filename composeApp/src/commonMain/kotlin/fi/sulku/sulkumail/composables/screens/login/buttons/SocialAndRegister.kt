@@ -1,10 +1,8 @@
-package fi.sulku.sulkumail.composables.login.buttons
+package fi.sulku.sulkumail.composables.screens.login.buttons
 
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import fi.sulku.sulkumail.composables.login.OrSeparator
+import fi.sulku.sulkumail.composables.screens.login.OrSeparator
 import io.github.jan.supabase.auth.providers.Discord
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.compose.auth.ui.ProviderButtonContent

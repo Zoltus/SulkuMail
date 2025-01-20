@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.login
+package fi.sulku.sulkumail.composables.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +16,9 @@ import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import fi.sulku.sulkumail.composables.login.buttons.LoginButton
-import fi.sulku.sulkumail.composables.login.buttons.RegisterSwitchButton
-import fi.sulku.sulkumail.composables.login.buttons.SocialArea
+import fi.sulku.sulkumail.composables.screens.login.buttons.LoginButton
+import fi.sulku.sulkumail.composables.screens.login.buttons.RegisterSwitchButton
+import fi.sulku.sulkumail.composables.screens.login.buttons.SocialArea
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.compose.auth.ui.LocalAuthState

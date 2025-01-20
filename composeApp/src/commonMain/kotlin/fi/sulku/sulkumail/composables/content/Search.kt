@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail
+package fi.sulku.sulkumail.composables.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

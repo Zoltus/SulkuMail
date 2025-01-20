@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.login.buttons
+package fi.sulku.sulkumail.composables.screens.login.buttons
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
