@@ -2,9 +2,12 @@ package fi.sulku.sulkumail.composables.sidebar
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.navigation.NavHostController
+import fi.sulku.sulkumail.ManageAccountsRoute
+import fi.sulku.sulkumail.SettingsRoute
 
 @Composable
-fun DrawerBottom() {
+fun DrawerBottom(nav: NavHostController) {
     HorizontalDivider()
     NavigationDrawerItem(
         shape = MaterialTheme.shapes.small,
@@ -12,8 +15,7 @@ fun DrawerBottom() {
         // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
         selected = false,
         badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-        onClick = {
-        },
+        onClick = { nav.navigate(ManageAccountsRoute)},
     )
     NavigationDrawerItem(
         shape = MaterialTheme.shapes.small,
@@ -21,6 +23,6 @@ fun DrawerBottom() {
         // icon = { Icon(imageVector = mail.icon, contentDescription = mail.title) },
         selected = false,
         badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-        onClick = {},
+        onClick = { nav.navigate(SettingsRoute) },
     )
 }

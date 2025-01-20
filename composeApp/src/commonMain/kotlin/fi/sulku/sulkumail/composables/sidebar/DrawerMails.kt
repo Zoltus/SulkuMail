@@ -17,6 +17,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import fi.sulku.sulkumail.MailRoute
+import fi.sulku.sulkumail.SettingsRoute
 import fi.sulku.sulkumail.mail.Folders
 import fi.sulku.sulkumail.mail.Mail
 import org.jetbrains.compose.resources.painterResource
@@ -56,7 +58,7 @@ fun ColumnScope.DrawerMails(
                     Icon(arrow, contentDescription = "Expand folder arrow")
                 },
                 onClick = {
-                    nav.navigate(mail.email)
+                    nav.navigate(MailRoute(mail.email))
                     expandedMails.apply { if (isExpanded) remove(mail) else add(mail) }
                 },
             )

@@ -68,7 +68,7 @@ private fun DrawerContent(
             DrawerMails(expandedMails, nav, selectedMail, selectedFolder)
             //Moves items to bottom
             Column(verticalArrangement = Arrangement.Bottom) {
-                DrawerBottom()
+                DrawerBottom(nav)
             }
         }
     }
