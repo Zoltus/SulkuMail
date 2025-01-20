@@ -26,10 +26,4 @@ fun SocialArea() {
         },
         content = { ProviderButtonContent(Google) }
     )
-    OutlinedButton(
-        onClick = {
-
-        },
-        content = { ProviderButtonContent(Discord) }
-    )
 }
