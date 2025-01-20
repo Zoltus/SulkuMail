@@ -50,25 +50,23 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
         }
     }
 
-    fun signUp(email: String, password: String, captchaToken: String?) {
+    fun signUp(email: String, password: String) {
         catchingAuthAction {
             println("Registering")
             supabase.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
-                this.captchaToken = captchaToken
             }
             println("Registered")
         }
     }
 
-    fun signIn(email: String, password: String, captchaToken: String?) {
+    fun signIn(email: String, password: String) {
         catchingAuthAction {
             println("Signing in")
             supabase.auth.signInWith(Email) {
                 this.email = email
                 this.password = password
-                this.captchaToken = captchaToken
             }
             println("Signed in")
         }

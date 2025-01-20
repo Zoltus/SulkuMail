@@ -10,12 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.multiplatform.webview.jsbridge.IJsMessageHandler
-import com.multiplatform.webview.jsbridge.JsMessage
-import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewState
 import fi.sulku.sulkumail.composables.screens.login.buttons.LoginButton
 import fi.sulku.sulkumail.composables.screens.login.buttons.RegisterSwitchButton
 import fi.sulku.sulkumail.composables.screens.login.buttons.SocialArea
@@ -27,7 +21,6 @@ import io.github.jan.supabase.compose.auth.ui.email.EmailField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordField
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
 import io.github.jan.supabase.compose.auth.ui.password.rememberPasswordRuleList
-import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class, SupabaseInternal::class)
@@ -41,33 +34,13 @@ fun Login() {
     var passwordConfirm by remember { mutableStateOf("") }
     val authErrorMsg by authVm.authErrorMsg.collectAsState()
 
-    var token by remember { mutableStateOf("") }
-
-    val webViewState = rememberWebViewState(
-        url = "https://obvebhxdnmbnzjbinsgw.supabase.co/storage/v1/object/public/turnstile/index.html"
-     //   baseUrl = "https://obvebhxdnmbnzjbinsgw.supabase.co",
-    )
-    webViewState.webSettings.isJavaScriptEnabled = true
-
-
-    val jsBridge = rememberWebViewJsBridge()
-    LaunchedEffect(jsBridge) {
-        jsBridge.register(TurnstileHandler { token = it })
-    }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
     ) {
-
-
         // Auth Error message
         authErrorMsg?.let { Text(text = it, color = Color.Red) }
-        WebView(
-            state = webViewState,
-            webViewJsBridge = jsBridge
-        )
         // Login
         EmailField(
             value = email,
@@ -100,32 +73,10 @@ fun Login() {
         LoginButton(
             email = email,
             password = password,
-            captchaToken = token,
             isRegistering = isRegistering.value,
             enabled = formState.validForm
         )
         RegisterSwitchButton(isRegistering)
         SocialArea()
-    }
-}
-
-
-
-class TurnstileHandler(private val onTokenReceived: (String) -> Unit) : IJsMessageHandler {
-    override fun methodName(): String = "turnstile"
-
-    override fun handle(
-        message: JsMessage,
-        navigator: WebViewNavigator?,
-        callback: (String) -> Unit
-    ) {
-        try {
-            val jsonObject = Json.decodeFromString<Map<String, String>>(message.params)
-            // Get token if exists
-            println(jsonObject)
-            jsonObject["token"]?.let { token -> onTokenReceived(token) }
-        } catch (e: Exception) {
-            println("Error parsing token: ${e.message}")
-        }
     }
 }

@@ -51,8 +51,7 @@ fun App() = AppTheme {
                         .fillMaxSize()
                         .padding(1.dp)
                 ) {
-                    composable<LoginRoute> {
-                        //  authVm.signOut()
+                    composable<LoginRoute> { //todo error on expired email confirmation
                          Login()
                     }
                     composable<ManageAccountsRoute> {

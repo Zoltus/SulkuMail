@@ -14,9 +14,8 @@ logback = "1.5.8"
 composeIcons = "1.1.1"
 koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
-supabase = "3.0.0"
+supabase = "3.0.3"
 buildConfig = "5.5.1"
-webView = "1.9.40"
 
 [bundles]
 
@@ -50,7 +49,6 @@ frontend = [
     "koin-compose-viewmodel",
     "supabase-composeauth",
     "supabase-composables",
-    "compose-webview" # Captcha
 ]
 android = [
     "androidx-activity-compose",
@@ -64,7 +62,6 @@ android = [
 ]
 ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing"]
-wasm = ["ktor-client-js"]
 
 [libraries]
 # googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
@@ -78,7 +75,6 @@ ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref =
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-compose-webview=  { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "webView" }
 # Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
@@ -94,6 +90,7 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+
 # Auth Field composables and authentication
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 supabase-composeauth = { group = "io.github.jan-tennert.supabase", name = "compose-auth", version.ref = "supabase" }
@@ -105,8 +102,6 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # IOS
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
-# Wasm
-ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 # Android, Desktop, Backend
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 # Desktop
