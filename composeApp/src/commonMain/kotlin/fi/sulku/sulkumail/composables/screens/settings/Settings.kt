@@ -1,9 +1,32 @@
 package fi.sulku.sulkumail.composables.screens.settings
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import fi.sulku.sulkumail.viewmodels.AuthViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun Settings() {
-    Text("Settings")
+    val authVm = koinViewModel<AuthViewModel>()
+    Column(
+        modifier = Modifier.padding(25.dp)
+    ) {
+        Text(
+            fontSize = 30.sp,
+            text = "Settings"
+        )
+        Spacer(Modifier.height(50.dp))
+
+        Button(onClick = { authVm.signOut() }) {
+            Text("Logout")
+        }
+    }
 }

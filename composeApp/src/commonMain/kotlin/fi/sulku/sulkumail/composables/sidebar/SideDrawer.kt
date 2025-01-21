@@ -4,13 +4,21 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.PermanentDrawerSheet
+import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import fi.sulku.sulkumail.LoginRoute
 import fi.sulku.sulkumail.getPlatform
 import fi.sulku.sulkumail.mail.Folders
 import fi.sulku.sulkumail.mail.Mail
@@ -34,12 +42,16 @@ fun SideDrawer(
     //todo selectedMail and selected folder
     val selectedMail = remember { mutableStateOf(mails[0]) }
     val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
-
+    val navBackStackEntry by nav.currentBackStackEntryAsState()
+    val currentDest = navBackStackEntry?.destination
     //All mails which are expanded:
     val expandedMails = remember { mutableStateListOf<Mail>() }
-    val drawerConent = @Composable {
+
+    // Show sidebar only if current route has LoginRoute
+    var drawerConent = if (currentDest?.hasRoute(LoginRoute::class) == true) (@Composable {})
+    else (@Composable {
         DrawerContent(drawerState, expandedMails, nav, selectedMail, selectedFolder)
-    }
+    })
 
     if (getPlatform().isMobile) {
         ModalNavigationDrawer(content = content, drawerContent = drawerConent)
