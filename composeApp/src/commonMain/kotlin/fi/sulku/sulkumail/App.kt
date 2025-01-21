@@ -31,11 +31,10 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App() = AppTheme {
     KoinContext {
+        val authVm = koinViewModel<AuthViewModel>()
+        val isLoggedIn: Boolean by authVm.isLoggedIn.collectAsState()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
         val nav: NavHostController = rememberNavController()
-        val authVm = koinViewModel<AuthViewModel>()
-
-        val isLoggedIn: Boolean by authVm.isLoggedIn.collectAsState()
         val startRoute = if (isLoggedIn) ManageAccountsRoute else LoginRoute
 
         Column(
@@ -52,7 +51,7 @@ fun App() = AppTheme {
                         .padding(1.dp)
                 ) {
                     composable<LoginRoute> { //todo error on expired email confirmation
-                         Login()
+                        Login()
                     }
                     composable<ManageAccountsRoute> {
                         ManageAccounts()
@@ -60,7 +59,6 @@ fun App() = AppTheme {
                     composable<SettingsRoute> {
                         Settings()
                     }
-                    // Routes for emails
                     composable<MailRoute> { entry ->
                         val mail = entry.toRoute<MailRoute>()
                         MailScreen(
@@ -74,6 +72,7 @@ fun App() = AppTheme {
     }
 }
 
+//todo move
 @Serializable
 data class MailRoute(val email: String)
 

@@ -50,7 +50,7 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
         }
     }
 
-    fun signUp(email: String, password: String, onSignUp : () -> Unit) {
+    fun signUp(email: String, password: String, onSignUp: () -> Unit) {
         //todo loading circle
         catchingAuthAction {
             println("Registering")
@@ -79,7 +79,7 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
             try {
                 //todo reset error when switching to register/login screen?
                 //Clear old error for new actions
-                 _authErrorMsg.value = null
+                _authErrorMsg.value = null
                 // Execute code
                 authAction()
             } catch (authException: AuthRestException) {
