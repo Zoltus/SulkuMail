@@ -16,8 +16,6 @@ buildConfig {
     // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
     val properties = Properties()
     properties.load(project.rootProject.file("local.properties").inputStream())
-    buildConfigField("SUPABASE_URL", properties.getProperty("SUPABASE_URL"))
-    buildConfigField("SUPABASE_ANON_KEY", properties.getProperty("SUPABASE_ANON_KEY"))
 }
 
 kotlin {
@@ -41,8 +39,7 @@ kotlin {
         }
     }
 
-    // todo linuxX64() //linuxArm64()
-
+    // todo linuxX64() //linuxArm64()?
 
     sourceSets {
         commonMain.dependencies {

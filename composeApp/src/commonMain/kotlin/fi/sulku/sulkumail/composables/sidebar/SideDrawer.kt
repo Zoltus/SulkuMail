@@ -15,10 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import fi.sulku.sulkumail.LoginRoute
 import fi.sulku.sulkumail.getPlatform
 import fi.sulku.sulkumail.mail.Folders
 import fi.sulku.sulkumail.mail.Mail
@@ -48,11 +46,9 @@ fun SideDrawer(
     val expandedMails = remember { mutableStateListOf<Mail>() }
 
     // Show sidebar only if current route has LoginRoute
-    var drawerConent = if (currentDest?.hasRoute(LoginRoute::class) == true) (@Composable {})
-    else (@Composable {
+    val drawerConent = @Composable {
         DrawerContent(drawerState, expandedMails, nav, selectedMail, selectedFolder)
-    })
-
+    }
     if (getPlatform().isMobile) {
         ModalNavigationDrawer(content = content, drawerContent = drawerConent)
     } else {

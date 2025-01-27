@@ -4,12 +4,12 @@ agp = "8.5.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-androidx-activityCompose = "1.9.3"
+androidx-activityCompose = "1.10.0"
 androidx-lifecycle = "2.8.4"
 compose-plugin = "1.7.1"
-kotlin = "2.0.20" # 2.1.0 has KLIB resolver: The same unique_name error with wasmjs
+kotlin = "2.0.21"
 kotlinx-coroutines = "1.9.0"
-ktor = "3.0.1"
+ktor = "3.0.2"
 logback = "1.5.8"
 composeIcons = "1.1.1"
 koin = "4.0.0-RC1"
@@ -41,6 +41,7 @@ backend = [
     "ktor-server-auth-jwt",
     "ktor-client-cio",
     "kotlin-test-junit",
+    "ktor-server-resources",
 ]
 frontend = [
     "coil",
@@ -48,8 +49,8 @@ frontend = [
     "composeIcons-featherIcons",
     "koin-compose",
     "koin-compose-viewmodel",
-    "supabase-composeauth",
     "supabase-composables",
+    "ktor-client-resources",
 ]
 android = [
     "androidx-activity-compose",
@@ -73,11 +74,13 @@ ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref =
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
+ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 # Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -93,7 +96,6 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 
 # Auth Field composables and authentication
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
-supabase-composeauth = { group = "io.github.jan-tennert.supabase", name = "compose-auth", version.ref = "supabase" }
 # Android
 # // optional - needed for credentials support from play services, for devices running
 #// Android 13 and below.

@@ -13,6 +13,6 @@ val viewModelModule = module {
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
-        modules(viewModelModule, supabaseModule)
+        modules(viewModelModule)
     }
 }
