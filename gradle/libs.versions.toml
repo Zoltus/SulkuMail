@@ -16,6 +16,7 @@ koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
 supabase = "3.0.3"
 buildConfig = "5.5.1"
+googleid-android = "1.1.1"
 
 [bundles]
 
@@ -58,13 +59,12 @@ android = [
     "koin-android",
     "koin-androidx-compose",
     "kotlinx-coroutines-android",
-    # "googleid-android",
+    "googleid-android",
 ]
 ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing"]
 
 [libraries]
-# googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 
 # Shared
@@ -95,6 +95,10 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 supabase-composeauth = { group = "io.github.jan-tennert.supabase", name = "compose-auth", version.ref = "supabase" }
 # Android
+# // optional - needed for credentials support from play services, for devices running
+#// Android 13 and below.
+#implementation("androidx.credentials:credentials-play-services-auth:<latest version>")
+googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }

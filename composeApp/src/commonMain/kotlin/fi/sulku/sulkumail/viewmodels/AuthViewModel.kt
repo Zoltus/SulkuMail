@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.exception.AuthRestException
+import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 //todo supabase to object?
-class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
+class AuthViewModel(val supabase: SupabaseClient) : ViewModel() {
 
     private val _user = MutableStateFlow<UserInfo?>(null)
     val user = _user.asStateFlow()
@@ -42,11 +43,48 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
         }
     }
 
+
     fun signOut() {
         catchingAuthAction {
-            println("logging out")
-            supabase.auth.signOut()
-            println("logged out")
+            try {
+                supabase.auth.linkIdentity(
+                    provider = Google,
+                    //For web?, for mobile schema?
+                    //
+                    redirectUrl = "sulkumail://login"
+                ) {
+                 queryParams["prompt"] = "consent"
+                 automaticallyOpenUrl = true
+                scopes.add("email")
+                scopes.add("profile")
+                 scopes.add("https://www.googleapis.com/auth/userinfo.email")
+                 scopes.add("https://www.googleapis.com/auth/userinfo.email")
+                  scopes.add("https://www.googleapis.com/auth/gmail.readonly")
+                }
+                // Handle successful linking
+                println("Success?")
+            } catch (e: Exception) {
+                println("Error " + e.message)
+                // Handle error (check e.message)
+            }
+/*
+            val linkId: String? = supabase.auth.linkIdentity(
+                //config = ExternalAuthConfigDefaults,
+                provider = Google,
+                //todo local?
+                redirectUrl = "sulkumail://login",
+                //
+            ) {
+                //  queryParams["prompt"] = "consent"
+                //  automaticallyOpenUrl = true
+                // scopes.add("email")
+                // scopes.add("profile")
+                //  scopes.add("https://www.googleapis.com/auth/userinfo.email")
+                //  scopes.add("https://www.googleapis.com/auth/userinfo.email")
+                //   scopes.add("https://www.googleapis.com/auth/gmail.readonly")
+            }*/
+           // println("@@@@Link $linkId")
+            //  linkId?.let { openBrowser(it) }
         }
     }
 
@@ -92,3 +130,66 @@ class AuthViewModel(private val supabase: SupabaseClient) : ViewModel() {
         }
     }
 }
+
+/*
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import io.supabase.supabase.auth.SupabaseAuth
+import io.supabase.supabase.auth.providers.Google
+import java.awt.Desktop
+import java.net.URI
+
+@Composable
+fun LinkGmailAccount(supabaseAuth: SupabaseAuth) {
+    val context = LocalContext.current
+
+    // Ensure the user is already authenticated
+    if (supabaseAuth.currentSession != null) {
+        val linkId: String? = supabaseAuth.linkIdentity(
+            provider = Google,
+            redirectUrl = "sulkumail://linkgmail",
+        ) {
+            queryParams["prompt"] = "consent"
+            automaticallyOpenUrl = true
+            scopes.add("https://mail.google.com/")
+        }
+
+        // Open the URL in the appropriate platform-specific way
+        val authUrl = "https://your-auth-url.com" // Replace with the actual URL
+
+        when {
+            Platform.isAndroid -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
+                context.startActivity(intent)
+            }
+            Platform.isIOS -> {
+                val nsUrl = NSURL.URLWithString(authUrl)
+                UIApplication.sharedApplication.openURL(nsUrl)
+            }
+            Platform.isDesktop -> {
+                Desktop.getDesktop().browse(URI(authUrl))
+            }
+        }
+    } else {
+        // Handle the case where the user is not authenticated
+        println("User is not authenticated. Please log in first.")
+    }
+}
+
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        // Initialize SupabaseAuth
+        val supabaseAuth = SupabaseAuth("your-supabase-url", "your-supabase-key")
+
+        // Call the composable function
+        LinkGmailAccount(supabaseAuth)
+    }
+}
+
+Replace "https://your-auth-url.com" with the actual authentication URL you get from Supabase.
+Ensure you have the necessary permissions and dependencies for each platform to open URLs.
+This setup will allow you to handle authentication prompts on Android, iOS, and Desktop in a Compose Multiplatform app.
+ */
