@@ -40,7 +40,7 @@ fun App() = AppTheme {
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
-                    startDestination = ManageAccountsRoute,
+                    startDestination = SettingsRoute, //todo manageaccounts
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(1.dp)
