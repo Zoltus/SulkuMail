@@ -3,6 +3,7 @@ package fi.sulku.sulkumail.composables.content
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -18,8 +19,10 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +32,15 @@ fun SearchBarSample(drawerState: DrawerState) {
     var text by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    val authVm = koinViewModel<AuthViewModel>()
+    val emails by authVm.emailDetails.collectAsState()
+    val temails = emails
+
+    if (temails.isEmpty()){
+        Text("No emails")
+        return
+    }
 
     Box(Modifier.semantics { isTraversalGroup = true }) {
         SearchBar(
@@ -62,7 +74,7 @@ fun SearchBarSample(drawerState: DrawerState) {
             onExpandedChange = { expanded = it },
         ) {
             LazyColumn {
-                itemsIndexed((0..10).toList()) { index, _ ->
+                itemsIndexed(emails) { index, mail ->
                     ListItem(
                         headlineContent = { Text("Res $index") },
                         supportingContent = { Text("Additional info") },
@@ -83,10 +95,9 @@ fun SearchBarSample(drawerState: DrawerState) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.semantics { traversalIndex = 1f },
         ) {
-            val list = List(100) { "Text $it" }
-            items(count = list.size) {
+            items(emails) {
                 Text(
-                    text = list[it],
+                    text = it.snippet,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 )
             }

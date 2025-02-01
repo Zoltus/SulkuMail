@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,8 +48,9 @@ fun Settings() {
             "&prompt=consent"
     //todo state
     //login_hint	Optional
+    val token by authVm.tempToken.collectAsState()
 
-    var token by remember { mutableStateOf<Token?>(null) }
+    val emaiLDetials by authVm.emailDetails.collectAsState()
 
 
     Column(
@@ -60,7 +64,7 @@ fun Settings() {
         Button(onClick = {
             scope.launch {
                 openUrl(authorizationUrl) { code -> // todo handle request token in callback
-                    token = requestToken(code, codeVerifier)
+                    authVm.setTempToken(requestToken(code, codeVerifier))
                 }
             }
         }) {
@@ -71,12 +75,21 @@ fun Settings() {
             Button(onClick = {
                 scope.launch {
                     val requestMessageList = requestMessageDetailList(token!!) // todo temp!!
+                    authVm.setNextPageToken(requestMessageList.pageToken)
+                    authVm.setEmailDetails(requestMessageList.details)
                     println(requestMessageList)
                 }
             }) {
                 Text("GetMessageList")
             }
         }
+
+        Button(onClick = {
+               println("vall ${authVm.emailDetails.value}")
+                println("wholedetails $emaiLDetials")
+            }) {
+                Text("getStoredEmailsviewModel")
+            }
     }
 }
 
