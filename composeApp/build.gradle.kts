@@ -13,9 +13,7 @@ plugins {
 }
 
 buildConfig {
-    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
-    val properties = Properties()
-    properties.load(project.rootProject.file("local.properties").inputStream())
+
 }
 
 kotlin {
@@ -43,8 +41,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.shared) //todo
-            implementation(libs.bundles.shared)
+            implementation(projects.shared) //todo?
+            implementation(libs.bundles.common)
             implementation(libs.bundles.frontend)
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -119,4 +117,5 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+
 }

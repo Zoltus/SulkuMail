@@ -1,8 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlinxSerialization)
     application
+    alias(libs.plugins.buildConfig)
+}
+
+buildConfig {
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+    buildConfigField("GOOGLE_API_SECRET", properties.getProperty("GOOGLE_API_SECRET"))
 }
 
 group = "fi.sulku.sulkumail"
@@ -13,7 +22,7 @@ application {
 }
 
 dependencies {
-    implementation(projects.shared) //todo dont work?
-    implementation(libs.bundles.backend)
-    implementation(libs.bundles.shared)
+    implementation(projects.shared)
+    implementation(libs.bundles.common)
+    implementation(libs.bundles.server)
 }

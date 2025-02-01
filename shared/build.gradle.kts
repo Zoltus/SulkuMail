@@ -1,10 +1,24 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.buildConfig)
+}
+
+buildConfig {
+    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+    buildConfigField("GOOGLE_CLIENT_ID", properties.getProperty("GOOGLE_CLIENT_ID"))
+    useKotlinOutput { internalVisibility = false }   // adds `internal` modifier to all declarations
+    /*
+       useKotlinOutput()                               // forces the outputType to 'kotlin', generating an `object`
+    useKotlinOutput { topLevelConstants = true }    // forces the outputType to 'kotlin', generating top-level declarations
+     */
 }
 
 subprojects {
@@ -30,6 +44,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.bundles.common)
             implementation(libs.bundles.shared)
         }
         jvmMain.dependencies {}
