@@ -74,10 +74,9 @@ fun Settings() {
         token?.let {
             Button(onClick = {
                 scope.launch {
-                    val requestMessageList = requestMessageDetailList(token!!) // todo temp!!
-                    authVm.setNextPageToken(requestMessageList.pageToken)
-                    authVm.setEmailDetails(requestMessageList.details)
-                    println(requestMessageList)
+                    val messagesResp = requestMessageDetailList(token!!) // todo temp!!
+                    authVm.setEmailDetails(messagesResp)
+                    println(messagesResp)
                 }
             }) {
                 Text("GetMessageList")

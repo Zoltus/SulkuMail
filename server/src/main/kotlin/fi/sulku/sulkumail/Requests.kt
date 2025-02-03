@@ -20,26 +20,23 @@ private val client = HttpClient {
     }
 }
 
-suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): EmailDetailResp {
-    val msgs = messageIds.messages.mapNotNull {
+suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): MessagesResp {
+    val messages = messageIds.messages.mapNotNull {
         try {
-            val response: MessageDetail = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/${it.id}") {
+             client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/${it.id}") {
                 headers {
                     append(HttpHeaders.Authorization, "Bearer $token")
                 }
-                parameter("format", "metadata")
+                parameter("format", "full")
                 parameter("metadataHeaders", "Subject")
-            }.body()
-
-            val subject = response.payload.headers.find { it.name == "Subject" }?.value ?: "No Subject"
-            val snippet = response.snippet
-            EmailDetail(response.id, subject, snippet)
+            }.body<Message>()
         } catch (e: Exception) {
             println("Failed to fetch details for message ID ${it.id}: ${e.message}")
             null
         }
     }
-    return EmailDetailResp(messageIds.nextPageToken, msgs)
+    println("Messages $messages")
+    return MessagesResp(messageIds.nextPageToken, messages)
 }
 
 suspend fun gFetchMessageList(req: MessageListRequest): MessageListResponse =
@@ -79,32 +76,13 @@ suspend fun gRefreshToken(refreshToken: String): RefreshResponse {
 
 @Serializable
 data class MessageListResponse(
-    val messages: List<Message>,
+    val messages: List<MessageInfo>,
     val nextPageToken: String,
-   // val resultSizeEstimate: String
+    val resultSizeEstimate: Int
 )
 
 @Serializable
-data class Message(
+data class MessageInfo(
     val id: String,
     val threadId: String,
-)
-
-
-@Serializable
-data class MessageDetail(
-    val id: String,
-    val snippet: String,
-    val payload: Payload
-)
-
-@Serializable
-data class Payload(
-    val headers: List<Header>
-)
-
-@Serializable
-data class Header(
-    val name: String,
-    val value: String
 )

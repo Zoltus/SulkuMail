@@ -41,7 +41,7 @@ fun Application.module() {
         post("/messages") {
             val req = call.receive<MessageListRequest>()
             val messagesResp: MessageListResponse = gFetchMessageList(req)
-            val messageDetails: EmailDetailResp = gFetchEmailDetails(req.access_token, messagesResp)
+            val messageDetails: MessagesResp = gFetchEmailDetails(req.access_token, messagesResp)
             call.respond(messageDetails)
         }
     }

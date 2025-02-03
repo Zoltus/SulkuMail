@@ -32,19 +32,43 @@ data class MessageListRequest(
 )
 
 @Serializable
-data class EmailDetail(
-    val id: String,
-    val subject: String,
-    val snippet: String
+data class MessagesResp(
+    val pageToken: String?,
+    val messages: List<Message>,
 )
 
 @Serializable
-data class EmailDetailResp(
-    val pageToken: String,
-    val details: List<EmailDetail>
+data class Message(
+    val id: String,
+    val threadID: String? = null,
+    val labelIds: List<String>? = null,
+    val snippet: String,
+    val internalDate: String,
+    val payload: MessagePart,
 )
 
+@Serializable
+data class MessagePart(
+    val partId: String,
+    val mimeType: String,
+    val filename: String,
+    val headers: List<Header>,
+    val body: MessagePartBody?,
+    val parts: List<MessagePart>? = null
+)
 
+@Serializable
+data class Header(
+    val name: String,
+    val value: String,
+)
+
+@Serializable
+data class MessagePartBody(
+    val attachmentId: String? = null,
+    val size: Int,
+    val data: String? = null,
+)
 
 
 enum class Provider {
