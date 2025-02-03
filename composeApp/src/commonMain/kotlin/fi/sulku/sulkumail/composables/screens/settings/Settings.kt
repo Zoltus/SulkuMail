@@ -49,9 +49,7 @@ fun Settings() {
     //todo state
     //login_hint	Optional
     val token by authVm.tempToken.collectAsState()
-
-    val emaiLDetials by authVm.emailDetails.collectAsState()
-
+    val emailDetails by authVm.emailDetails.collectAsState()
 
     Column(
         modifier = Modifier.padding(25.dp)
@@ -85,7 +83,7 @@ fun Settings() {
 
         Button(onClick = {
                println("vall ${authVm.emailDetails.value}")
-                println("wholedetails $emaiLDetials")
+                println("wholedetails $emailDetails")
             }) {
                 Text("getStoredEmailsviewModel")
             }
