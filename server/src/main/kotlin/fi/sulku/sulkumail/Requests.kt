@@ -59,7 +59,7 @@ suspend fun gTokenRequest(req: TokenRequest): Token {
         parameter("code", req.code)
         parameter("code_verifier", req.codeVerifier)
         parameter("grant_type", "authorization_code")
-        parameter("redirect_uri", "http://localhost:8079/callback")
+        parameter("redirect_uri", SharedBuildConfig.GOOGLE_REDIRECT_URL)
     }.body()
     return a
 }

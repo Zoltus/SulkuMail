@@ -9,11 +9,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
-    alias(libs.plugins.buildConfig)
-}
-
-buildConfig {
-
 }
 
 kotlin {

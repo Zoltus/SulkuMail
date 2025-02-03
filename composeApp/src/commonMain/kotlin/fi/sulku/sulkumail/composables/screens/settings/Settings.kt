@@ -40,8 +40,8 @@ fun Settings() {
     val authorizationUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
             "?response_type=code" +
             "&client_id=${BuildConfig.GOOGLE_CLIENT_ID}" +
-            "&redirect_uri=http://localhost:8079/callback" +
-            "&scope=https://mail.google.com/" +
+            "&redirect_uri=${BuildConfig.GOOGLE_REDIRECT_URL}" +
+            "&scope=https://www.googleapis.com/auth/gmail.readonly" +
             "&code_challenge=$codeChallenge" +
             "&code_challenge_method=S256" +
             "&access_type=offline" +
@@ -103,13 +103,13 @@ val client = HttpClient {
 }
 
 suspend fun requestToken(code: String, codeVerifier: String): Token =
-    client.post("http://localhost:8080/auth") {
+    client.post(BuildConfig.BACKEND_AUTH_URL) {
         contentType(ContentType.Application.Json)
         setBody(TokenRequest(Provider.GOOGLE, code, codeVerifier))
     }.body()
 
-suspend fun requestMessageDetailList(code: Token): EmailDetailResp =
-    client.post("http://localhost:8080/messages") {
+suspend fun requestMessageDetailList(code: Token): MessagesResp =
+    client.post(BuildConfig.BACKEND_MESSAGES_URL) {
         contentType(ContentType.Application.Json)
         setBody(MessageListRequest(code.access_token))
     }.body()
