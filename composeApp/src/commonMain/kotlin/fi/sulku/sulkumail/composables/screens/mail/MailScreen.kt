@@ -1,11 +1,10 @@
 package fi.sulku.sulkumail.composables.screens.mail
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -31,6 +30,8 @@ fun MailScreen(drawerState: DrawerState, email: String) {
         val msResp: MessagesResp? = messageResp
         val t: List<Message>? = msResp?.messages
 
+    val scrollState = rememberLazyListState()
+
         if (msResp == null || t == null || t.isEmpty()) {
             Text("No emails")
             return
@@ -40,12 +41,17 @@ fun MailScreen(drawerState: DrawerState, email: String) {
             Search(messageResp = msResp, drawerState = drawerState)
             //Content
             LazyColumn(
+                state = scrollState,
                 contentPadding = PaddingValues(start = 16.dp, top = 72.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.semantics { traversalIndex = 1f },
             ) {
                 items(msResp.messages) { MailItem(it) }
             }
+            ScrollBar(scrollState)
         }
     }
 }
+
+@Composable
+expect fun BoxScope.ScrollBar(scrollState: LazyListState)
