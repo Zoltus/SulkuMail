@@ -25,7 +25,7 @@ data class RefreshResponse(
 @Serializable
 data class MessageListRequest(
     val access_token: String,
-    val maxResults: Int = 10, // 1-500
+    val maxResults: Int = 20, // 1-500
     val pageToken: Int? = null,
     val q: String = "is:inbox", //Search query is:inbox
     val labelIds: List<String>? = null
@@ -45,6 +45,7 @@ data class Message(
     val snippet: String,
     val internalDate: String,
     val payload: MessagePart,
+    var senderImage: String? = null
 )
 
 @Serializable
