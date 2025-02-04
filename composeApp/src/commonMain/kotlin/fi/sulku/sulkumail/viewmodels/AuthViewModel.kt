@@ -1,28 +1,24 @@
 package fi.sulku.sulkumail.viewmodels
 
 import androidx.lifecycle.ViewModel
-import fi.sulku.sulkumail.MessagesResp
+import fi.sulku.sulkumail.MessagePage
 import fi.sulku.sulkumail.Token
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import fi.sulku.sulkumail.di.SettingsRepository
+import kotlinx.coroutines.flow.StateFlow
 
-class AuthViewModel() : ViewModel() {
+class AuthViewModel(val repo: SettingsRepository) : ViewModel() {
+//https://dev.to/touchlab/encrypted-key-value-store-in-kotlin-multiplatform-2hnk
 
-    private val _tempToken = MutableStateFlow<Token?>(null)
-    val tempToken = _tempToken.asStateFlow()
+    val token: StateFlow<Token?> = repo.token
+    val messagePage: StateFlow<MessagePage?> = repo.messagePage
 
-    private val _emailDetails = MutableStateFlow<MessagesResp?>(null)
-    val emailDetails = _emailDetails.asStateFlow()
+    fun setToken(token: Token) {
+        repo.setToken(token)
+    }
 
-    init {}
-
-    fun setTempToken(token: Token) {
-        _tempToken.value = token
+    fun setMessagePage(messagePage: MessagePage) {
+        repo.setMessagePage(messagePage)
     }
 
 
-    fun setEmailDetails(emailDetailsList: MessagesResp) {
-        _emailDetails.value = emailDetailsList
-        println("Detials set to:$emailDetailsList")
-    }
 }

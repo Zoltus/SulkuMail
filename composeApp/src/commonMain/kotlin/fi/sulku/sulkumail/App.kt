@@ -28,6 +28,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App() = AppTheme {
     KoinContext {
+       // val client = koinInject<SettingsRepository>()
+
         val authVm = koinViewModel<AuthViewModel>()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
         val nav: NavHostController = rememberNavController()
