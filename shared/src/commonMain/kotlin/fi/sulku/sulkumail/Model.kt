@@ -32,7 +32,7 @@ data class MessageListRequest(
 )
 
 @Serializable
-data class MessagesResp(
+data class MessagePage(
     val pageToken: String?,
     val messages: List<Message>,
 )
@@ -46,7 +46,10 @@ data class Message(
     val internalDate: String,
     val payload: MessagePart,
     var senderImage: String? = null
-)
+) {
+    val senderName = payload.headers.find { it.name == "From" }?.value ?: "Unknown Sender"
+    val subject = payload.headers.find { it.name == "Subject" }?.value ?: "No Subject"
+}
 
 @Serializable
 data class MessagePart(

@@ -17,7 +17,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.Message
-import fi.sulku.sulkumail.MessagesResp
+import fi.sulku.sulkumail.MessagePage
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -26,11 +26,11 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MailScreen(drawerState: DrawerState, email: String) {
     Column {
         val authVm = koinViewModel<AuthViewModel>()
-        val messageResp by authVm.emailDetails.collectAsState()
-        val msResp: MessagesResp? = messageResp
+        val messageResp by authVm.messagePage.collectAsState()
+        val msResp: MessagePage? = messageResp
         val t: List<Message>? = msResp?.messages
 
-    val scrollState = rememberLazyListState()
+        val scrollState = rememberLazyListState()
 
         if (msResp == null || t == null || t.isEmpty()) {
             Text("No emails")
@@ -39,14 +39,14 @@ fun MailScreen(drawerState: DrawerState, email: String) {
 
         Box(Modifier.semantics { isTraversalGroup = true }) {
             Search(messageResp = msResp, drawerState = drawerState)
-            //Content
+            //Mail Content
             LazyColumn(
                 state = scrollState,
                 contentPadding = PaddingValues(start = 16.dp, top = 72.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.semantics { traversalIndex = 1f },
             ) {
-                items(msResp.messages) { MailItem(it) }
+                items(msResp.messages) { MailItem(it, onDelete = {}) }
             }
             ScrollBar(scrollState)
         }

@@ -3,6 +3,7 @@ package fi.sulku.sulkumail
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
@@ -20,25 +21,8 @@ private val client = HttpClient {
     }
 }
 
-suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): MessagesResp {
-    val messages = messageIds.messages.mapNotNull {
-        try {
-             client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/${it.id}") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer $token")
-                }
-                parameter("format", "full")
-                parameter("metadataHeaders", "Subject")
-            }.body<Message>()
-        } catch (e: Exception) {
-            println("Failed to fetch details for message ID ${it.id}: ${e.message}")
-            null
-        }
-    }
-    println("Messages $messages")
-    return MessagesResp(messageIds.nextPageToken, messages)
-}
 
+//todo client or na?
 suspend fun gFetchMessageList(req: MessageListRequest): MessageListResponse =
     client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
         headers { append(HttpHeaders.Authorization, "Bearer ${req.access_token}") }
@@ -47,6 +31,43 @@ suspend fun gFetchMessageList(req: MessageListRequest): MessageListResponse =
         req.pageToken?.let { parameter("pageToken", req.pageToken) }
         req.labelIds?.let { parameter("labelIds", it.joinToString(",")) }
     }.body()
+
+suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): MessagePage {
+    val messages = messageIds.messages.mapNotNull {
+        try {
+            val message = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/${it.id}") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+                parameter("format", "full")
+                parameter("metadataHeaders", "Subject")
+            }.body<Message>()
+            // Extract only the email
+            val fromHeader = message.payload.headers.find { it.name == "From" }?.value ?: "Unknown Sender"
+            val emailRegex = Regex("<(.*?)>")  // Regex to extract email inside <>
+            val email = emailRegex.find(fromHeader)?.groupValues?.get(1) ?: fromHeader  // Extract email or return as is if no <>
+
+            println("Email was: $email")
+           // val avatar = gFetchProfileAvatar(token, email)
+           // println("Img was: $avatar")
+          //  message.senderImage = avatar
+            message
+        } catch (e: Exception) {
+            println("Failed to fetch details for message ID ${it.id}: ${e.message}")
+            null
+        }
+    }
+    return MessagePage(messageIds.nextPageToken, messages)
+}
+
+suspend fun gFetchProfileAvatar(token: String, email: String) : String {
+    return client.get("https://people.googleapis.com/v1/people:searchDirectoryPeople") {
+        headers { append(HttpHeaders.Authorization, "Bearer $token") }
+        parameter("query", email)
+        parameter("readMask", "photos")
+        parameter("sources", "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE")
+    }.bodyAsText()
+}
 
 
 suspend fun gTokenRequest(req: TokenRequest): Token {
@@ -60,6 +81,22 @@ suspend fun gTokenRequest(req: TokenRequest): Token {
     }.body()
     return a
 }
+
+suspend fun gFetchProfilePhoto(mail: String): Token {
+    val a: Token = client.get("https://admin.googleapis.com/admin/directory/v1/users/$mail/photos/thumbnail").body()
+    return a
+}
+
+/*fun getUserPictureUrl(email){
+    val defaultPictureUrl = 'https://lh3.googleusercontent.com/a-/AOh14Gj-cdUSUVoEge7rD5a063tQkyTDT3mripEuDZ0v=s100';
+    val people = People.People.searchDirectoryPeople( {
+        query: email,
+        readMask: 'photos',
+        sources: 'DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE'
+    });
+   val userPictureUrl = people?.people[0]?.photos[0]?.url;
+   return userPictureUrl ?? defaultPictureUrl;
+}*/
 
 suspend fun gRefreshToken(refreshToken: String): RefreshResponse {
     val a: RefreshResponse = client.post("https://oauth2.googleapis.com/token") {

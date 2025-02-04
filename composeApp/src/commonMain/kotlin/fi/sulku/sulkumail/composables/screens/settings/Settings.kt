@@ -10,10 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import fi.sulku.sulkumail.*
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import io.ktor.client.*
@@ -33,8 +33,6 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 @Composable
 fun Settings() {
     val authVm = koinViewModel<AuthViewModel>()
-    val scope = rememberCoroutineScope()
-
     val codeVerifier = generateCodeVerifier()
     val codeChallenge = generateCodeChallenge(codeVerifier)
     val authorizationUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
@@ -48,8 +46,8 @@ fun Settings() {
             "&prompt=consent"
     //todo state
     //login_hint	Optional
-    val token by authVm.tempToken.collectAsState()
-    val emailDetails by authVm.emailDetails.collectAsState()
+    val token by authVm.token.collectAsState()
+    val emailDetails by authVm.messagePage.collectAsState()
 
     Column(
         modifier = Modifier.padding(25.dp)
@@ -60,9 +58,9 @@ fun Settings() {
         )
         Spacer(Modifier.height(50.dp))
         Button(onClick = {
-            scope.launch {
+            authVm.viewModelScope.launch { //todo wrong scope
                 openUrl(authorizationUrl) { code -> // todo handle request token in callback
-                    authVm.setTempToken(requestToken(code, codeVerifier))
+                    authVm.setToken(requestToken(code, codeVerifier))
                 }
             }
         }) {
@@ -71,10 +69,10 @@ fun Settings() {
 
         token?.let {
             Button(onClick = {
-                scope.launch {
-                    val messagesResp = requestMessageDetailList(token!!) // todo temp!!
-                    authVm.setEmailDetails(messagesResp)
-                    println(messagesResp)
+                authVm.viewModelScope.launch { //todo wrong scope
+                    val messagePage = requestMessagePage(token!!) // todo temp!!
+                    authVm.setMessagePage(messagePage)
+                    //println(messagePage)
                 }
             }) {
                 Text("GetMessageList")
@@ -82,11 +80,11 @@ fun Settings() {
         }
 
         Button(onClick = {
-               println("vall ${authVm.emailDetails.value}")
-                println("wholedetails $emailDetails")
-            }) {
-                Text("getStoredEmailsviewModel")
-            }
+            println("vall ${authVm.messagePage.value}")
+            println("wholedetails $emailDetails")
+        }) {
+            Text("getStoredEmailsviewModel")
+        }
     }
 }
 
@@ -105,7 +103,7 @@ suspend fun requestToken(code: String, codeVerifier: String): Token =
         setBody(TokenRequest(Provider.GOOGLE, code, codeVerifier))
     }.body()
 
-suspend fun requestMessageDetailList(code: Token): MessagesResp =
+suspend fun requestMessagePage(code: Token): MessagePage =
     client.post(BuildConfig.BACKEND_MESSAGES_URL) {
         contentType(ContentType.Application.Json)
         setBody(MessageListRequest(code.access_token))
