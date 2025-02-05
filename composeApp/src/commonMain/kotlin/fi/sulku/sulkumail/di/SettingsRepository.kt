@@ -15,6 +15,7 @@ class SettingsRepository(private val settings: Settings) {
         val get = settings.get<String>("testtoken")
         println("Was: $get")
     }
+    //list mails
 
     private val _token = MutableStateFlow<Token?>(null)
     val token = _token.asStateFlow()
@@ -31,4 +32,14 @@ class SettingsRepository(private val settings: Settings) {
     fun setMessagePage(messagePage: MessagePage) {
         _messagePage.value = messagePage
     }
+}
+
+data class UserMail(private val s: String) {
+    var token : String? = null
+    var refreshToken : String? = null
+    var pages : List<MessagePage>? = null
+
+    //pageToken,/page?
+
+
 }
