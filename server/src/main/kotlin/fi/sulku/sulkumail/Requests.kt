@@ -46,15 +46,6 @@ suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): 
                 parameter("format", "full")
                 parameter("metadataHeaders", "Subject")
             }.body<Message>()
-            // Extract only the email
-            val fromHeader = message.payload.headers.find { it.name == "From" }?.value ?: "Unknown Sender"
-            val emailRegex = Regex("<(.*?)>")  // Regex to extract email inside <>
-            val email = emailRegex.find(fromHeader)?.groupValues?.get(1) ?: fromHeader  // Extract email or return as is if no <>
-
-            println("Email was: $email")
-           // val avatar = gFetchProfileAvatar(token, email)
-           // println("Img was: $avatar")
-          //  message.senderImage = avatar
             message
         } catch (e: Exception) {
             println("Failed to fetch details for message ID ${it.id}: ${e.message}")

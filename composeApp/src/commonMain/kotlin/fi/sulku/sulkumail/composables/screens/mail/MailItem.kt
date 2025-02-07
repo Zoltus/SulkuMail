@@ -49,7 +49,7 @@ fun MailItem(message: Message, onDelete: () -> Unit) {
         },
         supportingContent = {
             Text(
-                text = message.snippet,
+                text = message.snippet ?: "no snippet",
                 style = MaterialTheme.typography.bodySmall
             )
         },

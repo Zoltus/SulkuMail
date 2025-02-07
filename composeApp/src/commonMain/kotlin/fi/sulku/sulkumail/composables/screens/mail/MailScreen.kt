@@ -59,6 +59,7 @@ fun MailScreen(drawerState: DrawerState, email: String) {
                 items(msResp.messages) { MailItem(it, onDelete = {
                     scope.launch {
                         token?.let { it1 -> trashMessage(it1, it) }
+                        println("Trashed")
                     }
                 }) }
             }

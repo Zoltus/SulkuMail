@@ -48,13 +48,13 @@ data class Message(
     val id: String,
     val threadID: String? = null,
     val labelIds: List<String>? = null,
-    val snippet: String,
-    val internalDate: String,
-    val payload: MessagePart,
+    val snippet: String? = null,
+    val internalDate: String? = null,
+    val payload: MessagePart? = null,
     var senderImage: String? = null
 ) {
-    val senderName = payload.headers.find { it.name == "From" }?.value ?: "Unknown Sender"
-    val subject = payload.headers.find { it.name == "Subject" }?.value ?: "No Subject"
+    val senderName = payload?.headers?.find { it.name == "From" }?.value ?: "Unknown Sender"
+    val subject = payload?.headers?.find { it.name == "Subject" }?.value ?: "No Subject"
 }
 
 @Serializable
