@@ -15,8 +15,7 @@ buildConfig {
     properties.load(project.rootProject.file("local.properties").inputStream())
     buildConfigField("GOOGLE_CLIENT_ID", properties.getProperty("GOOGLE_CLIENT_ID"))
     buildConfigField("GOOGLE_REDIRECT_URL", properties.getProperty("GOOGLE_REDIRECT_URL"))
-    buildConfigField("BACKEND_AUTH_URL", properties.getProperty("BACKEND_AUTH_URL"))
-    buildConfigField("BACKEND_MESSAGES_URL", properties.getProperty("BACKEND_MESSAGES_URL"))
+    buildConfigField("BACKEND_URL", properties.getProperty("BACKEND_URL"))
     useKotlinOutput { internalVisibility = false }   // adds `internal` modifier to all declarations
     /*
     useKotlinOutput()                               // forces the outputType to 'kotlin', generating an `object`

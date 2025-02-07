@@ -19,7 +19,6 @@ fun main() {
     ).start(wait = true)
 }
 
-@OptIn(DelicateCoroutinesApi::class)
 fun Application.module() {
     install(ContentNegotiation) {
         json(Json {
@@ -29,26 +28,29 @@ fun Application.module() {
     }
 
     routing {
-        post("/auth") {
-            val req = call.receive<TokenRequest>()
-            when (req.provider) {
-                Provider.GOOGLE -> {
-                    call.respond(gTokenRequest(req))
-                }
-                Provider.OUTLOOK -> {}
-            }
-        }
-        post("/messages") {
-            val req = call.receive<MessageListRequest>()
-            val messagesResp: MessageListResponse = gFetchMessageList(req)
-            val messageDetails: MessagePage = gFetchEmailDetails(req.access_token, messagesResp)
-            call.respond(messageDetails)
-        }
+        route("/api") {
+            post("/auth") {
+                val req = call.receive<TokenRequest>()
+                when (req.provider) {
+                    Provider.GOOGLE -> {
+                        call.respond(gTokenRequest(req))
+                    }
 
-         post("api/gmail/messages/trash") {
-            val req = call.receive<MessageDeleteRequest>()
-            val trashMessage: Message = gTrashMessage(req)
-            call.respond(trashMessage)
+                    Provider.OUTLOOK -> {}
+                }
+            }
+            post("/gmail/messages") {
+                val req = call.receive<MessageListRequest>()
+                val messagesResp: MessageListResponse = gFetchMessageList(req)
+                val messageDetails: MessagePage = gFetchEmailDetails(req.access_token, messagesResp)
+                call.respond(messageDetails)
+            }
+
+            post("/gmail/messages/trash") {
+                val req = call.receive<MessageDeleteRequest>()
+                val trashMessage: Message = gTrashMessage(req)
+                call.respond(trashMessage)
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class, ExperimentalSettingsApi::class)
+@file:OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class, ExperimentalSettingsApi::class,
+    ExperimentalSerializationApi::class
+)
 
 package fi.sulku.sulkumail.di
 

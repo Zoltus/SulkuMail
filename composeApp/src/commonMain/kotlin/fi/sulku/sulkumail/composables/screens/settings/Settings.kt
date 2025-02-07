@@ -98,13 +98,13 @@ val client = HttpClient {
 }
 
 suspend fun requestToken(code: String, codeVerifier: String): Token =
-    client.post(BuildConfig.BACKEND_AUTH_URL) {
+    client.post(BuildConfig.BACKEND_URL + "/api/auth") {
         contentType(ContentType.Application.Json)
         setBody(TokenRequest(Provider.GOOGLE, code, codeVerifier))
     }.body()
 
 suspend fun requestMessagePage(code: Token): MessagePage =
-    client.post(BuildConfig.BACKEND_MESSAGES_URL) {
+    client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
         contentType(ContentType.Application.Json)
         setBody(MessageListRequest(code.access_token))
     }.body()
