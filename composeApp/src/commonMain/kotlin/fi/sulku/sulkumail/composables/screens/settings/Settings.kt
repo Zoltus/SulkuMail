@@ -20,6 +20,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.launch
@@ -107,6 +108,12 @@ suspend fun requestMessagePage(code: Token): MessagePage =
     client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
         contentType(ContentType.Application.Json)
         setBody(MessageListRequest(code.access_token))
+    }.body()
+
+suspend fun trashMessage(token: Token, message: Message): Message =
+    client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages/trash") {
+        contentType(ContentType.Application.Json)
+        setBody(MessageDeleteRequest(token.access_token, message.id))
     }.body()
 
 @OptIn(ExperimentalEncodingApi::class)

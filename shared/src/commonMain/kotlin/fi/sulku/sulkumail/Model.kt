@@ -34,7 +34,6 @@ data class MessageListRequest(
 @Serializable
 data class MessageDeleteRequest(
     val access_token: String,
-    val userId: String,
     val messageId: String,
 )
 
