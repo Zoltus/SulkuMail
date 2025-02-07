@@ -20,6 +20,7 @@ googleid-android = "1.1.1"
 secure-random = "0.3.2"
 android-security-crypto = "1.0.0"
 multiplatform-settings = "1.3.0"
+datastore = "1.1.2"
 
 [bundles]
 
@@ -47,7 +48,8 @@ frontend = [
     "multiplatform-settings",
     "multiplatform-settings-coroutines",
     "multiplatform-settings-datastore",
-    #"multiplatform-settings-serialization"
+    "multiplatform-settings-serialization",
+    "datastore-preferences"
 ]
 
 server = [
@@ -93,7 +95,8 @@ ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
-multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-serialization", version.ref = "multiplatform-settings" }
+multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 android-security-crypto = { module = "androidx.security:security-crypto", version.ref = "android-security-crypto" }
 secure-random = { module = "org.kotlincrypto:secure-random", version.ref = "secure-random" }
