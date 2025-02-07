@@ -1,45 +1,31 @@
+@file:OptIn(ExperimentalSerializationApi::class, ExperimentalSettingsApi::class, ExperimentalSettingsApi::class)
+
 package fi.sulku.sulkumail.di
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
+import com.russhwolf.settings.serialization.decodeValueOrNull
+import com.russhwolf.settings.serialization.encodeValue
 import fi.sulku.sulkumail.MessagePage
 import fi.sulku.sulkumail.Token
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.serialization.ExperimentalSerializationApi
 
 class SettingsRepository(private val settings: Settings) {
-
-    init {
-        println("TestToken:")
-        val get = settings.get<String>("testtoken")
-        println("Was: $get")
-    }
-    //list mails
-
-    private val _token = MutableStateFlow<Token?>(null)
+    private val _token = MutableStateFlow(settings.decodeValueOrNull(Token.serializer(), "gtoken"))
     val token = _token.asStateFlow()
-
-    //todo cache pages
-    private val _messagePage = MutableStateFlow<MessagePage?>(null)
-    val messagePage = _messagePage.asStateFlow()
 
     fun setToken(token: Token) {
         _token.value = token
-        settings["testtoken"] = token.access_token
+        settings.encodeValue(Token.serializer(), "gtoken", token)
     }
+
+    private val _messagePage = MutableStateFlow<MessagePage?>(null)
+    val messagePage = _messagePage.asStateFlow()
 
     fun setMessagePage(messagePage: MessagePage) {
         _messagePage.value = messagePage
+        //todo atm no saving of this
     }
-}
-
-data class UserMail(private val s: String) {
-    var token : String? = null
-    var refreshToken : String? = null
-    var pages : List<MessagePage>? = null
-
-    //pageToken,/page?
-
-
 }

@@ -12,12 +12,12 @@ data class TokenRequest(
 @Serializable
 data class Token(
     var access_token: String,
-    val expires_in: Int,
-    val refresh_token: String
+    var expires_in: Int,
+    var refresh_token: String
 )
 
 @Serializable
-data class RefreshResponse(
+data class RefreshResponse( // Todo can Token be used?
     val access_token: String,
     val expires_in: Int,
 )
@@ -29,6 +29,13 @@ data class MessageListRequest(
     val pageToken: Int? = null,
     val q: String = "is:inbox", //Search query is:inbox
     val labelIds: List<String>? = null
+)
+
+@Serializable
+data class MessageDeleteRequest(
+    val access_token: String,
+    val userId: String,
+    val messageId: String,
 )
 
 @Serializable
