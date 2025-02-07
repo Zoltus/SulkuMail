@@ -21,6 +21,10 @@ private val client = HttpClient {
     }
 }
 
+suspend fun gTrashMessage(req: MessageDeleteRequest) : Message =
+    client.post("https://gmail.googleapis.com/gmail/v1/users/me/messages/${req.messageId}/trash") {
+        headers { append(HttpHeaders.Authorization, "Bearer ${req.access_token}") }
+    }.body()
 
 //todo client or na?
 suspend fun gFetchMessageList(req: MessageListRequest): MessageListResponse =

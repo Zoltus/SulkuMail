@@ -44,5 +44,11 @@ fun Application.module() {
             val messageDetails: MessagePage = gFetchEmailDetails(req.access_token, messagesResp)
             call.respond(messageDetails)
         }
+
+         post("api/gmail/messages/trash") {
+            val req = call.receive<MessageDeleteRequest>()
+            val trashMessage: Message = gTrashMessage(req)
+            call.respond(trashMessage)
+        }
     }
 }
