@@ -1,8 +1,8 @@
 package fi.sulku.sulkumail.viewmodels
 
 import fi.sulku.sulkumail.Message
-import fi.sulku.sulkumail.MessagePage
 import fi.sulku.sulkumail.Token
+import fi.sulku.sulkumail.di.MessagePage2
 import okio.ByteString.Companion.toByteString
 import org.kotlincrypto.SecureRandom
 import kotlin.io.encoding.Base64
@@ -14,7 +14,7 @@ sealed interface MailProvider {
 
     suspend fun requestToken(code: String, codeVerifier: String): Token
 
-    suspend fun fetchPage(token: Token, pageToken: String? = null): MessagePage
+    suspend fun fetchPage(token: Token, pageToken: String? = null): MessagePage2
 
     suspend fun trashMessage(token: Token, message: Message): Message
 

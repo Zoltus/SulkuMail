@@ -52,7 +52,7 @@ suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): 
             null
         }
     }
-    return MessagePage(messageIds.nextPageToken, messages)
+    return MessagePage(messageIds.nextPageToken, messages.toMutableList())
 }
 
 suspend fun gFetchProfileAvatar(token: String, email: String) : String {

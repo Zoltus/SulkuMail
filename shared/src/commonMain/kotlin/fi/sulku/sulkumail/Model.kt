@@ -39,8 +39,8 @@ data class MessageDeleteRequest(
 
 @Serializable
 data class MessagePage(
-    val pageToken: String?,
-    val messages: List<Message>,
+    val pageToken: String? = null,
+    val messages: List<Message> = emptyList(),
 )
 
 @Serializable
@@ -79,7 +79,6 @@ data class MessagePartBody(
     val size: Int,
     val data: String? = null,
 )
-
 
 enum class Provider {
     GOOGLE, OUTLOOK
