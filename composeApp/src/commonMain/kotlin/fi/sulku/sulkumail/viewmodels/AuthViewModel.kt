@@ -2,7 +2,7 @@ package fi.sulku.sulkumail.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fi.sulku.sulkumail.Token
+import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.di.MessagePage2
 import fi.sulku.sulkumail.di.SettingsRepository
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class AuthViewModel(private val repo: SettingsRepository) : ViewModel() {
 //https://dev.to/touchlab/encrypted-key-value-store-in-kotlin-multiplatform-2hnk
 
-    val token: StateFlow<Token?> = repo.token
+    val token: StateFlow<AuthResponse?> = repo.token
     val messagePage: StateFlow<MessagePage2?> = repo.messagePage
 
     init {
@@ -25,14 +25,14 @@ class AuthViewModel(private val repo: SettingsRepository) : ViewModel() {
         if (token.value != null && messagePage.value == null) {
             viewModelScope.launch {
                 println("Starting fetch")
-                val messagePage = Gmail.fetchPage(token.value!!, null) //todo !! and multifetches
+                val messagePage = Gmail.fetchPage(token.value!!.token, null) //todo !! and multifetches,clean
                 repo.setMessagePage(messagePage)
                 println("Fetch Done and saved")
             }
         }
     }
 
-    fun setToken(token: Token) {
+    fun setToken(token: AuthResponse) {
         repo.setToken(token)
     }
 

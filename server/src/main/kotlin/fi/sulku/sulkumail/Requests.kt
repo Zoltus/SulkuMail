@@ -8,6 +8,8 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import SulkuMail.shared.BuildConfig as SharedBuildConfig
 import fi.sulku.sulkumail.server.BuildConfig as ServerBuildConfig
 
@@ -55,18 +57,16 @@ suspend fun gFetchEmailDetails(token: String, messageIds: MessageListResponse): 
     return MessagePage(messageIds.nextPageToken, messages.toMutableList())
 }
 
-suspend fun gFetchProfileAvatar(token: String, email: String) : String {
-    return client.get("https://people.googleapis.com/v1/people:searchDirectoryPeople") {
-        headers { append(HttpHeaders.Authorization, "Bearer $token") }
-        parameter("query", email)
-        parameter("readMask", "photos")
-        parameter("sources", "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE")
-    }.bodyAsText()
+suspend fun gRequestEmail(accessToken: String): String {
+    val response: HttpResponse = client.get("https://www.googleapis.com/gmail/v1/users/me/profile") {
+        headers { append(HttpHeaders.Authorization, "Bearer $accessToken") }
+    }
+    val json = response.body<JsonObject>()
+    return json["emailAddress"]?.jsonPrimitive?.content ?: error("Email not found")
 }
 
-
 suspend fun gTokenRequest(req: TokenRequest): Token {
-    val a: Token = client.post("https://oauth2.googleapis.com/token") {
+    return client.post("https://oauth2.googleapis.com/token") {
         parameter("client_id", SharedBuildConfig.GOOGLE_CLIENT_ID)
         parameter("client_secret", ServerBuildConfig.GOOGLE_API_SECRET)
         parameter("code", req.code)
@@ -74,7 +74,6 @@ suspend fun gTokenRequest(req: TokenRequest): Token {
         parameter("grant_type", "authorization_code")
         parameter("redirect_uri", SharedBuildConfig.GOOGLE_REDIRECT_URL)
     }.body()
-    return a
 }
 
 suspend fun gFetchProfilePhoto(mail: String): Token {

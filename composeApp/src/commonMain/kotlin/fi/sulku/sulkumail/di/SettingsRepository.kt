@@ -10,19 +10,19 @@ import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.serialization.decodeValueOrNull
 import com.russhwolf.settings.serialization.encodeValue
+import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.Message
-import fi.sulku.sulkumail.Token
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.ExperimentalSerializationApi
 
 class SettingsRepository(private val settings: Settings) {
-    private val _token = MutableStateFlow(settings.decodeValueOrNull(Token.serializer(), "gtoken"))
+    private val _token = MutableStateFlow(settings.decodeValueOrNull(AuthResponse.serializer(), "gtoken"))
     val token = _token.asStateFlow()
 
-    fun setToken(token: Token) {
+    fun setToken(token: AuthResponse) {
         _token.value = token
-        settings.encodeValue(Token.serializer(), "gtoken", token)
+        settings.encodeValue(AuthResponse.serializer(), "gtoken", token)
     }
 
     private val _messagePage = MutableStateFlow<MessagePage2?>(null)

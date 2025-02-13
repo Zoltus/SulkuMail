@@ -32,9 +32,11 @@ fun Application.module() {
                 val req = call.receive<TokenRequest>()
                 when (req.provider) {
                     Provider.GOOGLE -> {
-                        call.respond(gTokenRequest(req))
+                        val token = gTokenRequest(req)
+                        val email = gRequestEmail(token.access_token)
+                        println("Tokenb: ${token.access_token}")
+                        call.respond(AuthResponse(token, email))
                     }
-
                     Provider.OUTLOOK -> {}
                 }
             }
@@ -42,6 +44,7 @@ fun Application.module() {
                 val req = call.receive<MessageListRequest>()
                 val messagesResp: MessageListResponse = gFetchMessageList(req)
                 val messageDetails: MessagePage = gFetchEmailDetails(req.access_token, messagesResp)
+
                 call.respond(messageDetails)
             }
 

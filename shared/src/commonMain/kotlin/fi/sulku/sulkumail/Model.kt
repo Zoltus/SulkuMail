@@ -10,10 +10,16 @@ data class TokenRequest(
 )
 
 @Serializable
+data class AuthResponse(
+    var token: Token,
+    var emailAdress: String
+)
+
+@Serializable
 data class Token(
     var access_token: String,
     var expires_in: Int,
-    var refresh_token: String
+    var refresh_token: String,
 )
 
 @Serializable

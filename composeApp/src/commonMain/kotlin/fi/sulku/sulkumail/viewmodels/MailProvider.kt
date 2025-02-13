@@ -1,5 +1,6 @@
 package fi.sulku.sulkumail.viewmodels
 
+import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.Message
 import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.di.MessagePage2
@@ -12,7 +13,7 @@ sealed interface MailProvider {
 
     suspend fun authFlow(vm: AuthViewModel)
 
-    suspend fun requestToken(code: String, codeVerifier: String): Token
+    suspend fun requestToken(code: String, codeVerifier: String): AuthResponse
 
     suspend fun fetchPage(token: Token, pageToken: String? = null): MessagePage2
 

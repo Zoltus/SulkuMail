@@ -37,17 +37,16 @@ data object Gmail : MailProvider {
         //todo state & login_hint ptional
 
         openUrl(authorizationUrl) { code -> // todo handle request token in callback
-            val token: Token = requestToken(code, codeVerifier)
+            val token: AuthResponse = requestToken(code, codeVerifier)
             vm.setToken(token)
         }
     }
 
-    override suspend fun requestToken(code: String, codeVerifier: String): Token {
-        val token: Token = client.post(BuildConfig.BACKEND_URL + "/api/auth") {
+    override suspend fun requestToken(code: String, codeVerifier: String): AuthResponse {
+        val token: AuthResponse = client.post(BuildConfig.BACKEND_URL + "/api/auth") {
             contentType(ContentType.Application.Json)
             setBody(TokenRequest(Provider.GOOGLE, code, codeVerifier))
         }.body()
-
         return token
     }
 

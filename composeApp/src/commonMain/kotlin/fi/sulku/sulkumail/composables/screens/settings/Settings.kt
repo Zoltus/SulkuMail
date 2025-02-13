@@ -45,7 +45,7 @@ fun Settings() {
         token?.let {
             Button(onClick = {
                 authVm.viewModelScope.launch { //todo wrong scope
-                    val page = Gmail.fetchPage(token = token!!)
+                    val page = Gmail.fetchPage(token = token!!.token)
                     authVm.setMessagePage(page)
                 }
             }) {

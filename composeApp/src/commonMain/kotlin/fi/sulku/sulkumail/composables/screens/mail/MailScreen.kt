@@ -18,7 +18,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.Message
-import fi.sulku.sulkumail.MessagePage
 import fi.sulku.sulkumail.di.MessagePage2
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import fi.sulku.sulkumail.viewmodels.Gmail.trashMessage
@@ -59,7 +58,7 @@ fun MailScreen(drawerState: DrawerState, email: String) {
             ) {
                 items(msResp.messages) { MailItem(it, onDelete = {
                     scope.launch {
-                        token?.let { it1 -> trashMessage(it1, it) }
+                        token?.let { it1 -> trashMessage(it1.token, it) }
                         msResp.messages.remove(it)
                         println("Trashed")
                     }
