@@ -25,7 +25,7 @@ class AuthViewModel(private val repo: SettingsRepository) : ViewModel() {
         if (token.value != null && messagePage.value == null) {
             viewModelScope.launch {
                 println("Starting fetch")
-                val messagePage = Gmail.fetchPage(token.value!!.token, null) //todo !! and multifetches,clean
+                val messagePage = Gmail.fetchPage(token.value!!.tokenResponse, null) //todo !! and multifetches,clean
                 repo.setMessagePage(messagePage)
                 println("Fetch Done and saved")
             }

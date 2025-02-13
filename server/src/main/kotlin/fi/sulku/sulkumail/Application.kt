@@ -1,5 +1,6 @@
 package fi.sulku.sulkumail
 
+import fi.sulku.sulkumail.providers.google.Google
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -8,6 +9,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 
 fun main() {
@@ -28,29 +30,28 @@ fun Application.module() {
 
     routing {
         route("/api") {
+            //Todo providers
+            //Todo flow to multiple deletes
             post("/auth") {
                 val req = call.receive<TokenRequest>()
                 when (req.provider) {
                     Provider.GOOGLE -> {
-                        val token = gTokenRequest(req)
-                        val email = gRequestEmail(token.access_token)
-                        println("Tokenb: ${token.access_token}")
-                        call.respond(AuthResponse(token, email))
+                        val token = Google.fetchToken(req.code, req.codeVerifier)
+                        println("Tokenb: ${token.token}")
+                        call.respond(AuthResponse(token, "mailname"))
                     }
+
                     Provider.OUTLOOK -> {}
                 }
             }
             post("/gmail/messages") {
-                val req = call.receive<MessageListRequest>()
-                val messagesResp: MessageListResponse = gFetchMessageList(req)
-                val messageDetails: MessagePage = gFetchEmailDetails(req.access_token, messagesResp)
-
-                call.respond(messageDetails)
+                val req = call.receive<MessageSearchRequest>()
+                val flow: Flow<UnifiedEmail> = Google.fetchMails(req.token, req.query)
+                call.respond(flow)
             }
-
             post("/gmail/messages/trash") {
                 val req = call.receive<MessageDeleteRequest>()
-                val trashMessage: Message = gTrashMessage(req)
+                val trashMessage: UnifiedEmail = Google.trashMail(req.token, req.mailId)
                 call.respond(trashMessage)
             }
         }

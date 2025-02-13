@@ -21,10 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.Message
+import fi.sulku.sulkumail.models.GMail
 
 @Composable
-fun MailItem(message: Message, onDelete: () -> Unit) {
+fun MailItem(message: GMail, onDelete: () -> Unit) {
     // Track hover state for the entire list item
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()

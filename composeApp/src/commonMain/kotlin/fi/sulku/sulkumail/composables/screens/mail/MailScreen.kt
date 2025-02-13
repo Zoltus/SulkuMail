@@ -3,7 +3,6 @@ package fi.sulku.sulkumail.composables.screens.mail
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,7 +16,7 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.Message
+import fi.sulku.sulkumail.models.GMail
 import fi.sulku.sulkumail.di.MessagePage2
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import fi.sulku.sulkumail.viewmodels.Gmail.trashMessage
@@ -38,7 +37,7 @@ fun MailScreen(drawerState: DrawerState, email: String) {
 
         val messageResp by authVm.messagePage.collectAsState()
         val msResp: MessagePage2? = messageResp
-        val t: List<Message>? = msResp?.messages
+        val t: List<GMail>? = msResp?.messages
 
         val scrollState = rememberLazyListState()
 
@@ -58,7 +57,7 @@ fun MailScreen(drawerState: DrawerState, email: String) {
             ) {
                 items(msResp.messages) { MailItem(it, onDelete = {
                     scope.launch {
-                        token?.let { it1 -> trashMessage(it1.token, it) }
+                        token?.let { it1 -> trashMessage(it1.tokenResponse, it) }
                         msResp.messages.remove(it)
                         println("Trashed")
                     }

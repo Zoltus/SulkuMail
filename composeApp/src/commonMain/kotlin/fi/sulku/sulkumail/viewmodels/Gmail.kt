@@ -4,6 +4,14 @@ import SulkuMail.shared.BuildConfig
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import fi.sulku.sulkumail.*
 import fi.sulku.sulkumail.di.MessagePage2
+import fi.sulku.sulkumail.AuthResponse
+import fi.sulku.sulkumail.models.GMail
+import fi.sulku.sulkumail.MessageDeleteRequest
+import fi.sulku.sulkumail.models.MessageListRequest
+import fi.sulku.sulkumail.models.MessagePage
+import fi.sulku.sulkumail.Provider
+import fi.sulku.sulkumail.TokenResponse
+import fi.sulku.sulkumail.TokenRequest
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -50,21 +58,21 @@ data object Gmail : MailProvider {
         return token
     }
 
-    override suspend fun fetchPage(token: Token, pageToken: String?): MessagePage2 {
+    override suspend fun fetchPage(tokenResponse: TokenResponse, pageToken: String?): MessagePage2 {
         val msg1: MessagePage = client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
             contentType(ContentType.Application.Json)
-            setBody(MessageListRequest(token.access_token))
+            setBody(MessageListRequest(tokenResponse.token))
         }.body()
-        return MessagePage2(pageToken = msg1.pageToken, messages = SnapshotStateList<Message>().apply {
+        return MessagePage2(pageToken = msg1.pageToken, messages = SnapshotStateList<GMail>().apply {
             addAll(msg1.messages)
         })
     }
 
 
-    override suspend fun trashMessage(token: Token, message: Message): Message =
+    override suspend fun trashMessage(tokenResponse: TokenResponse, message: GMail): GMail =
         client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages/trash") {
             contentType(ContentType.Application.Json)
-            setBody(MessageDeleteRequest(token.access_token, message.id))
+            setBody(MessageDeleteRequest(tokenResponse.token, message.id))
         }.body()
 }
 

@@ -11,7 +11,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.serialization.decodeValueOrNull
 import com.russhwolf.settings.serialization.encodeValue
 import fi.sulku.sulkumail.AuthResponse
-import fi.sulku.sulkumail.Message
+import fi.sulku.sulkumail.models.GMail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -43,5 +43,5 @@ class SettingsRepository(private val settings: Settings) {
 
 data class MessagePage2(
     val pageToken: String? = null,
-    val messages: SnapshotStateList<Message> = SnapshotStateList(),
+    val messages: SnapshotStateList<GMail> = SnapshotStateList(),
 )
