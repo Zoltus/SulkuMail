@@ -9,6 +9,8 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sse.sse
+import io.ktor.sse.ServerSentEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 
@@ -36,22 +38,25 @@ fun Application.module() {
                 val req = call.receive<TokenRequest>()
                 when (req.provider) {
                     Provider.GOOGLE -> {
-                        val token = Google.fetchToken(req.code, req.codeVerifier)
+                        val token = Google.fetchToken(req)
                         println("Tokenb: ${token.token}")
                         call.respond(AuthResponse(token, "mailname"))
+                        ServerSentEvent("")
                     }
 
                     Provider.OUTLOOK -> {}
                 }
             }
-            post("/gmail/messages") {
+            sse("/gmail/messages") {
                 val req = call.receive<MessageSearchRequest>()
-                val flow: Flow<UnifiedEmail> = Google.fetchMails(req.token, req.query)
-                call.respond(flow)
+                val flow: Flow<UnifiedEmail> = Google.fetchMails(req)
+                flow.collect { mail ->
+                    send(ServerSentEvent(Json.encodeToString<UnifiedEmail>(UnifiedEmail.serializer(),mail)))
+                }
             }
             post("/gmail/messages/trash") {
                 val req = call.receive<MessageDeleteRequest>()
-                val trashMessage: UnifiedEmail = Google.trashMail(req.token, req.mailId)
+                val trashMessage: UnifiedEmail = Google.trashMail(req)
                 call.respond(trashMessage)
             }
         }

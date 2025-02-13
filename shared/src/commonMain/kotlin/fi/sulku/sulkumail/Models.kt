@@ -8,7 +8,7 @@ enum class Provider {
 }
 
 @Serializable
-data class TokenResponse(
+data class Token(
     @SerialName("access_token")
     var token: String,
     @SerialName("expires_in")
@@ -28,7 +28,7 @@ data class TokenRequest(
 @Serializable
 data class MessageSearchRequest(
     val token: String,
-    val query: String = "null", //todo does "" work?
+    val query: String = "is:inbox", //todo this is google way
 )
 
 @Serializable
@@ -49,7 +49,7 @@ data class UnifiedEmail(
 
 @Serializable
 data class AuthResponse(
-    var tokenResponse: TokenResponse,
+    var token: Token,
     var emailAdress: String
 )
 

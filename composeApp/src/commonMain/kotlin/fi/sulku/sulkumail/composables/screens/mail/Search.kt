@@ -12,14 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
-import fi.sulku.sulkumail.di.MessagePage2
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoxScope.Search(
     drawerState: DrawerState,
-    messageResp: MessagePage2
 ) {
     val scope = rememberCoroutineScope()
     var query by rememberSaveable { mutableStateOf("") }

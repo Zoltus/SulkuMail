@@ -11,7 +11,8 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.serialization.decodeValueOrNull
 import com.russhwolf.settings.serialization.encodeValue
 import fi.sulku.sulkumail.AuthResponse
-import fi.sulku.sulkumail.models.GMail
+import fi.sulku.sulkumail.UnifiedEmail
+import fi.sulku.sulkumail.viewmodels.Gmail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -20,28 +21,21 @@ class SettingsRepository(private val settings: Settings) {
     private val _token = MutableStateFlow(settings.decodeValueOrNull(AuthResponse.serializer(), "gtoken"))
     val token = _token.asStateFlow()
 
+    private val _mails = MutableStateFlow<SnapshotStateList<UnifiedEmail>>(SnapshotStateList())
+    val mails = _mails.asStateFlow()
+
     fun setToken(token: AuthResponse) {
         _token.value = token
         settings.encodeValue(AuthResponse.serializer(), "gtoken", token)
     }
 
-    private val _messagePage = MutableStateFlow<MessagePage2?>(null)
-    val messagePage = _messagePage.asStateFlow()
-
-    //private val _messagePage2 = MutableStateFlow<SnapshotStateList<String>>(SnapshotStateList())
-   // val messagePage2 = _messagePage2.asStateFlow()
-
-    fun setMessagePage(messagePage: MessagePage2) {
-        _messagePage.value = messagePage
-
-        //todo atm no saving of this
+    //todo atm no saving of this
+    fun addMail(unifiedMail: UnifiedEmail) {
+        println("Added mail: ${unifiedMail.id}")
+        _mails.value.add(unifiedMail)
     }
 
+    suspend fun trashMail(unifiedMail: UnifiedEmail) {
+        Gmail.trashMessage(token.value!!.token, unifiedMail)
+    }
 }
-
-
-
-data class MessagePage2(
-    val pageToken: String? = null,
-    val messages: SnapshotStateList<GMail> = SnapshotStateList(),
-)

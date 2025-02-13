@@ -1,9 +1,9 @@
 package fi.sulku.sulkumail.viewmodels
 
 import fi.sulku.sulkumail.AuthResponse
-import fi.sulku.sulkumail.models.GMail
-import fi.sulku.sulkumail.TokenResponse
-import fi.sulku.sulkumail.di.MessagePage2
+import fi.sulku.sulkumail.Token
+import fi.sulku.sulkumail.UnifiedEmail
+import kotlinx.coroutines.flow.Flow
 import okio.ByteString.Companion.toByteString
 import org.kotlincrypto.SecureRandom
 import kotlin.io.encoding.Base64
@@ -15,9 +15,9 @@ sealed interface MailProvider {
 
     suspend fun requestToken(code: String, codeVerifier: String): AuthResponse
 
-    suspend fun fetchPage(tokenResponse: TokenResponse, pageToken: String? = null): MessagePage2
+    suspend fun fetchEmails(token: Token, query: String = "", pageToken: String? = null): Flow<UnifiedEmail>
 
-    suspend fun trashMessage(tokenResponse: TokenResponse, message: GMail): GMail
+    suspend fun trashMessage(token: Token, message: UnifiedEmail): UnifiedEmail
 
     @OptIn(ExperimentalEncodingApi::class)
     fun generateCodeVerifier(): String {

@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,8 +22,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun Settings() {
     val authVm = koinViewModel<AuthViewModel>()
-    val token by authVm.token.collectAsState()
-    val emailDetails by authVm.messagePage.collectAsState()
+    val authResponse by authVm.token.collectAsState()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.padding(25.dp)
@@ -42,22 +43,20 @@ fun Settings() {
             Text("add gmail")
         }
 
-        token?.let {
+        if (authResponse != null) {
             Button(onClick = {
-                authVm.viewModelScope.launch { //todo wrong scope
-                    val page = Gmail.fetchPage(tokenResponse = token!!.tokenResponse)
-                    authVm.setMessagePage(page)
+                authVm.viewModelScope.launch {
+                    authVm.fetchMails(authResponse!!.token)
                 }
             }) {
-                Text("GetMessageList")
+                Text("fetchMails")
             }
         }
 
         Button(onClick = {
-            println("vall ${authVm.messagePage.value}")
-            println("wholedetails $emailDetails")
+            println("mails ${authVm.mails.value}")
         }) {
-            Text("getStoredEmailsviewModel")
+            Text("viewEmails")
         }
     }
 }

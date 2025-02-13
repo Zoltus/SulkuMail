@@ -1,6 +1,6 @@
 package fi.sulku.sulkumail.providers.google
 
-import fi.sulku.sulkumail.TokenResponse
+import fi.sulku.sulkumail.Token
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,5 +12,5 @@ data class RefreshResponse(
     val expiresIn: Int,
 ) {
     fun toToken(refreshToken: String) =
-        TokenResponse(token, expiresIn, refreshToken)
+        Token(token, expiresIn, refreshToken)
 }

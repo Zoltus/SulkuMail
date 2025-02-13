@@ -3,6 +3,7 @@ package fi.sulku.sulkumail.composables.screens.mail
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,15 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.models.GMail
-import fi.sulku.sulkumail.di.MessagePage2
+import fi.sulku.sulkumail.UnifiedEmail
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
-import fi.sulku.sulkumail.viewmodels.Gmail.trashMessage
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -28,26 +28,18 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MailScreen(drawerState: DrawerState, email: String) {
     Column {
         val scope = rememberCoroutineScope()
-
-
-
         val authVm = koinViewModel<AuthViewModel>()
-
-        val token by authVm.token.collectAsState()
-
-        val messageResp by authVm.messagePage.collectAsState()
-        val msResp: MessagePage2? = messageResp
-        val t: List<GMail>? = msResp?.messages
+        val mails: SnapshotStateList<UnifiedEmail> by authVm.mails.collectAsState()
 
         val scrollState = rememberLazyListState()
 
-        if (msResp == null || t.isNullOrEmpty()) {
+        if (mails.isEmpty()) {
             Text("No emails")
             return
         }
 
         Box(Modifier.semantics { isTraversalGroup = true }) {
-            Search(messageResp = msResp, drawerState = drawerState)
+            Search(drawerState = drawerState)
             //Mail Content
             LazyColumn(
                 state = scrollState,
@@ -55,13 +47,18 @@ fun MailScreen(drawerState: DrawerState, email: String) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.semantics { traversalIndex = 1f },
             ) {
-                items(msResp.messages) { MailItem(it, onDelete = {
-                    scope.launch {
-                        token?.let { it1 -> trashMessage(it1.tokenResponse, it) }
-                        msResp.messages.remove(it)
-                        println("Trashed")
-                    }
-                }) }
+                //todo cleanup
+                items(mails) { unifiedMail ->
+                    MailItem(
+                        message = unifiedMail,
+                        onDelete = {
+                            scope.launch {
+                                authVm.trashMail(unifiedMail)
+                                println("Trashed")
+                            }
+                        }
+                    )
+                }
             }
             ScrollBar(scrollState)
         }

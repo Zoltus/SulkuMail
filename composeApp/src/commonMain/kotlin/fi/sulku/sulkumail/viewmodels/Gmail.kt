@@ -1,23 +1,14 @@
 package fi.sulku.sulkumail.viewmodels
 
 import SulkuMail.shared.BuildConfig
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import fi.sulku.sulkumail.*
-import fi.sulku.sulkumail.di.MessagePage2
-import fi.sulku.sulkumail.AuthResponse
-import fi.sulku.sulkumail.models.GMail
-import fi.sulku.sulkumail.MessageDeleteRequest
-import fi.sulku.sulkumail.models.MessageListRequest
-import fi.sulku.sulkumail.models.MessagePage
-import fi.sulku.sulkumail.Provider
-import fi.sulku.sulkumail.TokenResponse
-import fi.sulku.sulkumail.TokenRequest
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 
 data object Gmail : MailProvider {
@@ -58,21 +49,17 @@ data object Gmail : MailProvider {
         return token
     }
 
-    override suspend fun fetchPage(tokenResponse: TokenResponse, pageToken: String?): MessagePage2 {
-        val msg1: MessagePage = client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
+    override suspend fun fetchEmails(token: Token, query: String, pageToken: String?): Flow<UnifiedEmail> {
+        return client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
             contentType(ContentType.Application.Json)
-            setBody(MessageListRequest(tokenResponse.token))
+            setBody(MessageSearchRequest(token = token.token))
         }.body()
-        return MessagePage2(pageToken = msg1.pageToken, messages = SnapshotStateList<GMail>().apply {
-            addAll(msg1.messages)
-        })
     }
 
-
-    override suspend fun trashMessage(tokenResponse: TokenResponse, message: GMail): GMail =
+    override suspend fun trashMessage(token: Token, message: UnifiedEmail): UnifiedEmail =
         client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages/trash") {
             contentType(ContentType.Application.Json)
-            setBody(MessageDeleteRequest(tokenResponse.token, message.id))
+            setBody(MessageDeleteRequest(token.token, message.id))
         }.body()
 }
 
