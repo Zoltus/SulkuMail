@@ -1,11 +1,9 @@
-package fi.sulku.sulkumail.providers.google
+package fi.sulku.sulkumail.viewmodels
 
-import fi.sulku.sulkumail.UnifiedEmail
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class GMail(
+data class GMessage(
     val id: String,
     val threadID: String? = null,
     val labelIds: List<String>? = null,

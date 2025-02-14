@@ -11,22 +11,26 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.serialization.decodeValueOrNull
 import com.russhwolf.settings.serialization.encodeValue
 import fi.sulku.sulkumail.AuthResponse
-import fi.sulku.sulkumail.UnifiedEmail
 import fi.sulku.sulkumail.viewmodels.Gmail
+import fi.sulku.sulkumail.viewmodels.UnifiedEmail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.ExperimentalSerializationApi
 
 class SettingsRepository(private val settings: Settings) {
-    private val _token = MutableStateFlow(settings.decodeValueOrNull(AuthResponse.serializer(), "gtoken"))
+    private val _name = MutableStateFlow<String?>(null)
+    val name = _name.asStateFlow()
+
+    private val _token = MutableStateFlow(settings.decodeValueOrNull(AuthResponse.serializer(), "gtoken")?.token)
     val token = _token.asStateFlow()
 
     private val _mails = MutableStateFlow<SnapshotStateList<UnifiedEmail>>(SnapshotStateList())
     val mails = _mails.asStateFlow()
 
-    fun setToken(token: AuthResponse) {
-        _token.value = token
-        settings.encodeValue(AuthResponse.serializer(), "gtoken", token)
+    fun setCredentials(authResponse: AuthResponse) {
+        _name.value = authResponse.emailAdress
+        _token.value = authResponse.token
+        settings.encodeValue(AuthResponse.serializer(), "gtoken", authResponse)
     }
 
     //todo atm no saving of this
@@ -36,6 +40,7 @@ class SettingsRepository(private val settings: Settings) {
     }
 
     suspend fun trashMail(unifiedMail: UnifiedEmail) {
-        Gmail.trashMessage(token.value!!.token, unifiedMail)
+        // todo !!
+        Gmail.trashMail(token.value!!, unifiedMail)
     }
 }

@@ -18,8 +18,8 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.UnifiedEmail
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
+import fi.sulku.sulkumail.viewmodels.UnifiedEmail
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 

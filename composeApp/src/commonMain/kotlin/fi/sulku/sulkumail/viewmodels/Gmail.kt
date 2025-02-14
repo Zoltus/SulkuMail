@@ -8,10 +8,14 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 
-data object Gmail : MailProvider {
+object Gmail : MailProvider {
     private val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -49,17 +53,44 @@ data object Gmail : MailProvider {
         return token
     }
 
-    override suspend fun fetchEmails(token: Token, query: String, pageToken: String?): Flow<UnifiedEmail> {
-        return client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages") {
-            contentType(ContentType.Application.Json)
-            setBody(MessageSearchRequest(token = token.token))
-        }.body()
+    suspend fun trashMail(token: Token, unifiedMail : UnifiedEmail): UnifiedEmail {
+        val GMessage: GMessage =
+            client.post("https://gmail.googleapis.com/gmail/v1/users/me/messages/${unifiedMail.id}/trash") {
+                headers { append(HttpHeaders.Authorization, "Bearer ${token.token}") }
+            }.body()
+        return GMessage.toUnifiedMail()
     }
 
-    override suspend fun trashMessage(token: Token, message: UnifiedEmail): UnifiedEmail =
-        client.post(BuildConfig.BACKEND_URL + "/api/gmail/messages/trash") {
-            contentType(ContentType.Application.Json)
-            setBody(MessageDeleteRequest(token.token, message.id))
-        }.body()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun fetchMails(token: Token, query : String) = flow<UnifiedEmail> {
+        val messageIdList: GMessageIdList =
+            client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
+                headers { append(HttpHeaders.Authorization, "Bearer ${token.token}") }
+                parameter("q", query)
+                parameter("maxResults", 10)
+                //req.pageToken?.let { parameter("pageToken", req.pageToken) }
+                //req.labelIds?.let { parameter("labelIds", it.joinToString(",")) }
+            }.body()
+        emitAll(
+            messageIdList.messages.asFlow() // Convert the list of message IDs into a flow
+                .flatMapMerge(concurrency = 10) { messageId -> // Fetch emails concurrently
+                    flow {
+                        val email = fetchEmailDetails(token, messageId.id)
+                        emit(email)
+                    }
+                }
+        )
+    }
+
+    private suspend fun fetchEmailDetails(token: Token, messageId: String): UnifiedEmail {
+        val gMessage = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/$messageId") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${token.token}")
+            }
+            parameter("format", "full")
+            parameter("metadataHeaders", "Subject")
+        }.body<GMessage>()
+        return gMessage.toUnifiedMail()
+    }
 }
 

@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.UnifiedEmail
+import fi.sulku.sulkumail.viewmodels.UnifiedEmail
 
 @Composable
 fun MailItem(message: UnifiedEmail, onDelete: () -> Unit) {

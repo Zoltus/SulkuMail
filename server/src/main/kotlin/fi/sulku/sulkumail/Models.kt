@@ -1,6 +1,5 @@
-package fi.sulku.sulkumail.providers.google
+package fi.sulku.sulkumail
 
-import fi.sulku.sulkumail.Token
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

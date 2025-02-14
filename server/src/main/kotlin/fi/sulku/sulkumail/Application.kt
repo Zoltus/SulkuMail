@@ -1,6 +1,6 @@
 package fi.sulku.sulkumail
 
-import fi.sulku.sulkumail.providers.google.Google
+import fi.sulku.sulkumail.providers.Google
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -9,9 +9,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sse.sse
-import io.ktor.sse.ServerSentEvent
-import kotlinx.coroutines.flow.Flow
+import io.ktor.sse.*
 import kotlinx.serialization.json.Json
 
 fun main() {
@@ -46,18 +44,6 @@ fun Application.module() {
 
                     Provider.OUTLOOK -> {}
                 }
-            }
-            sse("/gmail/messages") {
-                val req = call.receive<MessageSearchRequest>()
-                val flow: Flow<UnifiedEmail> = Google.fetchMails(req)
-                flow.collect { mail ->
-                    send(ServerSentEvent(Json.encodeToString<UnifiedEmail>(UnifiedEmail.serializer(),mail)))
-                }
-            }
-            post("/gmail/messages/trash") {
-                val req = call.receive<MessageDeleteRequest>()
-                val trashMessage: UnifiedEmail = Google.trashMail(req)
-                call.respond(trashMessage)
             }
         }
     }

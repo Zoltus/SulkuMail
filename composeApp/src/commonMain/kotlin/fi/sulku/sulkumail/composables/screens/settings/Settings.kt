@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import fi.sulku.sulkumail.viewmodels.AuthViewModel
+import fi.sulku.sulkumail.viewmodels.GMessage
 import fi.sulku.sulkumail.viewmodels.Gmail
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -22,7 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun Settings() {
     val authVm = koinViewModel<AuthViewModel>()
-    val authResponse by authVm.token.collectAsState()
+    val token by authVm.token.collectAsState()
     val scope = rememberCoroutineScope()
 
     Column(
@@ -43,10 +44,10 @@ fun Settings() {
             Text("add gmail")
         }
 
-        if (authResponse != null) {
+        if (token != null) {
             Button(onClick = {
                 authVm.viewModelScope.launch {
-                    authVm.fetchMails(authResponse!!.token)
+                    authVm.fetchMails(token = token!!) // todo !!
                 }
             }) {
                 Text("fetchMails")
