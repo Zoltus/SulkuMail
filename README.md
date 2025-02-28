@@ -31,7 +31,7 @@ Roadmap
   - [x] Native Android Login
   - [x] Desktop Login
   - [ ] Native IOS Login
-  - [ ] Get account details, name,email & profile picture
+  - [x] Get account details, name,email & profile picture
 
 **Security & Storage**
   - [ ] Android (DataStoreSettings)
@@ -44,13 +44,13 @@ Roadmap
   - [ ] Batch delete mails
   - [ ] Mail paginator/infinity scrolling
   - [ ] Background tasks for fetching mails
-  - [ ] Save fetched mails
+  - [ ] Store mails
 
 **User Interface**
   - [X] Siderbar containing users mail folders, Manage Accounts & Settings at the bottom
   - [X] Basic view to see snippets of fetched mails
   - [ ] Complete mail content view with attachments
-  - [ ] Display Users mail folders & info on sidebar
+  - [X] Display Users mail folders & info on sidebar
   - [ ] Settings UI
   - [ ] ManageAccounts UI (View & manage added Mail accounts)
 - [ ] Robust error handling
