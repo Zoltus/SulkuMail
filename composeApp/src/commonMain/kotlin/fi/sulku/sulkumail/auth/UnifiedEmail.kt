@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.screens.manageaccounts
+package fi.sulku.sulkumail.auth
 
 import kotlinx.serialization.Serializable
 

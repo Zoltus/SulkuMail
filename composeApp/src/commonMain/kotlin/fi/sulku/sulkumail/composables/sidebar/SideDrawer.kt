@@ -16,19 +16,13 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import fi.sulku.sulkumail.auth.User
+import fi.sulku.sulkumail.auth.UserViewModel
 import fi.sulku.sulkumail.getPlatform
-import fi.sulku.sulkumail.mail.Folders
-import fi.sulku.sulkumail.mail.Mail
-import fi.sulku.sulkumail.mail.MailProviderType
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 //todo to viewmodel&Dataclass
-val mails = listOf(
-    Mail("Mail1", "a@outlook.com", MailProviderType.OUTLOOK),
-    Mail("Mail2", "b@gmail.com", MailProviderType.GMAIL)
-)
-
 @Preview
 @Composable
 fun SideDrawer(
@@ -36,32 +30,40 @@ fun SideDrawer(
     drawerState: DrawerState,
     content: @Composable () -> Unit
 ) {
+    val authVm: UserViewModel = koinViewModel<UserViewModel>()
+    val user by authVm.user.collectAsState()
     //todo to vm
     //todo selectedMail and selected folder
-    val selectedMail = remember { mutableStateOf(mails[0]) }
+
+    //val navBackStackEntry by nav.currentBackStackEntryAsState()
+    //val currentDest = navBackStackEntry?.destination
+
+    val selectedUser = remember { mutableStateOf(user) }
     val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
-    val navBackStackEntry by nav.currentBackStackEntryAsState()
-    val currentDest = navBackStackEntry?.destination
     //All mails which are expanded:
-    val expandedMails = remember { mutableStateListOf<Mail>() }
+    val expandedUserFolders = remember { mutableStateListOf<User>() }
 
     // Show sidebar only if current route has LoginRoute
     val drawerConent = @Composable {
-        DrawerContent(drawerState, expandedMails, nav, selectedMail, selectedFolder)
+        DrawerContent(drawerState, expandedUserFolders, nav, selectedUser, selectedFolder)
     }
     if (getPlatform().isMobile) {
         ModalNavigationDrawer(content = content, drawerContent = drawerConent)
     } else {
         PermanentNavigationDrawer(content = content, drawerContent = drawerConent)
     }
+
+    LaunchedEffect(user) {
+        selectedUser.value = user
+    }
 }
 
 @Composable
 private fun DrawerContent(
     drawerState: DrawerState,
-    expandedMails: SnapshotStateList<Mail>,
+    expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedMail: MutableState<Mail>,
+    selectedUser: MutableState<User?>,
     selectedFolder: MutableState<Folders>
 ) {
     AnimatedVisibility(
@@ -73,7 +75,8 @@ private fun DrawerContent(
             modifier = Modifier.width(280.dp),
         ) {
             DrawerTop()
-            DrawerMails(expandedMails, nav, selectedMail, selectedFolder)
+            DrawerMails(expandedUsers, nav, selectedUser, selectedFolder)
+
             //Bottom nav
             Column(verticalArrangement = Arrangement.Bottom) {
                 DrawerBottom(nav)

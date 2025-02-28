@@ -3,7 +3,6 @@ package fi.sulku.sulkumail.composables.sidebar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -18,31 +17,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.MailRoute
-import fi.sulku.sulkumail.SettingsRoute
-import fi.sulku.sulkumail.mail.Folders
-import fi.sulku.sulkumail.mail.Mail
+import fi.sulku.sulkumail.auth.User
 import org.jetbrains.compose.resources.painterResource
 import sulkumail.composeapp.generated.resources.Res
 import sulkumail.composeapp.generated.resources.google
 
 @Composable
 fun ColumnScope.DrawerMails(
-    expandedMails: SnapshotStateList<Mail>,
+    expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedMail: MutableState<Mail>,
+    selectedUser: MutableState<User?>,
     selectedFolder: MutableState<Folders>
 ) {
+    val user = selectedUser.value
+    if (user == null) return
+    val userInfo = user.userInfo
+
     LazyColumn(modifier = Modifier.weight(1f)) {
-        items(mails) { mail ->
-            val isExpanded = expandedMails.contains(mail)
+        item {
+            val isExpanded = expandedUsers.contains(user)
             NavigationDrawerItem(
                 selected = false,
                 shape = MaterialTheme.shapes.small,
                 label = {
                     Column {
-                        Text(text = mail.label)
+                        Text(text = userInfo.name)
                         Text(
-                            text = mail.email,
+                            text = userInfo.email,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -58,14 +59,14 @@ fun ColumnScope.DrawerMails(
                     Icon(arrow, contentDescription = "Expand folder arrow")
                 },
                 onClick = {
-                    nav.navigate(MailRoute(mail.email))
-                    expandedMails.apply { if (isExpanded) remove(mail) else add(mail) }
+                    nav.navigate(MailRoute(userInfo.email))
+                    expandedUsers.apply { if (isExpanded) remove(user) else add(user) }
                 },
             )
             AnimatedVisibility(visible = isExpanded) {
                 Column {
                     Folders.entries.forEach {
-                        val isSelected = selectedMail.value == mail && selectedFolder.value == it
+                        val isSelected = expandedUsers.contains(user) && selectedFolder.value == it
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,
                             label = { Text(text = it.label) },
@@ -76,7 +77,7 @@ fun ColumnScope.DrawerMails(
                             selected = isSelected,
                             badge = { /*Unread amount?*/ },
                             onClick = {
-                                selectedMail.value = mail
+                                selectedUser.value = user
                                 selectedFolder.value = it
                             },
                         )

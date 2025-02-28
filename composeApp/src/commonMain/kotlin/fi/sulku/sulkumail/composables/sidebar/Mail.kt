@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.mail
+package fi.sulku.sulkumail.composables.sidebar
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
@@ -18,19 +18,6 @@ enum class Folders(val label: String, val icon: ImageVector, val contentDesc: St
     Deleted("Deleted", Icons.Rounded.Delete, "desc")
 }
 
-enum class MailProviderType {
-    GMAIL, OUTLOOK
-    //todo here folders somehow?
-}
-
-// Todo auth?
-data class Mail(
-    var label: String,
-    val email: String,
-    val provider: MailProviderType,
-) {
-
-}
 
 
 /*

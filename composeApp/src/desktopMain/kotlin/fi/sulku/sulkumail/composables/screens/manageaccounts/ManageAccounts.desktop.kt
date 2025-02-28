@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.Provider
 import fi.sulku.sulkumail.TokenRequest
+import fi.sulku.sulkumail.auth.UserViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -34,7 +35,7 @@ actual fun PlatformGoogleLogin(
     scopes: List<String>,
     onAuthResponse: (AuthResponse) -> Unit
 ) {
-    val authVm: AuthViewModel = koinViewModel<AuthViewModel>()
+    val authVm: UserViewModel = koinViewModel<UserViewModel>()
 
     authVm.viewModelScope.launch {
         val startAuthFlow = startAuthFlow(scopes)

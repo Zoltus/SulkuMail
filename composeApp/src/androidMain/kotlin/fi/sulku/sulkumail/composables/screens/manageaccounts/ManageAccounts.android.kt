@@ -20,6 +20,7 @@ import com.mmk.kmpauth.google.GoogleAuthProvider
 import fi.sulku.sulkumail.AndroidTokenRequest
 import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.Provider
+import fi.sulku.sulkumail.auth.UserViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -34,7 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 actual fun PlatformGoogleLogin(scopes: List<String>, onAuthResponse: (AuthResponse) -> Unit) {
-    val authVm: AuthViewModel = koinViewModel<AuthViewModel>()
+    val authVm: UserViewModel = koinViewModel<UserViewModel>()
     val context = LocalContext.current
     val authorizationLauncher = rememberAuthorizationLauncher(context = context, authVm, onAuthResponse)
     val googleAuthProvider = GoogleAuthProvider.create(GoogleAuthCredentials(serverId = BuildConfig.GOOGLE_CLIENT_ID))
@@ -72,7 +73,7 @@ actual fun PlatformGoogleLogin(scopes: List<String>, onAuthResponse: (AuthRespon
 @Composable
 private fun rememberAuthorizationLauncher(
     context: Context,
-    authVm: AuthViewModel = koinViewModel<AuthViewModel>(),
+    authVm: UserViewModel = koinViewModel<UserViewModel>(),
     onAuthResponse: (AuthResponse) -> Unit
 ): ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult> {
     return rememberLauncherForActivityResult(

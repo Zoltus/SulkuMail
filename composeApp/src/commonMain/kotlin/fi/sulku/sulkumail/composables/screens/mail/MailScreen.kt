@@ -18,8 +18,8 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.composables.screens.manageaccounts.AuthViewModel
-import fi.sulku.sulkumail.composables.screens.manageaccounts.UnifiedEmail
+import fi.sulku.sulkumail.auth.UserViewModel
+import fi.sulku.sulkumail.auth.UnifiedEmail
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -28,7 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MailScreen(drawerState: DrawerState, email: String) {
     Column {
         val scope = rememberCoroutineScope()
-        val authVm = koinViewModel<AuthViewModel>()
+        val authVm = koinViewModel<UserViewModel>()
         val mails: SnapshotStateList<UnifiedEmail> by authVm.mails.collectAsState()
 
         val scrollState = rememberLazyListState()
