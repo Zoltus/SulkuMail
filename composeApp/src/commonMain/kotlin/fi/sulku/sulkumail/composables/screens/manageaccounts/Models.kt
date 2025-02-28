@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.viewmodels
+package fi.sulku.sulkumail.composables.screens.manageaccounts
 
 import kotlinx.serialization.Serializable
 

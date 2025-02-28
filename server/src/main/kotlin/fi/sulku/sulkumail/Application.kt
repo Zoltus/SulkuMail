@@ -9,12 +9,11 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.sse.*
 import kotlinx.serialization.json.Json
 
 fun main() {
     embeddedServer(
-        Netty, port = 8080,
+        Netty, port = 8090,
         host = "0.0.0.0",
         module = Application::module,
     ).start(wait = true)
@@ -31,20 +30,45 @@ fun Application.module() {
     routing {
         route("/api") {
             //Todo providers
-            //Todo flow to multiple deletes
-            post("/auth") {
-                val req = call.receive<TokenRequest>()
+            post("/auth/android") {
+                val req = call.receive<AndroidTokenRequest>()
                 when (req.provider) {
                     Provider.GOOGLE -> {
-                        val token = Google.fetchToken(req)
-                        println("Tokenb: ${token.token}")
+                        val token = Google.exchangeAndroidCode(req)
                         call.respond(AuthResponse(token, "mailname"))
-                        ServerSentEvent("")
                     }
 
                     Provider.OUTLOOK -> {}
                 }
             }
+
+             post("/auth/jvm") {
+                val req = call.receive<TokenRequest>()
+                when (req.provider) {
+                    Provider.GOOGLE -> {
+                        val token = Google.exchangeJvmCode(req)
+                        call.respond(AuthResponse(token, "mailname"))
+                    }
+
+                    Provider.OUTLOOK -> {}
+                }
+            }
+
+            /*            post("/auth/refresh") {
+                            val req = call.receive<RefreshRequest>()
+                            when (req.provider) {
+                                Provider.GOOGLE -> {
+                                    val token = Google.refreshToken(req.code)
+                                    println("refresh requested for: ${token.access_token}")
+                                    val authResponse = AuthResponse(token, "refresh")
+                                    println("@@@@@@@@@@@@@@@@@@ res: $authResponse")
+                                    call.respond(AuthResponse(token, "refresh"))
+                                    //ServerSentEvent("")
+                                }
+
+                                Provider.OUTLOOK -> {}
+                            }
+                        }*/
         }
     }
 }

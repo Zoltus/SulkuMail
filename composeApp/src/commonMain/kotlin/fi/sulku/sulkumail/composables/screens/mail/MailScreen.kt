@@ -18,8 +18,8 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.viewmodels.AuthViewModel
-import fi.sulku.sulkumail.viewmodels.UnifiedEmail
+import fi.sulku.sulkumail.composables.screens.manageaccounts.AuthViewModel
+import fi.sulku.sulkumail.composables.screens.manageaccounts.UnifiedEmail
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,7 +53,7 @@ fun MailScreen(drawerState: DrawerState, email: String) {
                         message = unifiedMail,
                         onDelete = {
                             scope.launch {
-                                authVm.trashMail(unifiedMail)
+                               // authVm.trashMail(unifiedMail)
                                 println("Trashed")
                             }
                         }

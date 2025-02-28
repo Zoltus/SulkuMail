@@ -46,6 +46,9 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
+            implementation("io.github.mirzemehdi:kmpauth-google:2.3.1") //Google One Tap Sign-In
+            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.3.1") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+
             api(libs.koin.core)
         }
         androidMain.dependencies {

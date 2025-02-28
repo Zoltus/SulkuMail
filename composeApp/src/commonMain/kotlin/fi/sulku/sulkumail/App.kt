@@ -20,17 +20,12 @@ import fi.sulku.sulkumail.composables.screens.settings.Settings
 import fi.sulku.sulkumail.composables.sidebar.SideDrawer
 import fi.sulku.sulkumail.theme.AppTheme
 import fi.sulku.sulkumail.theme.CustomColor
-import fi.sulku.sulkumail.viewmodels.AuthViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.KoinContext
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() = AppTheme {
     KoinContext {
-       // val client = koinInject<SettingsRepository>()
-
-        val authVm = koinViewModel<AuthViewModel>()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
         val nav: NavHostController = rememberNavController()
 
@@ -42,7 +37,7 @@ fun App() = AppTheme {
             SideDrawer(nav, drawerState) {
                 NavHost(
                     navController = nav,
-                    startDestination = SettingsRoute, //todo manageaccounts
+                    startDestination = ManageAccountsRoute,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(1.dp)

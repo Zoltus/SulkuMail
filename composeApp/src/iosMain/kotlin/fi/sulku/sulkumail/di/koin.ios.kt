@@ -5,4 +5,9 @@ import org.koin.dsl.module
 
 actual val platformModule = module {
     singleOf(::SettingsRepository)
+
+   // val preferences = Preferences.userRoot() todo
+   // val settings: Settings = PreferencesSettings(preferences)
+    //single { SettingsRepository(settings) }
+
 }

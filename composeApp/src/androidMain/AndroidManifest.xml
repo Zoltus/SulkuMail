@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fi.sulku.sulkumail">
+          package="fi.sulku.sulkumail">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
             android:allowBackup="true"
@@ -11,7 +12,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"
-            android:name=".MyApplication">
+            android:name=".MyApplication"
+            android:usesCleartextTraffic="true"> <!-- todo temp allow http -->
         <activity
                 android:exported="true"
                 android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
@@ -24,11 +26,12 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="sulkumail" android:host="login"/>
+                <data android:scheme="https"/>
+                <data android:host="mail.sulku.fi"/>
+                <data android:path="/androidauth"/>
             </intent-filter>
         </activity>
     </application>
-
 
 
 </manifest>

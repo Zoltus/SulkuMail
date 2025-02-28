@@ -1,13 +1,13 @@
 [versions]
 
-agp = "8.5.2"
-android-compileSdk = "34"
+agp = "8.7.2"
+android-compileSdk = "35"
 android-minSdk = "24"
-android-targetSdk = "34"
+android-targetSdk = "35"
 androidx-activityCompose = "1.10.0"
 androidx-lifecycle = "2.8.4"
 compose-plugin = "1.7.1"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
 ktor = "3.0.3"
 logback = "1.5.8"
@@ -16,11 +16,12 @@ koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
 supabase = "3.0.3"
 buildConfig = "5.5.1"
-googleid-android = "1.1.1"
 secure-random = "0.3.2"
 android-security-crypto = "1.0.0"
 multiplatform-settings = "1.3.0"
 datastore = "1.1.2"
+androix-credentials = "1.5.0-rc01"
+googleid-android = "1.1.1"
 
 [bundles]
 
@@ -68,13 +69,18 @@ android = [
     "androidx-activity-compose",
     "androidx-lifecycle-viewmodel",
     "androidx-lifecycle-runtime-compose",
-    "ktor-client-cio",
+    "ktor-client-android",
     "koin-android",
     "koin-androidx-compose",
     "kotlinx-coroutines-android",
-    "googleid-android",
-    "android-security-crypto"
+    "android-security-crypto",
+    "android-credentials",
+    "android-googleid",
+    "android-credentials-services-auth",
+    "android-auth",
+    "kotlinx-coroutines-play-services"
 ]
+
 ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing", "ktor-server-netty"]
 
@@ -116,9 +122,15 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 # Auth Field composables and authentication
 supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 # Android
-#// Android 13 and below. optional - needed for credentials support from play services, for devices running implementation("androidx.credentials:credentials-play-services-auth:<latest version>")
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+android-credentials = { module = "androidx.credentials:credentials", version.ref = "androix-credentials" }
+android-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
+#// Android 13 and below. optional - needed for credentials support from play services
+android-credentials-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androix-credentials" }
+android-auth = { module ="com.google.android.gms:play-services-auth", version = "21.3.0" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-googleid-android = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
+
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
@@ -126,7 +138,7 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # IOS
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
-# Android, Desktop, server
+# Desktop, server
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 # Desktop
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }

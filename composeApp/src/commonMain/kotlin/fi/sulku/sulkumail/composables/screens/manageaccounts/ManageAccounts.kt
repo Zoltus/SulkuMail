@@ -15,10 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fi.sulku.sulkumail.AuthResponse
 
 @Composable
 fun ManageAccounts() {
     var showDialog by remember { mutableStateOf(false) }
+    var selectedProvider by remember { mutableStateOf<EmailProvider?>(null) }
+
+    val googleScopes: List<String> = listOf(
+        "email",
+        "profile",
+        "https://www.googleapis.com/auth/gmail.readonly"
+    )
 
     Column(
         modifier = Modifier.padding(25.dp)
@@ -29,15 +37,11 @@ fun ManageAccounts() {
         )
         Spacer(Modifier.height(50.dp))
         Button(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             onClick = { showDialog = true }
         ) {
             Column(
-                // modifier = Modifier
-                //.clickable(onClick = onClick)
-                //     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -52,11 +56,24 @@ fun ManageAccounts() {
         }
     }
 
+    when (selectedProvider) {
+        EmailProvider.GMAIL -> {
+            PlatformGoogleLogin(googleScopes) { authResp ->
+                println("Received Response! $authResp")
+                selectedProvider = null // Reset selection after handling
+            }
+        }
+        EmailProvider.OUTLOOK -> {}
+        EmailProvider.CUSTOM -> {}
+        null -> {}
+    }
+
     if (showDialog) {
         EmailProviderDialog(
             onDismiss = { showDialog = false },
             onProviderSelected = { provider ->
                 showDialog = false
+                selectedProvider = provider
             }
         )
     }
@@ -131,6 +148,10 @@ private fun ProviderCard(
     }
 }
 
+@Composable
+expect fun PlatformGoogleLogin(scopes: List<String>, onAuthResponse: (AuthResponse) -> Unit)
+
 enum class EmailProvider {
     GMAIL, OUTLOOK, CUSTOM
 }
+

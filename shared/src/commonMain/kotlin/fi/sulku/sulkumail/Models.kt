@@ -1,6 +1,5 @@
 package fi.sulku.sulkumail
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 enum class Provider {
@@ -9,12 +8,9 @@ enum class Provider {
 
 @Serializable
 data class Token(
-    @SerialName("access_token")
-    var token: String,
-    @SerialName("expires_in")
-    var expiresIn: Int,
-    @SerialName("refresh_token")
-    var refreshToken: String,
+    var access_token: String,
+    var expires_in: Int,
+    var refresh_token: String,
     //outlook id_token?
 )
 
@@ -23,6 +19,12 @@ data class TokenRequest(
     val provider: Provider,
     val code: String,
     val codeVerifier: String
+)
+
+@Serializable
+data class AndroidTokenRequest(
+    val provider: Provider,
+    val code: String,
 )
 
 @Serializable
