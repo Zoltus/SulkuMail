@@ -61,7 +61,7 @@ To setup the project do the following steps:
 
 1. Clone the repository
      ```sh
-    git clone https://github.com/your-username/weatherapp.git
+    git clone https://github.com/Zoltus/SulkuMail
    ```
 
 2. Open project in IntelliJ
