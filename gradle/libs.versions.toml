@@ -14,7 +14,6 @@ logback = "1.5.8"
 composeIcons = "1.1.1"
 koin = "4.0.0-RC1"
 coil = "3.0.0-rc01"
-supabase = "3.0.3"
 buildConfig = "5.5.1"
 secure-random = "0.3.2"
 android-security-crypto = "1.0.0"
@@ -39,7 +38,6 @@ frontend = [
     "composeIcons-featherIcons",
     "koin-compose",
     "koin-compose-viewmodel",
-    "supabase-composables",
     "ktor-client-core",
     "ktor-client-logging",
     "ktor-client-json",
@@ -61,7 +59,6 @@ server = [
     "ktor-server-auth-jwt",
     "ktor-client-cio",
     "ktor-client-content-negotiation",
-    #"ktor-server-serialization",
     "kotlin-test-junit",
 ]
 
@@ -85,26 +82,22 @@ ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing", "ktor-server-netty"]
 
 [libraries]
-# Shared
 # Common
 #kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "k-datetime,,0.6.1" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 # Server
-# ktor-server-serialization = { group = "io.ktor", name = "ktor-server-serialization", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" } # todo used?
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-
 # Frontend
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
 multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-
 android-security-crypto = { module = "androidx.security:security-crypto", version.ref = "android-security-crypto" }
 secure-random = { module = "org.kotlincrypto:secure-random", version.ref = "secure-random" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -119,8 +112,6 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
-# Auth Field composables and authentication
-supabase-composables = { group = "io.github.jan-tennert.supabase", name = "compose-auth-ui", version.ref = "supabase" }
 # Android
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 android-credentials = { module = "androidx.credentials:credentials", version.ref = "androix-credentials" }
@@ -130,7 +121,6 @@ android-credentials-services-auth = { module = "androidx.credentials:credentials
 android-auth = { module ="com.google.android.gms:play-services-auth", version = "21.3.0" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
-
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
@@ -147,14 +137,13 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 # server
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-# server & Shared todo?
+# Shared
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 # server & Frontend
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 # common
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
-#build-konfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "build-konfig" }
 # frontend & common
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
