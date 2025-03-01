@@ -2,13 +2,11 @@ package fi.sulku.sulkumail.composables.screens.manageaccounts
 
 import SulkuMail.shared.BuildConfig
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.LaunchedEffect
 import fi.sulku.sulkumail.Provider
 import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.TokenRequest
 import fi.sulku.sulkumail.auth.User
-import fi.sulku.sulkumail.auth.UserInfo
-import fi.sulku.sulkumail.auth.UserViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -20,10 +18,8 @@ import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okio.ByteString.Companion.toByteString
-import org.koin.compose.viewmodel.koinViewModel
 import org.kotlincrypto.SecureRandom
 import java.awt.Desktop
 import java.net.URI
@@ -32,16 +28,19 @@ import java.nio.charset.StandardCharsets
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+
 @Composable
 actual fun PlatformGoogleLogin(
     scopes: List<String>,
-    onAuthResponse: (User) -> Unit
+    authResult: (AuthResult) -> Unit
 ) {
-    val authVm: UserViewModel = koinViewModel<UserViewModel>()
-
-    authVm.viewModelScope.launch {
-        val startAuthFlow = startAuthFlow(scopes)
-        onAuthResponse(startAuthFlow)
+    LaunchedEffect(Unit) {
+        try {
+            val user = startAuthFlow(scopes)
+            authResult(AuthResult.Success(user))
+        } catch (e: AuthException) {
+            authResult(AuthResult.Error(e.message))
+        }
     }
 }
 
@@ -75,10 +74,8 @@ suspend fun startAuthFlow(scopes: List<String>): User {
         val token = exchangeCodeForToken(code = code, codeVerifier = codeVerifier)
         val userInfo = fetchUserInfo(token.access_token)
         return User(userInfo, token, EmailProvider.GMAIL)
-
     } else {
-        throw Exception("Temp Auth Exception")
-        println("Authorization failed")
+        throw AuthException("Temp Auth Exception") // todo
     }
 }
 
@@ -157,3 +154,4 @@ private fun generateCodeChallenge(codeVerifier: String): String {
     val hash = byteString.sha256()
     return Base64.UrlSafe.encode(hash.toByteArray()).replace("=", "")
 }
+
