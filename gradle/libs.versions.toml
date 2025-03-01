@@ -4,8 +4,9 @@ agp = "8.7.2"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
-androidx-activityCompose = "1.10.0"
 androidx-lifecycle = "2.8.4"
+android-googleid = "1.1.1"
+androidx-activity = "1.10.1"
 compose-plugin = "1.7.1"
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
@@ -17,10 +18,9 @@ coil = "3.0.0-rc01"
 buildConfig = "5.5.1"
 secure-random = "0.3.2"
 android-security-crypto = "1.0.0"
-multiplatform-settings = "1.3.0"
+mp-settings = "1.3.0"
 datastore = "1.1.2"
 androix-credentials = "1.5.0-rc01"
-googleid-android = "1.1.1"
 
 [bundles]
 
@@ -44,10 +44,10 @@ frontend = [
     "ktor-client-serialization",
     "ktor-client-content-negotiation",
     "secure-random",
-    "multiplatform-settings",
-    "multiplatform-settings-coroutines",
-    "multiplatform-settings-datastore",
-    "multiplatform-settings-serialization",
+    "settings-core",
+    "settings-coroutines",
+    "settings-datastore",
+    "settings-serialization",
     "datastore-preferences"
 ]
 
@@ -73,8 +73,8 @@ android = [
     "android-security-crypto",
     "android-credentials",
     "android-googleid",
-    "android-credentials-services-auth",
     "android-auth",
+    "androidx-activity-ktx",
     "kotlinx-coroutines-play-services"
 ]
 
@@ -82,24 +82,42 @@ ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing", "ktor-server-netty"]
 
 [libraries]
-# Common
-#kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "k-datetime,,0.6.1" }
-ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+#kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "k-datetime,,0.6.1" } # Common
+## Google auth android
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
+android-credentials = { module = "androidx.credentials:credentials", version.ref = "androix-credentials" }
+android-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "android-googleid" }
+android-auth = { module ="com.google.android.gms:play-services-auth", version = "21.3.0" }
+## Ktor
 # Server
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" } # todo used?
-logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-# Frontend
-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
-multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
-multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
-multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-android-security-crypto = { module = "androidx.security:security-crypto", version.ref = "android-security-crypto" }
-secure-random = { module = "org.kotlincrypto:secure-random", version.ref = "secure-random" }
+# Front
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
+ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+# Android
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ # IOS
+ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+ # Desktop, server
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+## Settings
+settings-core = { module = "com.russhwolf:multiplatform-settings", version.ref = "mp-settings" } # Front
+settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "mp-settings" } # Front
+settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "mp-settings" } # Front
+settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "mp-settings" } # Front
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" } # Front
+secure-random = { module = "org.kotlincrypto:secure-random", version.ref = "secure-random" } # Front
+android-security-crypto = { module = "androidx.security:security-crypto", version.ref = "android-security-crypto" } # Android
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" } # Server
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" } # Server
+# Front
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -107,29 +125,14 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
-ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
-ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
-ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
-ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 # Android
-ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
-android-credentials = { module = "androidx.credentials:credentials", version.ref = "androix-credentials" }
-android-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid-android" }
-#// Android 13 and below. optional - needed for credentials support from play services
-android-credentials-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androix-credentials" }
-android-auth = { module ="com.google.android.gms:play-services-auth", version = "21.3.0" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-# IOS
-ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
-# Desktop, server
-ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 # Desktop
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 

@@ -27,11 +27,4 @@ data class AndroidTokenRequest(
     val code: String,
 )
 
-@Serializable
-data class AuthResponse(
-    var token: Token,
-    var emailAdress: String
-)
-
-
 

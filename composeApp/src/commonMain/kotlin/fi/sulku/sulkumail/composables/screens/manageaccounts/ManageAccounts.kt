@@ -1,5 +1,6 @@
 package fi.sulku.sulkumail.composables.screens.manageaccounts
 
+import SulkuMail.shared.BuildConfig
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fi.sulku.sulkumail.AuthResponse
+import fi.sulku.sulkumail.AndroidTokenRequest
+import fi.sulku.sulkumail.Provider
+import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.auth.User
 import fi.sulku.sulkumail.auth.UserInfo
 import fi.sulku.sulkumail.auth.UserViewModel
@@ -22,8 +25,11 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.request.setBody
 import io.ktor.http.*
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.utils.io.core.use
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
@@ -34,7 +40,7 @@ fun ManageAccounts() {
     var selectedProvider by remember { mutableStateOf<EmailProvider?>(null) }
     val scope = rememberCoroutineScope()
 
-     val authVm: UserViewModel = koinViewModel<UserViewModel>()
+    val authVm: UserViewModel = koinViewModel<UserViewModel>()
 
     val googleScopes: List<String> = listOf(
         "email",
@@ -72,14 +78,13 @@ fun ManageAccounts() {
 
     when (selectedProvider) {
         EmailProvider.GMAIL -> {
-            PlatformGoogleLogin(googleScopes) { authResp ->
+            PlatformGoogleLogin(googleScopes) { user ->
                 scope.launch {
-                    val userInfo = fetchUserInfo(authResp.token.access_token)
-                    val user = User(userInfo, authResp.token, EmailProvider.GMAIL)
                     authVm.setUser(user)
+                    authVm.fetchMails(user, "") // todo temp
                 }
                 //Test:
-                println("Received Response! $authResp")
+                println("Received Response! $user")
                 selectedProvider = null // Reset selection after handling
             }
         }
@@ -162,12 +167,8 @@ private fun ProviderCard(
     }
 }
 
-@Composable
-expect fun PlatformGoogleLogin(scopes: List<String>, onAuthResponse: (AuthResponse) -> Unit)
-
-
 //todo temp here
-private suspend fun fetchUserInfo(token: String): UserInfo {
+suspend fun fetchUserInfo(token: String): UserInfo {
     val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -184,6 +185,8 @@ private suspend fun fetchUserInfo(token: String): UserInfo {
     return userInfo
 }
 
+@Composable
+expect fun PlatformGoogleLogin(scopes: List<String>, onAuthResponse: (User) -> Unit)
 
 enum class EmailProvider {
     GMAIL, OUTLOOK

@@ -35,7 +35,7 @@ fun Application.module() {
                 when (req.provider) {
                     Provider.GOOGLE -> {
                         val token = Google.exchangeAndroidCode(req)
-                        call.respond(AuthResponse(token, "mailname"))
+                        call.respond(token)
                     }
 
                     Provider.OUTLOOK -> {}
@@ -47,7 +47,7 @@ fun Application.module() {
                 when (req.provider) {
                     Provider.GOOGLE -> {
                         val token = Google.exchangeJvmCode(req)
-                        call.respond(AuthResponse(token, "mailname"))
+                        call.respond(token)
                     }
 
                     Provider.OUTLOOK -> {}

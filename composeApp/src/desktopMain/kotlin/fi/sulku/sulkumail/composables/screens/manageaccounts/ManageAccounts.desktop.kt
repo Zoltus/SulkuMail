@@ -3,9 +3,11 @@ package fi.sulku.sulkumail.composables.screens.manageaccounts
 import SulkuMail.shared.BuildConfig
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import fi.sulku.sulkumail.AuthResponse
 import fi.sulku.sulkumail.Provider
+import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.TokenRequest
+import fi.sulku.sulkumail.auth.User
+import fi.sulku.sulkumail.auth.UserInfo
 import fi.sulku.sulkumail.auth.UserViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -33,7 +35,7 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 @Composable
 actual fun PlatformGoogleLogin(
     scopes: List<String>,
-    onAuthResponse: (AuthResponse) -> Unit
+    onAuthResponse: (User) -> Unit
 ) {
     val authVm: UserViewModel = koinViewModel<UserViewModel>()
 
@@ -44,7 +46,7 @@ actual fun PlatformGoogleLogin(
 }
 
 
-suspend fun startAuthFlow(scopes: List<String>): AuthResponse {
+suspend fun startAuthFlow(scopes: List<String>): User {
     val authUrl = "https://accounts.google.com/o/oauth2/v2/auth"
     val scopeString = scopes.joinToString(" ")
     val encodedScope = URLEncoder.encode(scopeString, StandardCharsets.UTF_8.toString())
@@ -70,7 +72,10 @@ suspend fun startAuthFlow(scopes: List<String>): AuthResponse {
     val code = startLocalServerForCode(state = state)
 
     if (code != null) {
-        return exchangeCodeForToken(code = code, codeVerifier = codeVerifier)
+        val token = exchangeCodeForToken(code = code, codeVerifier = codeVerifier)
+        val userInfo = fetchUserInfo(token.access_token)
+        return User(userInfo, token, EmailProvider.GMAIL)
+
     } else {
         throw Exception("Temp Auth Exception")
         println("Authorization failed")
@@ -117,7 +122,7 @@ private suspend fun startLocalServerForCode(state: String): String? {
     return authCode
 }
 
-private suspend fun exchangeCodeForToken(code: String, codeVerifier: String): AuthResponse {
+private suspend fun exchangeCodeForToken(code: String, codeVerifier: String): Token {
     return HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -126,7 +131,7 @@ private suspend fun exchangeCodeForToken(code: String, codeVerifier: String): Au
             })
         }
     }.use { client ->
-        client.post(BuildConfig.BACKEND_URL + "/api/auth/jvm") {
+        return client.post(BuildConfig.BACKEND_URL + "/api/auth/jvm") {
             contentType(ContentType.Application.Json)
             setBody(
                 TokenRequest(

@@ -13,7 +13,7 @@ data class User(
 @Serializable
 data class UserInfo(
     var displayName: String? = null,
-    val name: String,
-    val email: String,
-    val picture: String?
+    val name: String = "NAME_NOT_FOUND", // todo throw exception
+    val email: String = "EMAIL_NOT_FOUND",
+    val photoUrl: String? = null
 )
