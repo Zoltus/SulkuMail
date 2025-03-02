@@ -16,11 +16,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fi.sulku.sulkumail.auth.User
-import fi.sulku.sulkumail.auth.UserViewModel
+import fi.sulku.sulkumail.auth.models.Folders
+import fi.sulku.sulkumail.auth.models.User
 import fi.sulku.sulkumail.getPlatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 //todo to viewmodel&Dataclass
 @Preview
@@ -30,31 +29,20 @@ fun SideDrawer(
     drawerState: DrawerState,
     content: @Composable () -> Unit
 ) {
-    val authVm: UserViewModel = koinViewModel<UserViewModel>()
-    val user by authVm.user.collectAsState()
-    //todo to vm
-    //todo selectedMail and selected folder
-
     //val navBackStackEntry by nav.currentBackStackEntryAsState()
     //val currentDest = navBackStackEntry?.destination
-
-    val selectedUser = remember { mutableStateOf(user) }
     val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
     //All mails which are expanded:
     val expandedUserFolders = remember { mutableStateListOf<User>() }
 
     // Show sidebar only if current route has LoginRoute
     val drawerConent = @Composable {
-        DrawerContent(drawerState, expandedUserFolders, nav, selectedUser, selectedFolder)
+        DrawerContent(drawerState, expandedUserFolders, nav, selectedFolder)
     }
     if (getPlatform().isMobile) {
         ModalNavigationDrawer(content = content, drawerContent = drawerConent)
     } else {
         PermanentNavigationDrawer(content = content, drawerContent = drawerConent)
-    }
-
-    LaunchedEffect(user) {
-        selectedUser.value = user
     }
 }
 
@@ -63,7 +51,6 @@ private fun DrawerContent(
     drawerState: DrawerState,
     expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedUser: MutableState<User?>,
     selectedFolder: MutableState<Folders>
 ) {
     AnimatedVisibility(
@@ -75,7 +62,7 @@ private fun DrawerContent(
             modifier = Modifier.width(280.dp),
         ) {
             DrawerTop()
-            DrawerMails(expandedUsers, nav, selectedUser, selectedFolder)
+            DrawerMails(expandedUsers, nav, selectedFolder)
 
             //Bottom nav
             Column(verticalArrangement = Arrangement.Bottom) {

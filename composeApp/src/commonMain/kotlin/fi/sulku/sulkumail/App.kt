@@ -49,11 +49,7 @@ fun App() = AppTheme {
                         Settings()
                     }
                     composable<MailRoute> { entry ->
-                        val mail = entry.toRoute<MailRoute>()
-                        MailScreen(
-                            drawerState = drawerState,
-                            email = mail.email,
-                        )
+                        MailScreen(drawerState = drawerState)
                     }
                 }
             }
@@ -63,7 +59,7 @@ fun App() = AppTheme {
 
 //todo move
 @Serializable
-data class MailRoute(val email: String)
+object MailRoute
 
 @Serializable
 object ManageAccountsRoute

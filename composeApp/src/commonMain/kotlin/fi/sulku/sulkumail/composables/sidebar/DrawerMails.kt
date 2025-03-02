@@ -3,6 +3,7 @@ package fi.sulku.sulkumail.composables.sidebar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -17,8 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.MailRoute
-import fi.sulku.sulkumail.auth.User
+import fi.sulku.sulkumail.auth.UserViewModel
+import fi.sulku.sulkumail.auth.models.Folders
+import fi.sulku.sulkumail.auth.models.User
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import sulkumail.composeapp.generated.resources.Res
 import sulkumail.composeapp.generated.resources.google
 
@@ -26,15 +30,14 @@ import sulkumail.composeapp.generated.resources.google
 fun ColumnScope.DrawerMails(
     expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedUser: MutableState<User?>,
     selectedFolder: MutableState<Folders>
 ) {
-    val user = selectedUser.value
-    if (user == null) return
-    val userInfo = user.userInfo
+    val authVm: UserViewModel = koinViewModel<UserViewModel>()
+    val users = authVm.users
 
     LazyColumn(modifier = Modifier.weight(1f)) {
-        item {
+        items(users) { user ->
+            val userInfo = user.userInfo
             val isExpanded = expandedUsers.contains(user)
             NavigationDrawerItem(
                 selected = false,
@@ -59,7 +62,8 @@ fun ColumnScope.DrawerMails(
                     Icon(arrow, contentDescription = "Expand folder arrow")
                 },
                 onClick = {
-                    nav.navigate(MailRoute(userInfo.email))
+                    authVm.selectUser(user)
+                    nav.navigate(MailRoute)
                     expandedUsers.apply { if (isExpanded) remove(user) else add(user) }
                 },
             )
@@ -77,7 +81,7 @@ fun ColumnScope.DrawerMails(
                             selected = isSelected,
                             badge = { /*Unread amount?*/ },
                             onClick = {
-                                selectedUser.value = user
+                                authVm.selectUser(user)
                                 selectedFolder.value = it
                             },
                         )

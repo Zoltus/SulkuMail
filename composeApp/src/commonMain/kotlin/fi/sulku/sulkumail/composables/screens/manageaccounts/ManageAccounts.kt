@@ -14,16 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fi.sulku.sulkumail.auth.UserInfo
+import fi.sulku.sulkumail.auth.EmailProvider
 import fi.sulku.sulkumail.auth.UserViewModel
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -31,13 +24,6 @@ fun ManageAccounts() {
     val scope = rememberCoroutineScope()
     val authVm: UserViewModel = koinViewModel<UserViewModel>()
     var showDialog by remember { mutableStateOf(false) }
-    var selectedProvider by remember { mutableStateOf<EmailProvider?>(null) }
-
-    val googleScopes: List<String> = listOf(
-        "email",
-        "profile",
-        "https://www.googleapis.com/auth/gmail.readonly"
-    )
 
     Column(
         modifier = Modifier.padding(25.dp)
@@ -67,31 +53,15 @@ fun ManageAccounts() {
         }
     }
 
-    if (selectedProvider != null) {
-        when (selectedProvider) {
-            EmailProvider.GMAIL -> {
-                PlatformGoogleLogin(googleScopes) { authResult ->
-                    selectedProvider = null
-                    authResult.onError { msg ->
-                        println("Error: $msg") // todo popup
-                    }.onResult { user ->
-                        scope.launch { authVm.setUser(user) }
-                    }
-                }
-            }
-
-            EmailProvider.OUTLOOK -> {}
-            null -> {}
-        }
-    }
-
-
     if (showDialog) {
         EmailProviderDialog(
             onDismiss = { showDialog = false },
             onProviderSelected = { provider ->
                 showDialog = false
-                selectedProvider = provider
+                scope.launch {
+                    val user = authVm.startGoogleAuth()
+                    authVm.fetchMails(user)
+                }
             }
         )
     }
@@ -159,26 +129,4 @@ private fun ProviderCard(
         }
     }
 }
-
-
-//todo temp here
-suspend fun fetchUserInfo(token: String): UserInfo {
-    val client = HttpClient {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                prettyPrint = true
-            })
-        }
-    }
-    //todo errohandling
-    val userInfo: UserInfo = client.get("https://www.googleapis.com/oauth2/v2/userinfo") {
-        headers { append(HttpHeaders.Authorization, "Bearer $token") }
-    }.body()
-    client.close()
-    return userInfo
-}
-
-@Composable
-expect fun PlatformGoogleLogin(scopes: List<String>, authResult: (AuthResult) -> Unit)
 

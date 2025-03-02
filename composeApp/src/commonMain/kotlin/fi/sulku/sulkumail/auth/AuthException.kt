@@ -1,3 +1,3 @@
-package fi.sulku.sulkumail.composables.screens.manageaccounts
+package fi.sulku.sulkumail.auth
 
 class AuthException(override val message: String) : RuntimeException(message)

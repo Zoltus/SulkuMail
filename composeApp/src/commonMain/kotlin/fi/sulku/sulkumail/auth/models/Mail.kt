@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.sidebar
+package fi.sulku.sulkumail.auth.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send

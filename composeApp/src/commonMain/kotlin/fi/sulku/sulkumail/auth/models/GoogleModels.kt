@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.auth
+package fi.sulku.sulkumail.auth.models
 
 import kotlinx.serialization.Serializable
 
