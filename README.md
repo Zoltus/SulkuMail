@@ -18,7 +18,6 @@ Roadmap
 - Complete account authentication flows on ios
 
 ## Images
-## Images
 <div style="display: flex; gap: 20px;">
 
    <img src="https://github.com/user-attachments/assets/f86cb548-6dd3-4d24-b117-159e74db3d45" width="20%">
