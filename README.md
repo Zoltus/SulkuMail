@@ -1,5 +1,5 @@
 SulkuMail is a modern, cross-platform email client built with Kotlin Multiplatform and Compose, providing a consistent experience across Android, iOS, Desktop, and Server platforms.
-
+Project is at first focused on adding full gmail support to read and delete emails, and on later date will focus on adding other mail providers + sending mails.
 
 🛠Technology Stack
 - Kotlin Multiplatform - Share code between platforms
@@ -10,21 +10,23 @@ SulkuMail is a modern, cross-platform email client built with Kotlin Multiplatfo
 - Multiplatform Settings - Secure credential storage
   
 Roadmap
-- Complete account authentication flows on ios
-- Implement secure credential storage
+- Add proper support for multiple accounts
 - Add proper mail viewing capabilities
-- Add support for multiple accounts
+- Implement secure credential storage
 - Implement local caching for offline access
 - Background synchronization
-- Rich text composition
+- Complete account authentication flows on ios
 
 ## Images
+## Images
 <div style="display: flex; gap: 20px;">
-  <img src="https://github.com/user-attachments/assets/d96f0d96-fdda-4be1-b84f-634ed49dde1e" width="48%">
-  <img src="https://github.com/user-attachments/assets/48930803-dc04-4b35-af3d-4014bf593795" width="20%" height="20%">
+
+   <img src="https://github.com/user-attachments/assets/f86cb548-6dd3-4d24-b117-159e74db3d45" width="20%">
+   <img src="https://github.com/user-attachments/assets/a144c132-fc21-4dae-a560-f7ec74bd9347" width="20%">
+   <img src="https://github.com/user-attachments/assets/3d0c0951-7963-44fd-a7b0-3e22259236d6" width="20%">
+
 </div>
-
-
+ <img src="https://github.com/user-attachments/assets/89965864-36b9-43c4-a267-e1b5a339e7b5" width="61%">
 
 ## Currently under work
 **Account Management (Google)**
@@ -54,7 +56,7 @@ Roadmap
   - [ ] Settings UI
   - [ ] ManageAccounts UI (View & manage added Mail accounts)
 - [ ] Robust error handling
-- [ ] Handle multiple gmail accounts
+- [X] Add multiple gmail accounts
 
 ## Project Setup
 To setup the project do the following steps:
