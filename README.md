@@ -1,5 +1,5 @@
 SulkuMail is a modern, cross-platform email client built with Kotlin Multiplatform and Compose, providing a consistent experience across Android, iOS, Desktop, and Server platforms.
-Project is at first focused on adding full gmail support to read and delete emails, and on later date will focus on adding other mail providers + sending mails.
+Project is on very early stages and at first the focus is adding full gmail support to read and delete emails, and later adding other mail providers + sending mails.
 
 🛠Technology Stack
 - Kotlin Multiplatform - Share code between platforms
