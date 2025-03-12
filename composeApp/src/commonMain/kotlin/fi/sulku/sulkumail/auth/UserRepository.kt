@@ -39,7 +39,7 @@ class UserRepository(private val settings: Settings) {
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser = _selectedUser.asStateFlow()
 
-     fun selectUser(user: User) {
+    fun selectUser(user: User) {
         println("User Selected")
         _selectedUser.value = user
     }
@@ -47,9 +47,9 @@ class UserRepository(private val settings: Settings) {
     // <userUUID, <mailId, mail>
     private val _mailsByUser: SnapshotStateMap<String, SnapshotStateMap<String, UnifiedEmail>> = mutableStateMapOf()
 
-    fun getMails(user: User): SnapshotStateMap<String, UnifiedEmail>? {
+    fun getMails(user: User): SnapshotStateMap<String, UnifiedEmail> {
         val uuid = user.uuid
-        val mails = _mailsByUser[uuid]
+        val mails = _mailsByUser.getOrElse(uuid) { mutableStateMapOf() }
         return mails
     }
 
@@ -58,7 +58,6 @@ class UserRepository(private val settings: Settings) {
         val userInfo = fetchUserInfo(token.access_token)
         val user = User(userInfo, token, EmailProvider.GMAIL)
         users.add(user)
-        println("@User added")
         //settings.encodeValue(AuthResponse.serializer(), "gtoken", authResponse)
         return user
     }
@@ -69,23 +68,22 @@ class UserRepository(private val settings: Settings) {
         mails[unifiedEmail.id] = unifiedEmail
     }
 
-    suspend fun trashMail(user: User?, unifiedMail: UnifiedEmail): UnifiedEmail? {
+    suspend fun trashMail(user: User?, unifiedMail: UnifiedEmail) {
         if (user == null) {
             throw NullPointerException("Selected user not found")
         } else {
             val uuid = user.uuid
             val mails = _mailsByUser.getOrPut(uuid) { mutableStateMapOf() }
-
-            val gMessage: GMessage = try {
+            try {
                 client.post("https://gmail.googleapis.com/gmail/v1/users/me/messages/${unifiedMail.id}/trash") {
                     headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
-                }.body()
+                }
             } catch (e: Exception) {
-                // Return null if it fails to delete mail, todo better error handling
-                return null
+                println("Exception: ${e.message}")
+                //todo better error handling Request had insufficient authentication scopes
+                return
             }
             mails.remove(unifiedMail.id)
-            return gMessage.toUnifiedMail()
         }
     }
 

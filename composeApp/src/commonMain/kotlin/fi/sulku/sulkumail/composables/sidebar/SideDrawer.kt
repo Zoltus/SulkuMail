@@ -31,13 +31,9 @@ fun SideDrawer(
 ) {
     //val navBackStackEntry by nav.currentBackStackEntryAsState()
     //val currentDest = navBackStackEntry?.destination
-    val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
-    //All mails which are expanded:
-    val expandedUserFolders = remember { mutableStateListOf<User>() }
-
     // Show sidebar only if current route has LoginRoute
     val drawerConent = @Composable {
-        DrawerContent(drawerState, expandedUserFolders, nav, selectedFolder)
+        DrawerContent(drawerState, nav)
     }
     if (getPlatform().isMobile) {
         ModalNavigationDrawer(content = content, drawerContent = drawerConent)
@@ -49,10 +45,12 @@ fun SideDrawer(
 @Composable
 private fun DrawerContent(
     drawerState: DrawerState,
-    expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedFolder: MutableState<Folders>
-) {
+    ) {
+    val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
+    //All mails which are expanded:
+    val expandedUsers = remember { mutableStateListOf<User>() }
+
     AnimatedVisibility(
         visible = drawerState.isOpen,
         enter = expandHorizontally(animationSpec = tween(durationMillis = 200)),

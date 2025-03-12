@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fi.sulku.sulkumail.auth.AuthException
 import fi.sulku.sulkumail.auth.EmailProvider
 import fi.sulku.sulkumail.auth.UserViewModel
 import kotlinx.coroutines.launch
@@ -59,8 +60,13 @@ fun ManageAccounts() {
             onProviderSelected = { provider ->
                 showDialog = false
                 scope.launch {
-                    val user = authVm.startGoogleAuth()
-                    authVm.fetchMails(user)
+                    try {
+                        val user = authVm.startGoogleAuth()
+                        authVm.fetchMails(user) // todo temp
+                    } catch (e: AuthException) {
+                        //todo popup dialog
+                        println("Auth exception " + e.message)
+                    }
                 }
             }
         )

@@ -16,15 +16,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import fi.sulku.sulkumail.auth.UserViewModel
 import fi.sulku.sulkumail.auth.models.UnifiedEmail
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MailItem(message: UnifiedEmail, onDelete: () -> Unit) {
+fun MailItem(
+    unifiedMail: UnifiedEmail,
+    authVm: UserViewModel = koinViewModel()
+) {
+    val scope = rememberCoroutineScope()
     // Track hover state for the entire list item
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
@@ -32,24 +41,24 @@ fun MailItem(message: UnifiedEmail, onDelete: () -> Unit) {
     ListItem(
         modifier = Modifier.hoverable(interactionSource),
         leadingContent = {
-            /* AsyncImage... */
+            /* Coil Img... */
         },
         headlineContent = {
             Column {
                 Text(
-                    text = message.sender ?: "NoSender",
+                    text = unifiedMail.sender ?: "NoSender",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = message.subject ?: "NoSubject",
+                    text = unifiedMail.subject ?: "NoSubject",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
         },
         supportingContent = {
             Text(
-                text = message.snippet ?: "no snippet",
+                text = unifiedMail.snippet ?: "no snippet",
                 style = MaterialTheme.typography.bodySmall
             )
         },
@@ -62,19 +71,24 @@ fun MailItem(message: UnifiedEmail, onDelete: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .hoverable(trashInteraction)
-                        .clickable { onDelete() }
+                        .clickable {
+                            scope.launch {
+                                authVm.trashMail(unifiedMail)
+                                println("Trashed")
+                            }
+                        }
                         .background(
                             if (trashHovered.value) Color.Red.copy(alpha = 0.2f)
                             else Color.Transparent
                         )
                         .padding(8.dp)
-                        .pointerHoverIcon(androidx.compose.ui.input.pointer.PointerIcon.Hand)
+                        .pointerHoverIcon(PointerIcon.Hand)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete email",
                         tint = if (trashHovered.value) Color.Red
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+                        else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

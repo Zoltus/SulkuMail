@@ -26,7 +26,7 @@ data class GMessage(
 @Serializable
 data class GMessageIdList(
     val messages: List<MessageInfo>,
-    val nextPageToken: String,
+    val nextPageToken: String?,
     val resultSizeEstimate: Int
 )
 

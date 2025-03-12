@@ -13,11 +13,7 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
     val users: SnapshotStateList<User> = repo.users
     val selectedUser: StateFlow<User?> = repo.selectedUser
 
-    suspend fun createUser(token: Token): User {
-        val user = repo.createUser(token)
-        fetchMails(user)
-        return user
-    }
+    private suspend fun createUser(token: Token) = repo.createUser(token)
 
     fun selectUser(user: User) = repo.selectUser(user)
 
@@ -25,13 +21,13 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
     suspend fun trashMail(unifiedMail: UnifiedEmail) = repo.trashMail(selectedUser.value, unifiedMail)
 
-    fun getMails(user: User): SnapshotStateMap<String, UnifiedEmail>? = repo.getMails(user)
+    fun getMails(user: User): SnapshotStateMap<String, UnifiedEmail> = repo.getMails(user)
 
     suspend fun startGoogleAuth(): User { // todo scope?
         val scopes: List<String> = listOf(
             "email",
             "profile",
-            "https://www.googleapis.com/auth/gmail.readonly"
+            "https://www.googleapis.com/auth/gmail.modify"
         )
         val token = startGoogleAuthFlow(scopes)
         val user = createUser(token)

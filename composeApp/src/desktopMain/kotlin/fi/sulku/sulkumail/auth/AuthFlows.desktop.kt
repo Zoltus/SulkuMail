@@ -7,6 +7,7 @@ import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.TokenRequest
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -106,13 +107,14 @@ private suspend fun startLocalServerForCode(state: String): String? {
     } catch (e: Exception) {
         throw AuthException("Failed to start local auth callback server: ${e.message}")
     }
-    val authCode = codeDeferred.await() // Wait for the callback
+    val authCode: String? = codeDeferred.await() // Wait for the callback
+    println("Stopping server")
     server.stop(1000, 1000)
     return authCode
 }
 
 private suspend fun exchangeCodeForToken(code: String, codeVerifier: String): Token {
-    return HttpClient {
+    HttpClient {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -120,17 +122,23 @@ private suspend fun exchangeCodeForToken(code: String, codeVerifier: String): To
             })
         }
     }.use { client ->
-        return client.post(BuildConfig.BACKEND_URL + "/api/auth/jvm") {
-            contentType(ContentType.Application.Json)
-            setBody(
-                TokenRequest(
-                    Provider.GOOGLE,
-                    code,
-                    codeVerifier
+        try {
+            val body: Token = client.post(BuildConfig.BACKEND_URL + "/api/auth/jvm") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    TokenRequest(
+                        Provider.GOOGLE,
+                        code,
+                        codeVerifier
+                    )
                 )
-            )
-        }.body()
+            }.body()
+            return body
+        } catch (e: Exception) {
+            println("Excpt: " + e.message) // Todo
+        }
     }
+    return Token("", 1, "0") // todo
 }
 
 @OptIn(ExperimentalEncodingApi::class)
