@@ -13,6 +13,8 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,7 +22,7 @@ import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.MailRoute
 import fi.sulku.sulkumail.auth.UserViewModel
 import fi.sulku.sulkumail.auth.models.Folders
-import fi.sulku.sulkumail.auth.models.User
+import fi.sulku.sulkumail.auth.models.room.user.User
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import sulkumail.composeapp.generated.resources.Res
@@ -33,7 +35,7 @@ fun ColumnScope.DrawerMails(
     selectedFolder: MutableState<Folders>
 ) {
     val authVm: UserViewModel = koinViewModel<UserViewModel>()
-    val users = authVm.users
+    val users by authVm.users.collectAsState(initial = emptyList())
 
     LazyColumn(modifier = Modifier.weight(1f)) {
         items(users) { user ->

@@ -10,14 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.auth.UserViewModel
-import fi.sulku.sulkumail.auth.models.UnifiedEmail
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -30,7 +28,8 @@ fun MailScreen(
     user?.let { user ->
         Column {
             val scrollState = rememberLazyListState()
-            val mails: SnapshotStateMap<String, UnifiedEmail> = authVm.getMails(user)
+            val mails by authVm.getMails(user).collectAsState(initial = emptyList())
+
             if (mails.isEmpty()) {
                 Text("No Mails")
                 return
@@ -45,8 +44,7 @@ fun MailScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.semantics { traversalIndex = 1f },
                 ) {
-                    val mailList = mails.values.toList()
-                    items(items = mailList, key = { it.id }) { unifiedMail ->
+                    items(items = mails, key = { it.id }) { unifiedMail ->
                         MailItem(unifiedMail = unifiedMail)
                     }
                 }

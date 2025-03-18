@@ -24,13 +24,13 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.auth.UserViewModel
-import fi.sulku.sulkumail.auth.models.UnifiedEmail
+import fi.sulku.sulkumail.auth.models.room.user.MailEntity
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MailItem(
-    unifiedMail: UnifiedEmail,
+    unifiedMail: MailEntity,
     authVm: UserViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()

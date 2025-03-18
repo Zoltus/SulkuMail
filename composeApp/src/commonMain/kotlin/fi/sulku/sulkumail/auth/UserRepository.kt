@@ -1,27 +1,28 @@
 package fi.sulku.sulkumail.auth
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.snapshots.SnapshotStateMap
-import com.russhwolf.settings.Settings
 import fi.sulku.sulkumail.Token
-import fi.sulku.sulkumail.auth.models.*
+import fi.sulku.sulkumail.auth.models.GMessage
+import fi.sulku.sulkumail.auth.models.GMessageIdList
+import fi.sulku.sulkumail.auth.models.MessageInfo
+import fi.sulku.sulkumail.auth.models.room.user.MailEntity
+import fi.sulku.sulkumail.auth.models.room.user.User
+import fi.sulku.sulkumail.auth.models.room.user.UserDao
+import fi.sulku.sulkumail.auth.models.room.user.UserInfo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 
-class UserRepository(private val settings: Settings) {
+class UserRepository(private val userDao: UserDao) {
 
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -32,50 +33,54 @@ class UserRepository(private val settings: Settings) {
         }
     }
 
-    // todo authvm has access to edit atm, figure out a stateflow
-    val users: SnapshotStateList<User> = mutableStateListOf()
-    //todo val users: List<User> = _users
-
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser = _selectedUser.asStateFlow()
 
     fun selectUser(user: User) {
-        println("User Selected")
         _selectedUser.value = user
     }
 
-    // <userUUID, <mailId, mail>
-    private val _mailsByUser: SnapshotStateMap<String, SnapshotStateMap<String, UnifiedEmail>> = mutableStateMapOf()
+    fun getUsers(): Flow<List<User>> {
+        return userDao.getUsers()
+    }
 
-    fun getMails(user: User): SnapshotStateMap<String, UnifiedEmail> {
-        val uuid = user.uuid
-        val mails = _mailsByUser.getOrElse(uuid) { mutableStateMapOf() }
-        return mails
+    fun getMails(user: User): Flow<List<MailEntity>> {
+        return userDao.getMails(user.id)
     }
 
     suspend fun createUser(token: Token): User {
         //todo check if user exists already
         val userInfo = fetchUserInfo(token.access_token)
-        val user = User(userInfo, token, EmailProvider.GMAIL)
-        users.add(user)
-        //settings.encodeValue(AuthResponse.serializer(), "gtoken", authResponse)
+        val user = User(
+            userInfo = userInfo,
+            token = token,
+            provider = EmailProvider.GMAIL
+        )
+        println("Adding user: $user")
+           try {
+               userDao.insertUser(user)
+        } catch (e: Exception) {
+            println("Exception: ${e.message}")
+            throw Exception("..")
+        }
         return user
     }
 
-    private fun addMail(user: User, unifiedEmail: UnifiedEmail) {
-        val uuid = user.uuid
-        val mails = _mailsByUser.getOrPut(uuid) { mutableStateMapOf() }
-        mails[unifiedEmail.id] = unifiedEmail
+    private suspend fun addMail(mailEntity: MailEntity) {
+        try {
+            userDao.insertEmail(mailEntity)
+        } catch (e: Exception) {
+            println("Exception: ${e.message}")
+            return
+        }
     }
 
-    suspend fun trashMail(user: User?, unifiedMail: UnifiedEmail) {
+    suspend fun trashMail(user: User?, mailEntity: MailEntity) {
         if (user == null) {
             throw NullPointerException("Selected user not found")
         } else {
-            val uuid = user.uuid
-            val mails = _mailsByUser.getOrPut(uuid) { mutableStateMapOf() }
             try {
-                client.post("https://gmail.googleapis.com/gmail/v1/users/me/messages/${unifiedMail.id}/trash") {
+                client.post("https://gmail.googleapis.com/gmail/v1/users/me/messages/${mailEntity.id}/trash") {
                     headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
                 }
             } catch (e: Exception) {
@@ -83,7 +88,7 @@ class UserRepository(private val settings: Settings) {
                 //todo better error handling Request had insufficient authentication scopes
                 return
             }
-            mails.remove(unifiedMail.id)
+            userDao.deleteEmail(mailEntity)
         }
     }
 
@@ -95,9 +100,23 @@ class UserRepository(private val settings: Settings) {
         return userInfo
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*  outlook
+      "error": {
+    "code": 400,
+    "message": "Mail service not enabled",
+    "errors": [
+      {
+        "message": "Mail service not enabled",
+        "domain": "global",
+        "reason": "failedPrecondition"
+      }
+    ],
+    "status": "FAILED_PRECONDITION"
+  }
+}
+     */
     suspend fun fetchMails(user: User, query: String = "") {
-        val messageIdList: GMessageIdList =
+        val messageIdList : GMessageIdList =
             client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
                 headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
                 parameter("q", query)
@@ -106,26 +125,25 @@ class UserRepository(private val settings: Settings) {
                 //req.labelIds?.let { parameter("labelIds", it.joinToString(",")) }
             }.body()
 
-        val uuid = user.uuid
-        val mailList = _mailsByUser[uuid]
-        val uniqueMessages = messageIdList.messages.filter { info ->
-            mailList?.contains(info.id) != true
-        }
+        val messages: MutableList<MessageInfo> = messageIdList.messages.toMutableList()
+        //Unique messages which arent in database
+        val dupeIds = userDao.dupeIds(user.id, messages.map { it.id })
+        val uniqueMessageInfo = messages.filter { !dupeIds.contains(it.id) }
 
         // Fetch message details for all unique mails
         coroutineScope {
-            uniqueMessages.map { messageInfo ->
+            uniqueMessageInfo.map { messageInfo ->
                 async {
                     runCatching { // todo better error handling
                         val unifiedMail = fetchEmailDetails(user, messageInfo.id)
-                        addMail(user, unifiedMail)
+                        addMail(unifiedMail)
                     }
                 }
             }.awaitAll()
         }
     }
 
-    private suspend fun fetchEmailDetails(user: User, messageId: String): UnifiedEmail {
+    private suspend fun fetchEmailDetails(user: User, messageId: String): MailEntity {
         val gMessage = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/$messageId") {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}")
@@ -133,6 +151,16 @@ class UserRepository(private val settings: Settings) {
             parameter("format", "full")
             parameter("metadataHeaders", "Subject")
         }.body<GMessage>()
-        return gMessage.toUnifiedMail()
+
+        val senderName = gMessage.payload?.headers?.find { it.name == "From" }?.value ?: "Unknown Sender"
+        val subject = gMessage.payload?.headers?.find { it.name == "Subject" }?.value ?: "No Subject"
+
+        return MailEntity(
+            id = gMessage.id,
+            userId = user.id,
+            sender = senderName,
+            subject = subject,
+            snippet = gMessage.snippet,
+        )
     }
 }

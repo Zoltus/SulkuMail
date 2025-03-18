@@ -1,5 +1,6 @@
 package fi.sulku.sulkumail.auth.models
 
+import fi.sulku.sulkumail.auth.models.room.user.MailEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,25 +12,18 @@ data class GMessage(
     val internalDate: String? = null,
     val payload: MessagePart? = null,
     var senderImage: String? = null
-) {
-    val senderName = payload?.headers?.find { it.name == "From" }?.value ?: "Unknown Sender"
-    val subject = payload?.headers?.find { it.name == "Subject" }?.value ?: "No Subject"
-
-    fun toUnifiedMail() = UnifiedEmail(
-        id = id,
-        sender = senderName,
-        subject = subject,
-        snippet = subject,
-    )
-}
+)
 
 @Serializable
 data class GMessageIdList(
-    val messages: List<MessageInfo>,
+    val messages: List<MessageInfo> = emptyList(),
     val nextPageToken: String?,
     val resultSizeEstimate: Int
 )
 
+/*
+fields [messages, nextPageToken, resultSizeEstimate]
+ */
 @Serializable
 data class MessageInfo(
     val id: String,

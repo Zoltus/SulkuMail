@@ -1,13 +1,19 @@
 package fi.sulku.sulkumail.di
 
-import com.russhwolf.settings.PreferencesSettings
-import com.russhwolf.settings.Settings
+import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import fi.sulku.sulkumail.auth.UserRepository
+import fi.sulku.sulkumail.auth.models.room.user.UserDatabase
 import org.koin.dsl.module
-import java.util.prefs.Preferences
+import java.io.File
 
 actual val platformModule = module {
-    val preferences = Preferences.userRoot()
-    val settings: Settings = PreferencesSettings(preferences)
-    single { UserRepository(settings) }
+    single {
+        val dbFile = File(System.getProperty("user.home"), "mail.db")
+        val dao = Room.databaseBuilder<UserDatabase>(dbFile.absolutePath)
+            .setDriver(BundledSQLiteDriver())
+            .fallbackToDestructiveMigration(true)
+            .build().userDao()
+        UserRepository(dao)
+    }
 }

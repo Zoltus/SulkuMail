@@ -1,19 +1,21 @@
 package fi.sulku.sulkumail.di
 
-import android.preference.PreferenceManager
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.SharedPreferencesSettings
+import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import fi.sulku.sulkumail.auth.UserRepository
+import fi.sulku.sulkumail.auth.models.room.user.UserDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 actual val platformModule = module {
     single {
         val context = androidContext()
-        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val settingsRepository: Settings = SharedPreferencesSettings(sharedPrefs)
-
-        UserRepository(settingsRepository)
+        val dbFile = context.getDatabasePath("mail.db")
+        val dao = Room.databaseBuilder<UserDatabase>(context.applicationContext, name = dbFile.absolutePath)
+            .setDriver(BundledSQLiteDriver())
+            .build()
+            .userDao()
+        UserRepository(dao)
     }
 }
 

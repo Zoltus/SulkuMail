@@ -12,12 +12,11 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.auth.models.Folders
-import fi.sulku.sulkumail.auth.models.User
+import fi.sulku.sulkumail.auth.models.room.user.User
 import fi.sulku.sulkumail.getPlatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
