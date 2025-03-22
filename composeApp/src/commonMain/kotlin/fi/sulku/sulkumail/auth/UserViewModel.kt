@@ -16,11 +16,13 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
     fun selectUser(user: User) = repo.selectUser(user)
 
+    suspend fun removeUser(user: User) = repo.removeUser(user)
+
     fun getMails(user: User): Flow<List<MailEntity>> = repo.getMails(user)
 
-    suspend fun fetchMails(user: User, query: String = "") = repo.fetchMails(user, query)
+    suspend fun fetchMails(user: User) = repo.fetchMails(user)
 
-    suspend fun trashMail(unifiedMail: MailEntity) = repo.trashMail(selectedUser.value, unifiedMail)
+    suspend fun trashMail(mail: MailEntity) = repo.trashMail(selectedUser.value, mail)
 
     suspend fun startGoogleAuth(): User { // todo scope?
         val scopes: List<String> = listOf(

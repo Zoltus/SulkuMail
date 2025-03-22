@@ -3,7 +3,6 @@ package fi.sulku.sulkumail.auth
 import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.auth.models.GMessage
 import fi.sulku.sulkumail.auth.models.GMessageIdList
-import fi.sulku.sulkumail.auth.models.MessageInfo
 import fi.sulku.sulkumail.auth.models.room.user.MailEntity
 import fi.sulku.sulkumail.auth.models.room.user.User
 import fi.sulku.sulkumail.auth.models.room.user.UserDao
@@ -33,11 +32,18 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
+    private val _fetching = MutableStateFlow(false)
+    val fetching = _fetching.asStateFlow()
+
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser = _selectedUser.asStateFlow()
 
     fun selectUser(user: User) {
         _selectedUser.value = user
+    }
+
+    suspend fun removeUser(user: User) {
+        userDao.deleteUser(user)
     }
 
     fun getUsers(): Flow<List<User>> {
@@ -57,8 +63,8 @@ class UserRepository(private val userDao: UserDao) {
             provider = EmailProvider.GMAIL
         )
         println("Adding user: $user")
-           try {
-               userDao.insertUser(user)
+        try {
+            userDao.insertUser(user)
         } catch (e: Exception) {
             println("Exception: ${e.message}")
             throw Exception("..")
@@ -88,7 +94,7 @@ class UserRepository(private val userDao: UserDao) {
                 //todo better error handling Request had insufficient authentication scopes
                 return
             }
-            userDao.deleteEmail(mailEntity)
+            userDao.trashMail(mailEntity)
         }
     }
 
@@ -115,32 +121,63 @@ class UserRepository(private val userDao: UserDao) {
   }
 }
      */
-    suspend fun fetchMails(user: User, query: String = "") {
-        val messageIdList : GMessageIdList =
-            client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
-                headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
-                parameter("q", query)
-                parameter("maxResults", 10)
-                //req.pageToken?.let { parameter("pageToken", req.pageToken) }
-                //req.labelIds?.let { parameter("labelIds", it.joinToString(",")) }
-            }.body()
-
-        val messages: MutableList<MessageInfo> = messageIdList.messages.toMutableList()
-        //Unique messages which arent in database
-        val dupeIds = userDao.dupeIds(user.id, messages.map { it.id })
-        val uniqueMessageInfo = messages.filter { !dupeIds.contains(it.id) }
-
-        // Fetch message details for all unique mails
-        coroutineScope {
-            uniqueMessageInfo.map { messageInfo ->
-                async {
-                    runCatching { // todo better error handling
-                        val unifiedMail = fetchEmailDetails(user, messageInfo.id)
-                        addMail(unifiedMail)
-                    }
-                }
-            }.awaitAll()
+    //todo fetch loop
+ suspend fun fetchMails(user: User) {
+        if (_fetching.value) {
+            //todo
+            return
         }
+        val lastSyncTime = user.lastSyncTime
+        var nextPageToken: String? = null
+        val allFetchedMails = mutableListOf<MailEntity>()
+        try {
+            do {
+                println("fethcing mails")
+                _fetching.value = true
+                val messageIdList: GMessageIdList =
+                    client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
+                        headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
+                        parameter("maxResults", 10)
+                        nextPageToken?.let { parameter("pageToken", it) }
+                        parameter("q", "after:$lastSyncTime") // Fetch only new emails
+                    }.body()
+
+                val messages = messageIdList.messages
+
+                println("a")
+                if (messages.isNotEmpty()) {
+                    val dupeIds = userDao.dupeIds(user.id, messages.map { it.id })
+                    val uniqueMessageInfo = messages.filter { !dupeIds.contains(it.id) }
+                    println("b")
+                    val fetchedMails: List<MailEntity> = coroutineScope {
+                        uniqueMessageInfo.map { messageInfo ->
+                            async {
+                                runCatching {
+                                    println("fetch details ${messageInfo.id}")
+                                    val mail = fetchEmailDetails(user, messageInfo.id)
+                                    addMail(mail)
+                                    mail
+                                }.getOrNull()
+                            }
+                        }.awaitAll().filterNotNull()
+                    }
+                    println("fetched all")
+                    allFetchedMails.addAll(fetchedMails) // Accumulate fetched emails
+                }
+                nextPageToken = messageIdList.nextPageToken // Continue fetching next page
+            } while (nextPageToken != null)
+        } catch (e: Exception) {
+            _fetching.value = false
+            println("Exception: ${e.message}")
+            return
+        }
+        // Update lastSyncTime only **after all pages are processed**
+        if (allFetchedMails.isNotEmpty()) {
+            val newLastSyncTime = allFetchedMails.maxOfOrNull { it.internalDate } ?: lastSyncTime
+            user.lastSyncTime = newLastSyncTime
+            userDao.updateUser(user) // Persist the final lastSyncTime
+        }
+         _fetching.value = false
     }
 
     private suspend fun fetchEmailDetails(user: User, messageId: String): MailEntity {
@@ -161,6 +198,7 @@ class UserRepository(private val userDao: UserDao) {
             sender = senderName,
             subject = subject,
             snippet = gMessage.snippet,
+            internalDate = gMessage.internalDate,
         )
     }
 }

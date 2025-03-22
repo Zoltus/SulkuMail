@@ -44,8 +44,8 @@ fun MailScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.semantics { traversalIndex = 1f },
                 ) {
-                    items(items = mails, key = { it.id }) { unifiedMail ->
-                        MailItem(unifiedMail = unifiedMail)
+                    items(items = mails, key = { it.id }) { mail ->
+                        MailItem(mail = mail)
                     }
                 }
                 ScrollBar(scrollState)

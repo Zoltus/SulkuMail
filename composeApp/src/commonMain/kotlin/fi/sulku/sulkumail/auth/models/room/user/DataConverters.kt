@@ -6,7 +6,7 @@ import fi.sulku.sulkumail.auth.EmailProvider
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-object DatabaseConverters {
+object UserConverters {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter

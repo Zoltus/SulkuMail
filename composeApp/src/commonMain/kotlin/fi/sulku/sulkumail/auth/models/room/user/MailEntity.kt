@@ -22,5 +22,6 @@ data class MailEntity(
     val subject: String? = null,
     val snippet: String? = null,
     var senderImage: String? = null,
-    val pageToken: String? = null
+    val pageToken: String? = null,
+    val internalDate: Long
 )

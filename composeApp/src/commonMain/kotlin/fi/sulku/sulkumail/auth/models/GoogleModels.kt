@@ -1,6 +1,5 @@
 package fi.sulku.sulkumail.auth.models
 
-import fi.sulku.sulkumail.auth.models.room.user.MailEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,15 +8,15 @@ data class GMessage(
     val threadID: String? = null,
     val labelIds: List<String>? = null,
     val snippet: String? = null,
-    val internalDate: String? = null,
+    val internalDate: Long,
     val payload: MessagePart? = null,
-    var senderImage: String? = null
+    var senderImage: String? = null,
 )
 
 @Serializable
 data class GMessageIdList(
     val messages: List<MessageInfo> = emptyList(),
-    val nextPageToken: String?,
+    val nextPageToken: String? = null,
     val resultSizeEstimate: Int
 )
 

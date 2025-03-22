@@ -9,14 +9,17 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: User)
 
+    @Update
+    suspend fun updateUser(user: User)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEmail(email: MailEntity)
+    suspend fun insertEmail(mail: MailEntity)
 
     @Delete
     suspend fun deleteUser(user: User)
 
     @Delete
-    suspend fun deleteEmail(email: MailEntity)
+    suspend fun trashMail(mail: MailEntity)
 
     @Transaction
     @Query("SELECT * FROM users")
