@@ -1,11 +1,13 @@
 package fi.sulku.sulkumail.auth
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import fi.sulku.sulkumail.Token
 import fi.sulku.sulkumail.auth.models.room.user.User
 import fi.sulku.sulkumail.auth.models.room.user.MailEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
@@ -20,7 +22,11 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
     fun getMails(user: User): Flow<List<MailEntity>> = repo.getMails(user)
 
-    suspend fun fetchMails(user: User) = repo.fetchMails(user)
+    fun fetchMails(user: User) {
+        viewModelScope.launch {
+            repo.fetchMails(user)
+        }
+    }
 
     suspend fun trashMail(mail: MailEntity) = repo.trashMail(selectedUser.value, mail)
 

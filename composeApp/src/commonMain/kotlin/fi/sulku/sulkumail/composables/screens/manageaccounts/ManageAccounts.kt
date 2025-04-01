@@ -20,11 +20,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ManageAccounts() {
-    val authVm: UserViewModel = koinViewModel<UserViewModel>()
+fun ManageAccounts(authVm: UserViewModel) {
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -63,8 +61,7 @@ fun ManageAccounts() {
                 showDialog = false
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val user = authVm.startGoogleAuth()
-                        authVm.fetchMails(user) // todo temp
+                        authVm.startGoogleAuth()
                     } catch (e: AuthException) {
                         //todo popup dialog
                         println("Auth exception " + e.message)

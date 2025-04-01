@@ -21,7 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MailScreen(
     drawerState: DrawerState,
-    authVm: UserViewModel = koinViewModel()
+    authVm: UserViewModel
 ) {
     val user by authVm.selectedUser.collectAsState()
 
