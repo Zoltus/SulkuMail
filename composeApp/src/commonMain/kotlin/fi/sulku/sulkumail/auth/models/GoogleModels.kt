@@ -17,7 +17,7 @@ data class GMessage(
 data class GMessageIdList(
     val messages: List<MessageInfo> = emptyList(),
     val nextPageToken: String? = null,
-    val resultSizeEstimate: Int
+    val resultSizeEstimate: Int? = null,
 )
 
 /*
