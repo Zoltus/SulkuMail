@@ -11,7 +11,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         ActivityHolder.init(this)
         setContent {
-
             App()
         }
     }

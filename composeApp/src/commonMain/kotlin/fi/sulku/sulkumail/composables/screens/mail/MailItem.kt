@@ -2,7 +2,6 @@ package fi.sulku.sulkumail.composables.screens.mail
 
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -26,42 +25,50 @@ fun MailItem(
     val scope = rememberCoroutineScope()
     // Track hover state for the entire list item
     val interactionSource = remember { MutableInteractionSource() }
-    val isHovered = interactionSource.collectIsHoveredAsState()
 
-    ListItem(
-        modifier = Modifier.hoverable(interactionSource),
-        leadingContent = {
-            /* Coil Img... */
-        },
-        headlineContent = {
-            Column {
-                Text(
-                    text = mail.sender ?: "NoSender",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = mail.subject ?: "NoSubject",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+    SwipeToDelete(
+        onDelete = {
+            scope.launch {
+                authVm.trashMail(mail)
             }
-        },
-        supportingContent = {
-            Text(
-                text = mail.snippet ?: "no snippet",
-                style = MaterialTheme.typography.bodySmall
-            )
-        },
-        trailingContent = {
-            DeleteButton(
-                iconDesc = "Delete",
-                interactionSource = interactionSource
-            ) {
-                scope.launch {
-                    authVm.trashMail(mail)
-                }
-            }
-
         }
-    )
+    ) {
+        ListItem(
+            modifier = Modifier.hoverable(interactionSource),
+            leadingContent = {
+                /* Coil Img... */
+            },
+            headlineContent = {
+                Column {
+                    Text(
+                        text = mail.sender ?: "NoSender",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = mail.subject ?: "NoSubject",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            },
+            supportingContent = {
+                Text(
+                    text = mail.snippet ?: "no snippet",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            },
+            trailingContent = {
+                DeleteButton(
+                    iconDesc = "Delete",
+                    interactionSource = interactionSource
+                ) {
+                    scope.launch {
+                        authVm.trashMail(mail)
+                    }
+                }
+
+            }
+        )
+    }
+
 }
