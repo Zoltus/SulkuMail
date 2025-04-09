@@ -29,9 +29,14 @@ fun Settings(authVm: UserViewModel) {
 
         user.value?.let {
             Button(onClick = {
-                authVm.fetchMails(it)
+                authVm.fetchInbox(it)
             }) {
                 Text("Fetch mails")
+            }
+              Button(onClick = {
+                authVm.fetchTrash(it)
+            }) {
+                Text("Fetch Trash")
             }
         }
     }

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.MailRoute
 import fi.sulku.sulkumail.auth.UserViewModel
-import fi.sulku.sulkumail.auth.models.Folders
+import fi.sulku.sulkumail.auth.models.Folder
 import fi.sulku.sulkumail.auth.models.room.user.User
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -32,7 +32,7 @@ import sulkumail.composeapp.generated.resources.google
 fun ColumnScope.DrawerMails(
     expandedUsers: SnapshotStateList<User>,
     nav: NavHostController,
-    selectedFolder: MutableState<Folders>
+    selectedFolder: MutableState<Folder>
 ) {
     val authVm: UserViewModel = koinViewModel<UserViewModel>()
     val users by authVm.users.collectAsState(initial = emptyList())
@@ -71,7 +71,7 @@ fun ColumnScope.DrawerMails(
             )
             AnimatedVisibility(visible = isExpanded) {
                 Column {
-                    Folders.entries.forEach {
+                    Folder.entries.forEach {
                         val isSelected = expandedUsers.contains(user) && selectedFolder.value == it
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,

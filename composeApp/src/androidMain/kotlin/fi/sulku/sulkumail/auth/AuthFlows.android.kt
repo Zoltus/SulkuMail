@@ -33,7 +33,7 @@ internal actual suspend fun startGoogleAuthFlow(scopes: List<String>): Token {
     val activityContext = ActivityHolder.getActivity()
     if (activityContext != null) {
         val authClient: AuthorizationClient = Identity.getAuthorizationClient(activityContext)
-        var authCompletable: CompletableDeferred<AuthorizationResult> = CompletableDeferred<AuthorizationResult>()
+        val authCompletable = CompletableDeferred<AuthorizationResult>()
 
         val launcher = ActivityHolder.registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()
@@ -41,8 +41,8 @@ internal actual suspend fun startGoogleAuthFlow(scopes: List<String>): Token {
             try {
                 val resultFromIntent = authClient.getAuthorizationResultFromIntent(result.data)
                 authCompletable.complete(resultFromIntent)
-            } catch (_: ApiException) {
-                authCompletable.completeExceptionally(AuthException("Auth Interrupted"))
+            } catch (e: ApiException) {
+                authCompletable.completeExceptionally(AuthException("Auth Interrupted3" + e.message))
             }
         }
         // Launch Google Credentials flow
@@ -66,7 +66,7 @@ internal actual suspend fun startGoogleAuthFlow(scopes: List<String>): Token {
             return exchangeCodeForToken(serverAuthCode)
         }
     } else {
-        throw AuthException("Auth Interrupted")
+        throw AuthException("Auth Interrupted2")
     }
 }
 
@@ -110,8 +110,8 @@ private suspend fun requestGoogleCredentials(context: Context) {
            credentialManager.clearCredentialState(clearRequest)*/
     try {
         credentialManager.getCredential(context, request)
-    } catch (_: Exception) {
-        throw AuthException("Auth Interrupted!")
+    } catch (e: Exception) {
+        throw AuthException("Auth Interrupted!1 " + e.message)
     }
 }
 

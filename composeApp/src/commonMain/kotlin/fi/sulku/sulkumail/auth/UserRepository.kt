@@ -1,6 +1,7 @@
 package fi.sulku.sulkumail.auth
 
 import fi.sulku.sulkumail.Token
+import fi.sulku.sulkumail.auth.models.Folder
 import fi.sulku.sulkumail.auth.models.GMessage
 import fi.sulku.sulkumail.auth.models.GMessageIdList
 import fi.sulku.sulkumail.auth.models.room.user.MailEntity
@@ -32,8 +33,8 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
-    private val _fetching = MutableStateFlow(false)
-    val fetching = _fetching.asStateFlow()
+    private val _isFetching = MutableStateFlow(false)
+    val isFetching = _isFetching.asStateFlow()
 
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser = _selectedUser.asStateFlow()
@@ -51,7 +52,7 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     fun getMails(user: User): Flow<List<MailEntity>> {
-        return userDao.getMails(user.id)
+        return userDao.getInbox(user.id)
     }
 
     suspend fun createUser(token: Token): User {
@@ -122,24 +123,27 @@ class UserRepository(private val userDao: UserDao) {
 }
      */
     //todo fetch loop
- suspend fun fetchMails(user: User) {
-        if (_fetching.value) {
+    suspend fun fetchMails(user: User, folder: Folder) {
+        if (_isFetching.value) {
             //todo
             return
         }
         val lastSyncTime = user.lastSyncTime
         var nextPageToken: String? = null
         val allFetchedMails = mutableListOf<MailEntity>()
+        val includeSpamTrash = folder == Folder.Trash || folder == Folder.Spam
         try {
             do {
                 println("fethcing mails")
-                _fetching.value = true
+                _isFetching.value = true
                 val messageIdList: GMessageIdList =
                     client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages") {
                         headers { append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}") }
                         parameter("maxResults", 10)
                         nextPageToken?.let { parameter("pageToken", it) }
                         parameter("q", "after:$lastSyncTime") // Fetch only new emails
+                        parameter("labelIds", folder.label)
+                        parameter("includeSpamTrash", includeSpamTrash)
                     }.body()
 
                 val messages = messageIdList.messages
@@ -167,7 +171,7 @@ class UserRepository(private val userDao: UserDao) {
                 nextPageToken = messageIdList.nextPageToken // Continue fetching next page
             } while (nextPageToken != null)
         } catch (e: Exception) {
-            _fetching.value = false
+            _isFetching.value = false
             println("Exception: ${e.message}")
             return
         }
@@ -177,7 +181,7 @@ class UserRepository(private val userDao: UserDao) {
             user.lastSyncTime = newLastSyncTime
             userDao.updateUser(user) // Persist the final lastSyncTime
         }
-         _fetching.value = false
+        _isFetching.value = false
     }
 
     private suspend fun fetchEmailDetails(user: User, messageId: String): MailEntity {
@@ -199,6 +203,7 @@ class UserRepository(private val userDao: UserDao) {
             subject = subject,
             snippet = gMessage.snippet,
             internalDate = gMessage.internalDate,
+            labelIds = gMessage.labelIds
         )
     }
 }

@@ -25,8 +25,11 @@ interface UserDao {
     @Query("SELECT * FROM users")
     fun getUsers(): Flow<List<User>>
 
-    @Query("SELECT * FROM emails WHERE userId = :userId")
-    fun getMails(userId: Int): Flow<List<MailEntity>>
+    @Query("SELECT * FROM emails WHERE userId = :userId AND labelIds LIKE '%INBOX%'")
+    fun getInbox(userId: Int): Flow<List<MailEntity>>
+
+    @Query("SELECT * FROM emails WHERE userId = :userId AND labelIds LIKE '%TRASH%'")
+    fun getTrash(userId: Int): Flow<List<MailEntity>>
 
     @Query("SELECT id FROM emails WHERE userId = :id AND id IN (:ids)")
     suspend fun dupeIds(id: Int, ids: List<String>): List<String>

@@ -10,13 +10,30 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 // todo temp
 //todo unread, and other uncommon folders
-enum class Folders(val label: String, val icon: ImageVector, val contentDesc: String) {
-    Inbox("Inbox", Icons.Rounded.Inbox, "desc"),
-    Spam("Spam", Icons.Rounded.Block, "desc"),
-    Sent("Sent", Icons.AutoMirrored.Rounded.Send, "desc"),
-    Drafts("Drafts", Icons.Rounded.EditNote, "desc"),
-    Deleted("Deleted", Icons.Rounded.Delete, "desc")
+enum class Folder(val label: String, val icon: ImageVector, val contentDesc: String) {
+    Inbox("INBOX", Icons.Rounded.Inbox, "desc"),
+    Spam("SPAM", Icons.Rounded.Block, "desc"),
+    Sent("SENT", Icons.AutoMirrored.Rounded.Send, "desc"),
+    Drafts("DRAFT", Icons.Rounded.EditNote, "desc"),
+    Trash("TRASH", Icons.Rounded.Delete, "desc")
 }
+
+/*
+Inbox: INBOX
+Trash: TRASH
+Spam: SPAM
+Sent: SENT
+Drafts: DRAFT
+
+
+Starred: STARRED
+Important: IMPORTANT
+All Mail: CATEGORY_PERSONAL (or ALL_MAIL for all emails)
+Promotions: CATEGORY_PROMOTIONS
+Social: CATEGORY_SOCIAL
+Updates: CATEGORY_UPDATES
+Forums: CATEGORY_FORUMS
+ */
 
 
 

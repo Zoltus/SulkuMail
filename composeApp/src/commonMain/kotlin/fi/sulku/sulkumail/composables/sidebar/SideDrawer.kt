@@ -15,7 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fi.sulku.sulkumail.auth.models.Folders
+import fi.sulku.sulkumail.auth.models.Folder
 import fi.sulku.sulkumail.auth.models.room.user.User
 import fi.sulku.sulkumail.getPlatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -46,7 +46,7 @@ private fun DrawerContent(
     drawerState: DrawerState,
     nav: NavHostController,
     ) {
-    val selectedFolder = remember { mutableStateOf(Folders.Inbox) }
+    val selectedFolder = remember { mutableStateOf(Folder.Inbox) }
     //All mails which are expanded:
     val expandedUsers = remember { mutableStateListOf<User>() }
 

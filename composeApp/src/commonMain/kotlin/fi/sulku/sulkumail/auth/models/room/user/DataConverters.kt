@@ -38,4 +38,14 @@ object UserConverters {
     fun toEmailProvider(name: String): EmailProvider {
         return EmailProvider.valueOf(name)
     }
+
+    @TypeConverter
+    fun fromLabelIds(labelIds: List<String>?): String {
+        return json.encodeToString(labelIds)
+    }
+
+    @TypeConverter
+    fun toLabelIds(labelIdsString: String?): List<String> {
+        return labelIdsString?.let { json.decodeFromString(it) } ?: emptyList()
+    }
 }
