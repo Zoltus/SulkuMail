@@ -12,30 +12,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fi.sulku.sulkumail.MailRoute
-import fi.sulku.sulkumail.auth.UserViewModel
-import fi.sulku.sulkumail.auth.models.Folder
-import fi.sulku.sulkumail.auth.models.room.user.User
+import fi.sulku.sulkumail.data.auth.models.Folder
+import fi.sulku.sulkumail.data.auth.UserViewModel
+import fi.sulku.sulkumail.routes.MailRoute
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import sulkumail.composeapp.generated.resources.Res
 import sulkumail.composeapp.generated.resources.google
 
 @Composable
-fun ColumnScope.DrawerMails(
-    expandedUsers: SnapshotStateList<User>,
-    nav: NavHostController,
-    selectedFolder: MutableState<Folder>
-) {
-    val authVm: UserViewModel = koinViewModel<UserViewModel>()
-    val users by authVm.users.collectAsState(initial = emptyList())
+fun ColumnScope.DrawerMails(nav: NavHostController) {
+    val userVm = koinInject<UserViewModel>()
+    val drwVm = koinViewModel<DrawerViewModel>()
+
+    val users by userVm.users.collectAsState(initial = emptyList())
+    val selectedFolder by drwVm.selectedUserFolder.collectAsState()
+    val expandedUsers by drwVm.expandedUsers.collectAsState()
 
     LazyColumn(modifier = Modifier.weight(1f)) {
         items(users) { user ->
@@ -64,27 +62,27 @@ fun ColumnScope.DrawerMails(
                     Icon(arrow, contentDescription = "Expand folder arrow")
                 },
                 onClick = {
-                    authVm.selectUser(user)
+                    userVm.selectUser(user)
                     nav.navigate(MailRoute)
-                    expandedUsers.apply { if (isExpanded) remove(user) else add(user) }
+                    drwVm.toggleUserExpansion(user)
                 },
             )
             AnimatedVisibility(visible = isExpanded) {
                 Column {
-                    Folder.entries.forEach {
-                        val isSelected = expandedUsers.contains(user) && selectedFolder.value == it
+                    Folder.entries.forEach { folder ->
+                        val isSelected = user to folder == selectedFolder
                         NavigationDrawerItem(
                             shape = MaterialTheme.shapes.small,
-                            label = { Text(text = it.label) },
+                            label = { Text(text = folder.label) },
                             icon = {
                                 Spacer(Modifier.width(20.dp))
-                                Icon(imageVector = it.icon, contentDescription = it.contentDesc)
+                                Icon(imageVector = folder.icon, contentDescription = folder.contentDesc)
                             },
                             selected = isSelected,
                             badge = { /*Unread amount?*/ },
                             onClick = {
-                                authVm.selectUser(user)
-                                selectedFolder.value = it
+                                userVm.selectUser(user)
+                                drwVm.selectFolder(user, folder)
                             },
                         )
                     }

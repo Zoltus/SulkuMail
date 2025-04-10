@@ -3,8 +3,8 @@ package fi.sulku.sulkumail.composables.sidebar
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
-import fi.sulku.sulkumail.ManageAccountsRoute
-import fi.sulku.sulkumail.SettingsRoute
+import fi.sulku.sulkumail.routes.ManageAccountsRoute
+import fi.sulku.sulkumail.routes.SettingsRoute
 
 @Composable
 fun DrawerBottom(nav: NavHostController) {

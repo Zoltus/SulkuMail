@@ -11,16 +11,13 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fi.sulku.sulkumail.auth.models.Folder
-import fi.sulku.sulkumail.auth.models.room.user.User
 import fi.sulku.sulkumail.getPlatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-//todo to viewmodel&Dataclass
 @Preview
 @Composable
 fun SideDrawer(
@@ -45,11 +42,7 @@ fun SideDrawer(
 private fun DrawerContent(
     drawerState: DrawerState,
     nav: NavHostController,
-    ) {
-    val selectedFolder = remember { mutableStateOf(Folder.Inbox) }
-    //All mails which are expanded:
-    val expandedUsers = remember { mutableStateListOf<User>() }
-
+) {
     AnimatedVisibility(
         visible = drawerState.isOpen,
         enter = expandHorizontally(animationSpec = tween(durationMillis = 200)),
@@ -59,7 +52,7 @@ private fun DrawerContent(
             modifier = Modifier.width(280.dp),
         ) {
             DrawerTop()
-            DrawerMails(expandedUsers, nav, selectedFolder)
+            DrawerMails(nav)
 
             //Bottom nav
             Column(verticalArrangement = Arrangement.Bottom) {

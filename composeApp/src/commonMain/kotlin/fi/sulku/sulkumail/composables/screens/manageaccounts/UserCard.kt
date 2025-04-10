@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fi.sulku.sulkumail.auth.models.room.user.User
+import fi.sulku.sulkumail.data.auth.models.room.User
 import fi.sulku.sulkumail.composables.content.DeleteButton
 
 @Composable

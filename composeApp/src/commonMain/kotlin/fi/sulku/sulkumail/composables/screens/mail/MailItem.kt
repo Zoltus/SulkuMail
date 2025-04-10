@@ -8,30 +8,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import fi.sulku.sulkumail.auth.UserViewModel
-import fi.sulku.sulkumail.auth.models.room.user.MailEntity
+import fi.sulku.sulkumail.data.auth.models.room.MailEntity
 import fi.sulku.sulkumail.composables.content.DeleteButton
-import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MailItem(
     mail: MailEntity,
-    authVm: UserViewModel = koinViewModel()
+    onTrashMail: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     // Track hover state for the entire list item
     val interactionSource = remember { MutableInteractionSource() }
 
     SwipeToDelete(
-        onDelete = {
-            scope.launch {
-                authVm.trashMail(mail)
-            }
-        }
+        onDelete = { onTrashMail() }
     ) {
         ListItem(
             modifier = Modifier.hoverable(interactionSource),
@@ -60,15 +51,10 @@ fun MailItem(
             trailingContent = {
                 DeleteButton(
                     iconDesc = "Delete",
-                    interactionSource = interactionSource
-                ) {
-                    scope.launch {
-                        authVm.trashMail(mail)
-                    }
-                }
-
+                    interactionSource = interactionSource,
+                    onDelete = { onTrashMail() }
+                )
             }
         )
     }
-
 }

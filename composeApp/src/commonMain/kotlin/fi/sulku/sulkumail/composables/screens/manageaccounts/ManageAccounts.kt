@@ -1,8 +1,6 @@
 package fi.sulku.sulkumail.composables.screens.manageaccounts
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,15 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fi.sulku.sulkumail.auth.AuthException
-import fi.sulku.sulkumail.auth.UserViewModel
+import fi.sulku.sulkumail.data.auth.AuthException
+import fi.sulku.sulkumail.data.auth.AuthViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ManageAccounts(authVm: UserViewModel) {
+fun ManageAccounts() {
+    val authVm = koinViewModel<AuthViewModel>()
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -51,7 +51,7 @@ fun ManageAccounts(authVm: UserViewModel) {
                 Text("Add Account")
             }
         }
-        UsersList(authVm)
+        UsersList()
     }
 
     if (showDialog) {
@@ -70,36 +70,6 @@ fun ManageAccounts(authVm: UserViewModel) {
 
             }
         )
-    }
-}
-
-@Composable
-private fun UsersList(
-    authVm: UserViewModel
-) {
-    val scope = rememberCoroutineScope()
-    val users by authVm.users.collectAsState(initial = emptyList())
-
-    Spacer(Modifier.height(16.dp))
-    Text(
-        fontSize = 20.sp,
-        text = "Your accounts"
-    )
-    Spacer(Modifier.height(8.dp))
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(users) { user ->
-            UserCard(
-                user = user,
-                onDelete = {
-                    scope.launch {
-                        authVm.removeUser(user)
-                    }
-                }
-            )
-        }
     }
 }
 
