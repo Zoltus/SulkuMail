@@ -1,6 +1,12 @@
 package fi.sulku.sulkumail.composables.screens.mail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -10,14 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.data.auth.UserViewModel
-import kotlinx.coroutines.launch
+import fi.sulku.sulkumail.theme.CustomColor
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -25,7 +30,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MailScreen(
     drawerState: DrawerState
 ) {
-    val scope = rememberCoroutineScope()
     val userVm = koinInject<UserViewModel>()
     val mailVm = koinViewModel<MailViewModel>()
     val user by userVm.selectedUser.collectAsState()
@@ -47,18 +51,14 @@ fun MailScreen(
             ) {
                 LazyColumn(
                     state = scrollState,
-                    contentPadding = PaddingValues(start = 16.dp, top = 72.dp, end = 16.dp, bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = Modifier.semantics { traversalIndex = 1f },
                 ) {
                     items(items = mails, key = { it.id }) { mail ->
                         MailItem(
                             mail = mail,
-                            onTrashMail = {
-                                scope.launch {
-                                    mailVm.trashMail(user, mail)
-                                }
-                            }
+                            onTrashMail = { mailVm.trashMail(user, mail) }
                         )
                     }
                 }

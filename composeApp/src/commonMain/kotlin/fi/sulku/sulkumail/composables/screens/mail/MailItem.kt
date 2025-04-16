@@ -1,17 +1,18 @@
 package fi.sulku.sulkumail.composables.screens.mail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ListItem
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import fi.sulku.sulkumail.data.auth.models.room.MailEntity
 import fi.sulku.sulkumail.composables.content.DeleteButton
+import fi.sulku.sulkumail.data.auth.models.room.MailEntity
+import fi.sulku.sulkumail.theme.CustomColor
 
 @Composable
 fun MailItem(
@@ -24,8 +25,9 @@ fun MailItem(
     SwipeToDelete(
         onDelete = { onTrashMail() }
     ) {
-        ListItem(
-            modifier = Modifier.hoverable(interactionSource),
+        MailListItem(
+            modifier = Modifier.hoverable(interactionSource)
+                .background(CustomColor.discordDark),
             leadingContent = {
                 /* Coil Img... */
             },
@@ -54,7 +56,7 @@ fun MailItem(
                     interactionSource = interactionSource,
                     onDelete = { onTrashMail() }
                 )
-            }
+            },
         )
     }
 }
