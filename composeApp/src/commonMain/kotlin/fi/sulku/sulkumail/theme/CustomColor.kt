@@ -8,5 +8,5 @@ object CustomColor {
     val discordDarkest = Color(0xff1e2124)
     val discordDark = Color(0xff282b30)
     val discordLight = Color(0xff36393e)
-    val discordDarkLightest = Color(0xff424549)
+    val discordLightest = Color(0xff424549)
 }
