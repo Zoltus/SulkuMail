@@ -1,6 +1,5 @@
 package fi.sulku.sulkumail.composables.screens.mail
 
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -8,7 +7,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
@@ -16,14 +14,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoxScope.Search(
+fun Search(
     drawerState: DrawerState,
 ) {
     val scope = rememberCoroutineScope()
     var query by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
     SearchBar(
-        modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth().semantics { traversalIndex = 0f },
+        modifier = Modifier.fillMaxWidth().semantics { traversalIndex = 0f },
         inputField = {
             SearchBarDefaults.InputField(
                 query = query,

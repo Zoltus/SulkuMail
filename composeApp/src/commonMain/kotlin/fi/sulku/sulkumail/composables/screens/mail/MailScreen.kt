@@ -40,9 +40,11 @@ fun MailScreen(
                 return
             }
 
-            Box(Modifier.semantics { isTraversalGroup = true }) {
-                Search(drawerState = drawerState)
-                //Mail Content
+            Search(drawerState = drawerState)
+            Box(modifier = Modifier.weight(1f)
+                .fillMaxWidth()
+                .semantics { isTraversalGroup = true }
+            ) {
                 LazyColumn(
                     state = scrollState,
                     contentPadding = PaddingValues(start = 16.dp, top = 72.dp, end = 16.dp, bottom = 16.dp),
