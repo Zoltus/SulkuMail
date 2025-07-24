@@ -17,6 +17,7 @@ import fi.sulku.sulkumail.theme.CustomColor
 @Composable
 fun MailItem(
     mail: MailEntity,
+    onClick: () -> Unit,
     onTrashMail: () -> Unit
 ) {
     // Track hover state for the entire list item
@@ -28,6 +29,7 @@ fun MailItem(
         MailListItem(
             modifier = Modifier.hoverable(interactionSource)
                 .background(CustomColor.discordDark),
+            onClick = { onClick() },
             leadingContent = {
                 /* Coil Img... */
             },

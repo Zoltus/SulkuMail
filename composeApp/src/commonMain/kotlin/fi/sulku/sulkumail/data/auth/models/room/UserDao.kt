@@ -28,6 +28,9 @@ interface UserDao {
     @Query("SELECT * FROM emails WHERE userId = :userId AND labelIds LIKE '%INBOX%'")
     fun getInbox(userId: Int): Flow<List<MailEntity>>
 
+    @Query("SELECT * FROM emails WHERE userId = :userId AND id = :id LIMIT 1")
+    fun getMailById(userId: Int, id: String): Flow<MailEntity?>
+
     @Query("SELECT * FROM emails WHERE userId = :userId AND labelIds LIKE '%TRASH%'")
     fun getTrash(userId: Int): Flow<List<MailEntity>>
 

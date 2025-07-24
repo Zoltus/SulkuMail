@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.data.auth.models.Folder
 import fi.sulku.sulkumail.data.auth.UserViewModel
-import fi.sulku.sulkumail.routes.MailRoute
+import fi.sulku.sulkumail.routes.MailsRoute
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -63,7 +63,7 @@ fun ColumnScope.DrawerMails(nav: NavHostController) {
                 },
                 onClick = {
                     userVm.selectUser(user)
-                    nav.navigate(MailRoute)
+                    nav.navigate(MailsRoute)
                     drwVm.toggleUserExpansion(user)
                 },
             )

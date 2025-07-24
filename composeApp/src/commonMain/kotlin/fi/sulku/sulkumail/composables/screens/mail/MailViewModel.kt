@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 
 class MailViewModel(private val mailRepo: MailRepository) : ViewModel() {
 
+   fun getMail(user: User, mailId: String): Flow<MailEntity?> = mailRepo.getMail(user, mailId)
+
     fun getMails(user: User): Flow<List<MailEntity>> = mailRepo.getMails(user)
 
     fun fetchMail(user: User, folder: Folder) {
@@ -18,6 +20,7 @@ class MailViewModel(private val mailRepo: MailRepository) : ViewModel() {
             mailRepo.fetchMails(user, folder)
         }
     }
+
 
     fun trashMail(user: User, mail: MailEntity) {
         viewModelScope.launch {

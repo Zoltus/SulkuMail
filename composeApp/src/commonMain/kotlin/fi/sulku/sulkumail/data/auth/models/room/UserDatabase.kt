@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [User::class, MailEntity::class],
-    version = 1,
+    version = 2,
 )
 @TypeConverters(value = [UserConverters::class])
 abstract class UserDatabase : RoomDatabase() {

@@ -13,11 +13,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import fi.sulku.sulkumail.composables.screens.mail.MailScreen
+import fi.sulku.sulkumail.composables.screens.mail.view.MailView
 import fi.sulku.sulkumail.composables.screens.manageaccounts.ManageAccounts
 import fi.sulku.sulkumail.composables.screens.settings.Settings
 import fi.sulku.sulkumail.composables.sidebar.SideDrawer
 import fi.sulku.sulkumail.routes.MailRoute
+import fi.sulku.sulkumail.routes.MailsRoute
 import fi.sulku.sulkumail.routes.ManageAccountsRoute
 import fi.sulku.sulkumail.routes.SettingsRoute
 import fi.sulku.sulkumail.theme.AppTheme
@@ -49,8 +52,12 @@ fun App() = AppTheme {
                     composable<SettingsRoute> {
                         Settings()
                     }
+                    composable<MailsRoute> { entry ->
+                        MailScreen(nav = nav, drawerState = drawerState)
+                    }
                     composable<MailRoute> { entry ->
-                        MailScreen(drawerState = drawerState)
+                        val mailRoute: MailRoute = entry.toRoute()
+                        MailView(mailRoute.mailId)
                     }
                 }
             })

@@ -26,7 +26,25 @@ fun SwipeToDelete(
     content: @Composable () -> Unit
 ) {
     val isVisible = remember { mutableStateOf(true) }
-    val swipeState = rememberSwipeToDismissBoxState(positionalThreshold = { totalDistance -> totalDistance * 0.5f })
+    //val swipeState = rememberSwipeToDismissBoxState(positionalThreshold = { totalDistance -> totalDistance * 0.5f })
+    val swipeState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            when(it) {
+                SwipeToDismissBoxValue.StartToEnd -> {
+                    //onRemove(currentItem)
+                  //  Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
+                }
+                SwipeToDismissBoxValue.EndToStart -> {
+                   // onRemove(currentItem)
+                  //  Toast.makeText(context, "Item archived", Toast.LENGTH_SHORT).show()
+                }
+                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
+            }
+            return@rememberSwipeToDismissBoxState true
+        },
+        // positional threshold of 25%
+        positionalThreshold = { it * .25f }
+    )
     val backgroundAppearance = getBackgroundAppearance(swipeState.dismissDirection)
 
     AnimatedDismissContent(

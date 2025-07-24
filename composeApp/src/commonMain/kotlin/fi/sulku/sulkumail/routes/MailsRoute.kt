@@ -3,4 +3,4 @@ package fi.sulku.sulkumail.routes
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MailRoute(val mailId: String)
+object MailsRoute

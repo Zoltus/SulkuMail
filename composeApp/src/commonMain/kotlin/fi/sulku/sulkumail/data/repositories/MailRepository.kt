@@ -33,6 +33,10 @@ class MailRepository(private val userDao: UserDao) {
         return userDao.getInbox(user.id)
     }
 
+    fun getMail(user: User, mailId: String): Flow<MailEntity?> {
+        return userDao.getMailById(user.id, mailId)
+    }
+
     private suspend fun addMail(mailEntity: MailEntity) {
         try {
             userDao.insertEmail(mailEntity)

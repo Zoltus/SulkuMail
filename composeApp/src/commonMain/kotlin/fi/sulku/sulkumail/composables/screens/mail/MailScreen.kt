@@ -1,6 +1,5 @@
 package fi.sulku.sulkumail.composables.screens.mail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -21,13 +20,15 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import fi.sulku.sulkumail.data.auth.UserViewModel
-import fi.sulku.sulkumail.theme.CustomColor
+import fi.sulku.sulkumail.routes.MailRoute
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MailScreen(
+    nav: NavHostController,
     drawerState: DrawerState
 ) {
     val userVm = koinInject<UserViewModel>()
@@ -58,6 +59,7 @@ fun MailScreen(
                     items(items = mails, key = { it.id }) { mail ->
                         MailItem(
                             mail = mail,
+                            onClick = { nav.navigate(MailRoute(mail.id))},
                             onTrashMail = { mailVm.trashMail(user, mail) }
                         )
                     }
