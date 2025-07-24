@@ -85,7 +85,7 @@ fun MailView(mailId: String) {
                 }
                 // Date
                 Text(
-                    text = "mail.internalDate",
+                    text = mail!!.internalDate.toString(), // todo format date properly
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
