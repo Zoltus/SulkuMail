@@ -12,6 +12,7 @@ buildConfig {
     val properties = Properties()
     properties.load(project.rootProject.file("local.properties").inputStream())
     buildConfigField("GOOGLE_API_SECRET", properties.getProperty("GOOGLE_API_SECRET"))
+    buildConfigField("AI_AGENT_URL", properties.getProperty("AI_AGENT_URL"))
 }
 
 group = "fi.sulku.sulkumail"

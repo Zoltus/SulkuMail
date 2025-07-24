@@ -1,6 +1,10 @@
 package fi.sulku.sulkumail
 
+import ai.koog.agents.core.agent.AIAgent
+import ai.koog.prompt.executor.llms.all.simpleOllamaAIExecutor
+import ai.koog.prompt.llm.OllamaModels
 import fi.sulku.sulkumail.providers.Google
+import fi.sulku.sulkumail.server.BuildConfig
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -42,7 +46,7 @@ fun Application.module() {
                 }
             }
 
-             post("/auth/jvm") {
+            post("/auth/jvm") {
                 val req = call.receive<TokenRequest>()
                 when (req.provider) {
                     Provider.GOOGLE -> {
@@ -52,6 +56,20 @@ fun Application.module() {
 
                     Provider.OUTLOOK -> {}
                 }
+            }
+
+            post("/ai/summarize") { // todo lateinit/ dont recreate agent every time
+                val req = call.receive<SummarizeInput>()
+                val agent = AIAgent(
+                    executor = simpleOllamaAIExecutor(baseUrl = BuildConfig.AI_AGENT_URL),
+                    llmModel = OllamaModels.Alibaba.QWEN_3_06B,
+                    systemPrompt = "You are a summarization assistant. " +
+                            "Summarize the given text clearly and concisely. " +
+                            "Give as a result only summary without any additional text. /no_think"
+                )
+                val result = agent.run(req.textToSummarize)
+                agent.close()
+                call.respond(SummarizeOutput(result.substringAfterLast("</think>")))
             }
 
             /*            post("/auth/refresh") {
