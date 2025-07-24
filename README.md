@@ -4,18 +4,21 @@ Project is on very early stages and at first the focus is adding full gmail supp
 🛠Technology Stack
 - Kotlin Multiplatform - Share code between platforms
 - Kotlin Compose - Modern UI toolkit for all platforms
+- Koog - To build ai agents to summarize & generate mails 
 - Ktor - HTTP client for network requests
 - Koin - Dependency injection
 - Google Credentials Manager & Identity service - Native Android & IOS login
 - Multiplatform Settings - Secure credential storage
-  
+
 Roadmap
+- Add ai agent to summarize & generate mails
 - Add proper support for multiple accounts
 - Add proper mail viewing capabilities
 - Implement secure credential storage
 - Implement local caching for offline access
 - Background synchronization
 - Complete account authentication flows on ios
+- Support multiple llm models for ai agent (e.g. OpenAI, Gemini)
 
 ## Images
 <div style="display: flex; gap: 20px;">
@@ -42,6 +45,7 @@ Roadmap
 **Mail Functionality**
   - [X] Fetching mail logic
   - [X] Delete mail Logic
+  - [ ] Ai agent to summarize & generate mails
   - [ ] Batch delete mails
   - [ ] Mail paginator/infinity scrolling
   - [ ] Background tasks for fetching mails
@@ -73,5 +77,6 @@ To setup the project do the following steps:
     GOOGLE_CLIENT_ID=your_google_client_id
     GOOGLE_REDIRECT_URL=http://localhost:8079/callback // This is callback url for the jvm, jvm hosts own http server to receive google auth code, no need to change
     BACKEND_URL=your_backend_url
+    AI_AGENT_URL=ollama_ai_agent_url
    ```
 
