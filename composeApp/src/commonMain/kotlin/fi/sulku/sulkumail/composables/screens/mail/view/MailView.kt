@@ -91,7 +91,7 @@ fun MailView(mailId: String) {
                 )
             }
 
-            Divider()
+            HorizontalDivider()
             Spacer(modifier = Modifier.height(16.dp))
 
             // Email Body
@@ -108,7 +108,7 @@ fun MailView(mailId: String) {
             mail!!.labelIds?.let { labels ->
                 if (labels.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    Divider()
+                    HorizontalDivider()
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Labels:", style = MaterialTheme.typography.labelMedium)
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
