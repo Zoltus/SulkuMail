@@ -105,7 +105,6 @@ fun MailView(mailId: String) {
             // Otherwise, fallback to snippet or a loading message.
             // Simple Text rendering. For HTML, you'd need a WebView.
 
-            Text("Testa")
             val initialUrl = mail!!.htmlBody!! // todo improve
             val state = rememberWebViewStateWithHTMLData(initialUrl)
             // WebView loading indicator
@@ -118,10 +117,10 @@ fun MailView(mailId: String) {
             }
 
             // WebView
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp) // Set height explicitly for WebView
+                    .weight(1f)
             ) {
                 WebView(
                     state = state,
