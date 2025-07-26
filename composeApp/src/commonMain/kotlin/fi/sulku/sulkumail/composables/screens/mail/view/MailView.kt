@@ -49,7 +49,7 @@ fun MailView(mailId: String) {
         ) {
             // Subject
             Text(
-                text = mail!!.subject ?: "(No Subject)",
+                text = mail!!.subject,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -73,7 +73,7 @@ fun MailView(mailId: String) {
                  )*/
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = mail!!.sender ?: "Unknown Sender",
+                        text = mail!!.from,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -85,7 +85,7 @@ fun MailView(mailId: String) {
                 }
                 // Date
                 Text(
-                    text = mail!!.internalDate.toString(), // todo format date properly
+                    text = mail!!.date.toString(), // todo format date properly
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
@@ -105,7 +105,7 @@ fun MailView(mailId: String) {
             )
 
             // Display Labels (optional)
-            mail!!.labelIds?.let { labels ->
+            mail!!.labelIds.let { labels ->
                 if (labels.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
                     HorizontalDivider()

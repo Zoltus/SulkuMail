@@ -3,6 +3,8 @@ package fi.sulku.sulkumail.data.repositories
 import fi.sulku.sulkumail.data.auth.models.Folder
 import fi.sulku.sulkumail.data.auth.models.GMessage
 import fi.sulku.sulkumail.data.auth.models.GMessageIdList
+import fi.sulku.sulkumail.data.auth.models.MessagePart
+import fi.sulku.sulkumail.data.auth.models.room.EmailAttachment
 import fi.sulku.sulkumail.data.auth.models.room.MailEntity
 import fi.sulku.sulkumail.data.auth.models.room.User
 import fi.sulku.sulkumail.data.auth.models.room.UserDao
@@ -10,6 +12,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.async
@@ -17,6 +20,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class MailRepository(private val userDao: UserDao) {
 
@@ -123,14 +128,14 @@ class MailRepository(private val userDao: UserDao) {
         }
         // Update lastSyncTime only **after all pages are processed**
         if (allFetchedMails.isNotEmpty()) {
-            val newLastSyncTime = allFetchedMails.maxOfOrNull { it.internalDate } ?: lastSyncTime
+            val newLastSyncTime = allFetchedMails.maxOfOrNull { it.date } ?: lastSyncTime
             user.lastSyncTime = newLastSyncTime
             userDao.updateUser(user) // Persist the final lastSyncTime
         }
     }
 
     private suspend fun fetchEmailDetails(user: User, messageId: String): MailEntity {
-        val gMessage = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/$messageId") {
+        val g = client.get("https://gmail.googleapis.com/gmail/v1/users/me/messages/$messageId") {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${user.token.access_token}")
             }
@@ -138,17 +143,92 @@ class MailRepository(private val userDao: UserDao) {
             parameter("metadataHeaders", "Subject")
         }.body<GMessage>()
 
-        val senderName = gMessage.payload?.headers?.find { it.name == "From" }?.value ?: "Unknown Sender"
-        val subject = gMessage.payload?.headers?.find { it.name == "Subject" }?.value ?: "No Subject"
+        val subject = g.payload?.headers?.find { it.name.equals("Subject", true) }?.value ?: "No Subject"
+        val from = g.payload?.headers?.find { it.name.equals("From", true) }?.value ?: "Unknown Sender"
+        val to = g.payload?.headers?.filter { it.name.equals("To", true) }?.map { it.value } ?: emptyList()
+
+        val htmlBody = findMimeBody(g.payload, "text/html")
+        val plainBody = findMimeBody(g.payload, "text/plain")
+        val attachments = extractAttachments(g.payload)
 
         return MailEntity(
-            id = gMessage.id,
             userId = user.id,
-            sender = senderName,
+            id = g.id,
             subject = subject,
-            snippet = gMessage.snippet,
-            internalDate = gMessage.internalDate,
-            labelIds = gMessage.labelIds
+            from = from,
+            to = to,
+            snippet = g.snippet,
+            date = g.internalDate,
+            htmlBody = htmlBody,
+            plainBody = plainBody,
+            //attachments = attachments,
+            threadId = g.threadID,
+            labelIds = g.labelIds ?: emptyList()
         )
     }
+
+    fun findMimeBody(part: MessagePart?, targetMimeType: String): String? {
+        if (part == null) return null
+
+        // Check if this part matches the desired MIME type
+        if (part.mimeType.equals(targetMimeType, ignoreCase = true) && part.body?.data != null) {
+            return decodeBase64UrlSafe(part.body.data)
+        }
+
+        // If this part has subparts (multipart/alternative, etc), recurse
+        part.parts?.forEach { subPart ->
+            val found = findMimeBody(subPart, targetMimeType)
+            if (found != null) return found
+        }
+
+        return null
+    }
+
+@OptIn(ExperimentalEncodingApi::class)
+fun decodeBase64UrlSafe(data: String): String {
+    return try {
+        // Convert URL-safe Base64 to standard Base64
+        val standardBase64 = data
+            .replace('-', '+')
+            .replace('_', '/')
+            .let { base64String ->
+                // Add padding if needed
+                val padding = (4 - base64String.length % 4) % 4
+                base64String + "=".repeat(padding)
+            }
+
+        val decoded = Base64.Default.decode(standardBase64)
+        decoded.decodeToString()
+    } catch (e: Exception) {
+        println("Base64 decode error: ${e.message}")
+        ""
+    }
+}
+
+
+    fun extractAttachments(payload: MessagePart?): List<EmailAttachment> {
+        val attachments = mutableListOf<EmailAttachment>()
+
+        fun recurse(part: MessagePart?) {
+            if (part == null) return
+
+            if (part.filename.isNotBlank() && part.body?.attachmentId != null) {
+                attachments.add(
+                    EmailAttachment(
+                        filename = part.filename,
+                        mimeType = part.mimeType,
+                        size = part.body.size,
+                        attachmentId = part.body.attachmentId,
+                        dataBase64 = part.body.data // Sometimes Gmail inlines small attachments
+                    )
+                )
+            }
+
+            part.parts?.forEach { recurse(it) }
+        }
+
+        recurse(payload)
+        return attachments
+    }
+
 }

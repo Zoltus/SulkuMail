@@ -36,12 +36,12 @@ fun MailItem(
             headlineContent = {
                 Column {
                     Text(
-                        text = mail.sender ?: "NoSender",
+                        text = mail.from,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = mail.subject ?: "NoSubject",
+                        text = mail.subject,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

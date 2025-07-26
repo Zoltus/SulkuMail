@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(
     tableName = "emails",
@@ -16,13 +17,27 @@ import androidx.room.PrimaryKey
     indices = [Index("userId")]
 )
 data class MailEntity(
-    @PrimaryKey val id: String,
     val userId: Int, // Foreign key reference
-    var sender: String? = null,
-    val subject: String? = null,
+    @PrimaryKey val id: String,
+    val subject: String,
+    var from: String,
+    val to: List<String>,
     val snippet: String? = null,
-    var senderImage: String? = null,
-    val pageToken: String? = null,
-    val internalDate: Long,
-    val labelIds: List<String>? = null,
+    val date: Long,
+    val htmlBody: String?,
+    val plainBody: String?,
+   // val attachments: List<EmailAttachment>,
+    val threadId: String? = null,
+    var senderImage: String? = null, // todo
+    val labelIds: List<String> = emptyList(),
+    //val pageToken: String? = null,
+)
+
+@Serializable
+data class EmailAttachment(
+    val filename: String,
+    val mimeType: String,
+    val size: Int,
+    val attachmentId: String,
+    val dataBase64: String? = null // Optional: inline base64 if available
 )
