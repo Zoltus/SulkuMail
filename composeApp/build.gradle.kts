@@ -11,6 +11,10 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+repositories {
+    maven("https://jogamp.org/deployment/maven") // For compose webview https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md#dependencies
+}
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -68,11 +72,11 @@ room { schemaDirectory("$projectDir/schemas") }
 
 dependencies {
     ksp(libs.room.compiler)
-/*    add("kspDesktop", libs.room.compiler)
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)*/
+    /*    add("kspDesktop", libs.room.compiler)
+        add("kspAndroid", libs.room.compiler)
+        add("kspIosX64", libs.room.compiler)
+        add("kspIosSimulatorArm64", libs.room.compiler)
+        add("kspIosArm64", libs.room.compiler)*/
 }
 
 android {
@@ -122,6 +126,14 @@ compose.desktop {
             packageName = "fi.sulku.sulkumail"
             packageVersion = "1.0.0"
         }
-    }
 
+        // For compose webview https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md#dependencies
+        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED")
+
+        if (System.getProperty("os.name").contains("Mac")) {
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+        }
+    }
 }

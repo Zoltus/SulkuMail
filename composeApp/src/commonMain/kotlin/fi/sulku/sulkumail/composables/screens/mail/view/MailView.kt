@@ -12,11 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.multiplatform.webview.web.LoadingState
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import fi.sulku.sulkumail.composables.screens.mail.MailViewModel
 import fi.sulku.sulkumail.data.auth.UserViewModel
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+
+// val state = rememberRichTextState()
+//  state.setHtml(mail!!.htmlBody ?: "No content available")
+// RichText(state = state)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,11 +104,30 @@ fun MailView(mailId: String) {
             // If 'fullBody' is fetched separately and available, use it.
             // Otherwise, fallback to snippet or a loading message.
             // Simple Text rendering. For HTML, you'd need a WebView.
-            Text(
-                text = mail!!.snippet ?: "null",
-                style = MaterialTheme.typography.bodyLarge,
-                lineHeight = 24.sp // Improve readability
-            )
+
+            Text("Testa")
+            val initialUrl = mail!!.htmlBody!! // todo improve
+            val state = rememberWebViewStateWithHTMLData(initialUrl)
+            // WebView loading indicator
+            val loadingState = state.loadingState
+            if (loadingState is LoadingState.Loading) {
+                LinearProgressIndicator(
+                    progress = loadingState.progress,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // WebView
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp) // Set height explicitly for WebView
+            ) {
+                WebView(
+                    state = state,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             // Display Labels (optional)
             mail!!.labelIds.let { labels ->

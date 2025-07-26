@@ -58,6 +58,7 @@ fun Application.module() {
                 }
             }
 
+            //todo ratelimit
             post("/ai/summarize") { // todo lateinit/ dont recreate agent every time
                 val req = call.receive<SummarizeInput>()
                 val agent = AIAgent(
