@@ -29,11 +29,11 @@ data class AndroidTokenRequest(
 
 
 @Serializable
-data class SummarizeInput(
+data class SummaryRequest(
     val textToSummarize: String,
 )
 
 @Serializable
-data class SummarizeOutput(
+data class Summary(
     val summarized: String,
 )

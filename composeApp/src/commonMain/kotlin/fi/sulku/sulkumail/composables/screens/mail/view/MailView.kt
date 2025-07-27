@@ -45,8 +45,6 @@ fun MailView(mailId: String) {
             return
         }
 
-
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -111,11 +109,10 @@ fun MailView(mailId: String) {
             val loadingState = state.loadingState
             if (loadingState is LoadingState.Loading) {
                 LinearProgressIndicator(
-                    progress = loadingState.progress,
+                    progress = { loadingState.progress },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-
             // WebView
             Column(
                 modifier = Modifier
@@ -144,7 +141,6 @@ fun MailView(mailId: String) {
             }
         }
     }
-
 }
 
 

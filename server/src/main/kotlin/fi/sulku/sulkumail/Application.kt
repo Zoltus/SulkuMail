@@ -60,7 +60,7 @@ fun Application.module() {
 
             //todo ratelimit
             post("/ai/summarize") { // todo lateinit/ dont recreate agent every time
-                val req = call.receive<SummarizeInput>()
+                val req = call.receive<SummaryRequest>()
                 val agent = AIAgent(
                     executor = simpleOllamaAIExecutor(baseUrl = BuildConfig.AI_AGENT_URL),
                     llmModel = OllamaModels.Alibaba.QWEN_3_06B,
@@ -70,7 +70,7 @@ fun Application.module() {
                 )
                 val result = agent.run(req.textToSummarize)
                 agent.close()
-                call.respond(SummarizeOutput(result.substringAfterLast("</think>")))
+                call.respond(Summary(result.substringAfterLast("</think>")))
             }
 
             /*            post("/auth/refresh") {
