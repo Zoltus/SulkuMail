@@ -28,6 +28,7 @@ play-services-auth = "21.3.0"
 koog = "0.3.0"
 rich-editor = "1.0.0-rc13"
 compose-webview = "2.0.1"
+kotlinx-datetime = "0.7.1"
 
 [bundles]
 
@@ -35,7 +36,7 @@ shared = []
 
 common = [
     "kotlinx-coroutines-core",
-    #"kotlinx-datetime",
+    "kotlinx-datetime",
     "ktor-serialization-kotlinx-json",
 ]
 
@@ -92,6 +93,8 @@ ios = ["ktor-client-darwin"]
 desktop = ["ktor-client-cio", "kotlinx-coroutines-swing", "ktor-server-netty"]
 
 [libraries]
+# Common
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 ## Google auth android
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
 android-credentials = { module = "androidx.credentials:credentials", version.ref = "androix-credentials" }
