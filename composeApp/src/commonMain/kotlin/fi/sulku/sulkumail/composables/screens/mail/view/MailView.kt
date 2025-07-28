@@ -103,7 +103,7 @@ fun MailView(mailId: String) {
             // Otherwise, fallback to snippet or a loading message.
             // Simple Text rendering. For HTML, you'd need a WebView.
 
-            val initialUrl = mail!!.htmlBody!! // todo improve
+            val initialUrl = mail!!.getDecodedHtmlBody()!! // todo improve
             val state = rememberWebViewStateWithHTMLData(initialUrl)
             // WebView loading indicator
             val loadingState = state.loadingState

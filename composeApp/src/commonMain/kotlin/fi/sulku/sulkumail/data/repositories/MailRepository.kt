@@ -12,7 +12,6 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.async
@@ -20,8 +19,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 class MailRepository(private val userDao: UserDao) {
 
@@ -159,20 +156,20 @@ class MailRepository(private val userDao: UserDao) {
             to = to,
             snippet = g.snippet,
             date = g.internalDate,
-            htmlBody = htmlBody,
-            plainBody = plainBody,
+            htmlBody64 = htmlBody,
+            plainBody64 = plainBody,
             //attachments = attachments,
             threadId = g.threadID,
             labelIds = g.labelIds ?: emptyList()
         )
     }
 
-    fun findMimeBody(part: MessagePart?, targetMimeType: String): String? {
+    private fun findMimeBody(part: MessagePart?, targetMimeType: String): String? {
         if (part == null) return null
 
         // Check if this part matches the desired MIME type
         if (part.mimeType.equals(targetMimeType, ignoreCase = true) && part.body?.data != null) {
-            return decodeBase64UrlSafe(part.body.data)
+            return part.body.data
         }
 
         // If this part has subparts (multipart/alternative, etc), recurse
@@ -184,29 +181,8 @@ class MailRepository(private val userDao: UserDao) {
         return null
     }
 
-@OptIn(ExperimentalEncodingApi::class)
-fun decodeBase64UrlSafe(data: String): String {
-    return try {
-        // Convert URL-safe Base64 to standard Base64
-        val standardBase64 = data
-            .replace('-', '+')
-            .replace('_', '/')
-            .let { base64String ->
-                // Add padding if needed
-                val padding = (4 - base64String.length % 4) % 4
-                base64String + "=".repeat(padding)
-            }
 
-        val decoded = Base64.Default.decode(standardBase64)
-        decoded.decodeToString()
-    } catch (e: Exception) {
-        println("Base64 decode error: ${e.message}")
-        ""
-    }
-}
-
-
-    fun extractAttachments(payload: MessagePart?): List<EmailAttachment> {
+    private fun extractAttachments(payload: MessagePart?): List<EmailAttachment> {
         val attachments = mutableListOf<EmailAttachment>()
 
         fun recurse(part: MessagePart?) {
