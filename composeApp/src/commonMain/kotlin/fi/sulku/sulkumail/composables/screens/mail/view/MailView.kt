@@ -20,10 +20,6 @@ import fi.sulku.sulkumail.data.auth.UserViewModel
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-// val state = rememberRichTextState()
-//  state.setHtml(mail!!.htmlBody ?: "No content available")
-// RichText(state = state)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MailView(mailId: String) {

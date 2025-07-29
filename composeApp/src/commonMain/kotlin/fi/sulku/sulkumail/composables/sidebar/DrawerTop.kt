@@ -4,15 +4,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import fi.sulku.sulkumail.routes.MailEditorRoute
 
 @Composable
-fun DrawerTop() {
+fun DrawerTop(nav: NavHostController) {
     NavigationDrawerItem(
         shape = MaterialTheme.shapes.small,
         label = { Text(text = "+ New Mail") },
         icon = {},
         selected = false,
-        badge = { /*if (!mail.isSaved) Text(text = "*")*/ },
-        onClick = {},
+        onClick = { nav.navigate(MailEditorRoute) },
     )
 }

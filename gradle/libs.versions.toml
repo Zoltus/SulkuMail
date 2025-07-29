@@ -27,8 +27,10 @@ navigation-compose = "2.9.0-alpha15"
 play-services-auth = "21.3.0"
 koog = "0.3.0"
 rich-editor = "1.0.0-rc13"
+colorpicker = "1.1.2"
 compose-webview = "2.0.1"
 kotlinx-datetime = "0.7.1"
+
 
 [bundles]
 
@@ -41,6 +43,7 @@ common = [
 ]
 
 frontend = [
+    "compose-colorpicker",
     "compose-webview",
     "compose-rich-editor",
     "androidx-navigation-compose",
@@ -122,6 +125,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 compose-rich-editor = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "rich-editor" }
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
 compose-webview = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "compose-webview" }
 # Navigation
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }

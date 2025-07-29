@@ -51,7 +51,7 @@ private fun DrawerContent(
         PermanentDrawerSheet(
             modifier = Modifier.width(280.dp),
         ) {
-            DrawerTop()
+            DrawerTop(nav)
             DrawerMails(nav)
 
             //Bottom nav
