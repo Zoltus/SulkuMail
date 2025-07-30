@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.screens.mail_editor.buttons.colorpicker
+package fi.sulku.sulkumail.composables.screens.mail_editor.tools.colorpicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

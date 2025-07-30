@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.screens.mail_editor.buttons
+package fi.sulku.sulkumail.composables.screens.mail_editor
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -15,14 +15,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import fi.sulku.sulkumail.theme.CustomColor
 
+import androidx.compose.ui.graphics.painter.Painter
+
 @Composable
 fun RichTextToolButton(
     onClick: () -> Unit,
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    painter: Painter? = null,
     tint: Color? = null,
     isSelected: Boolean = false,
     contentDescription: String? = null
 ) {
+    require(icon != null || painter != null) {
+        "Either iconVector or iconPainter must be provided"
+    }
+
     val buttonBackgroundColor: Color by animateColorAsState(
         targetValue = if (isSelected) CustomColor.discordBlue2 else Color.Transparent,
         label = "buttonBackgroundColor"
@@ -49,10 +56,18 @@ fun RichTextToolButton(
             containerColor = Color.Transparent
         ),
     ) {
-        Icon(
-            icon,
-            contentDescription = contentDescription,
-            tint = tint ?: iconColor
-        )
+        when {
+            icon != null -> Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = tint ?: iconColor
+            )
+
+            painter != null -> Icon(
+                painter = painter,
+                contentDescription = contentDescription,
+                tint = tint ?: iconColor
+            )
+        }
     }
 }

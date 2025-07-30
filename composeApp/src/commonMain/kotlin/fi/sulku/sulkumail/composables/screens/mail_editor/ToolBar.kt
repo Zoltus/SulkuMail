@@ -19,8 +19,8 @@ import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.*
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.colorpicker.ColorPickerDialog
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.*
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.colorpicker.ColorPickerDialog
 import fi.sulku.sulkumail.theme.CustomColor
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -57,11 +57,11 @@ fun RichTextHeaderToolBar(
     ) {
 
         Bold(state = state)
-        ItalicText(state)
+        Italic(state)
         UnderLine(state)
-        LineThrought(state)
-        ColorizeBg(state = state, selectedColor = activeColor)
-        ColorizeText(state = state, selectedColor = activeColor)
+        StrikeThrought(state)
+        ColorBackground(state = state, selectedColor = activeColor)
+        ColorText(state = state, selectedColor = activeColor)
         // Color Picker
         RichTextToolButton(
             onClick = { showColorPicker.value = !showColorPicker.value },
@@ -70,6 +70,7 @@ fun RichTextHeaderToolBar(
             tint = activeColor,
             contentDescription = ""
         )
+        ResetFormat(state)
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(
@@ -129,6 +130,7 @@ fun RichTextHeaderToolBar(
             icon = Icons.Default.FormatListNumbered,
             contentDescription = ""
         )
+        Ai(state)
 
     }
 }

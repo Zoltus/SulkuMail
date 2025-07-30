@@ -27,11 +27,6 @@ fun MailEditorScreen() {
             modifier = Modifier.fillMaxSize(),
             state = state
         )
-        /* RichTextBottomToolBar(
-             modifier = Modifier.fillMaxWidth(),
-             state = state,
-             onClose = { }
-         )*/
     }
 
 }
