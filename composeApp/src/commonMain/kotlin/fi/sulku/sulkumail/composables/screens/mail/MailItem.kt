@@ -28,7 +28,7 @@ fun MailItem(
     ) {
         MailListItem(
             modifier = Modifier.hoverable(interactionSource)
-                .background(CustomColor.discordDark),
+                .background(CustomColor.discordDark2),
             onClick = { onClick() },
             leadingContent = {
                 /* Coil Img... */

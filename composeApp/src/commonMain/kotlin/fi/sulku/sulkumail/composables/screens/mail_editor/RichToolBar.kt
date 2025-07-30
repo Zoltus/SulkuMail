@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
-import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.FormatAlignCenter
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material3.VerticalDivider
@@ -15,15 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.Bold
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.ColorizeBg
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.ColorizeText
-import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.colorpicker.ColorPickerBtn
+import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.*
 import fi.sulku.sulkumail.composables.screens.mail_editor.buttons.colorpicker.ColorPickerDialog
 import fi.sulku.sulkumail.theme.CustomColor
 
@@ -33,7 +29,7 @@ fun RichTextHeaderToolBar(
     modifier: Modifier = Modifier,
     state: RichTextState,
 ) {
-    var activeColor by remember { mutableStateOf(CustomColor.discordBlue) }
+    var activeColor by remember { mutableStateOf(CustomColor.discordBlue2) }
     val showColorPicker = remember { mutableStateOf(false) }
 
 
@@ -61,9 +57,19 @@ fun RichTextHeaderToolBar(
     ) {
 
         Bold(state = state)
-        ColorizeText(state = state, selectedColor = activeColor)
+        ItalicText(state)
+        UnderLine(state)
+        LineThrought(state)
         ColorizeBg(state = state, selectedColor = activeColor)
-        ColorPickerBtn(showColorPicker = showColorPicker)
+        ColorizeText(state = state, selectedColor = activeColor)
+        // Color Picker
+        RichTextToolButton(
+            onClick = { showColorPicker.value = !showColorPicker.value },
+            isSelected = showColorPicker.value,
+            icon = Icons.Filled.Colorize,
+            tint = activeColor,
+            contentDescription = ""
+        )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(
@@ -72,17 +78,11 @@ fun RichTextHeaderToolBar(
             ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RichTextToolButton(
-                isSelected = state.isCodeSpan,
-                onClick = { state.toggleCodeSpan() },
-                icon = Icons.Default.Code, // todo Code_Blocks
-                contentDescription = ""
-            )
             VerticalDivider(
                 modifier = Modifier
                     .heightIn(max = 30.dp)
                     .width(1.dp),
-                color = CustomColor.discordDark.copy(alpha = .2f)
+                color = CustomColor.discordDark2.copy(alpha = .2f)
             )
             RichTextToolButton(
                 isSelected = state.currentParagraphStyle.textAlign == TextAlign.Left,
@@ -114,7 +114,7 @@ fun RichTextHeaderToolBar(
                 modifier = Modifier
                     .heightIn(max = 30.dp)
                     .width(1.dp),
-                color = CustomColor.discordDark.copy(alpha = .2f)
+                color = CustomColor.discordDark2.copy(alpha = .2f)
             )
             RichTextToolButton(
                 isSelected = state.isUnorderedList,

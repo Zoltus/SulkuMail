@@ -34,7 +34,7 @@ fun App() = AppTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(CustomColor.discordDark)
+                .background(CustomColor.discordDark2)
         ) {
             SideDrawer(nav, drawerState, content = {
                 NavHost(

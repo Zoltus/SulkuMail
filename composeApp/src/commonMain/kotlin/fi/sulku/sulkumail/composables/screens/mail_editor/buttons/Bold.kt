@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.mohamedrejeb.richeditor.model.RichTextState
-import fi.sulku.sulkumail.composables.screens.mail_editor.RichTextToolButton
 
 @Composable
 fun Bold(

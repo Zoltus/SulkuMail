@@ -21,16 +21,17 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 fun MailEditorScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
         val state = rememberRichTextState()
+
         RichTextHeaderToolBar(state = state, modifier = Modifier.fillMaxWidth())
         RichTextEditor(
             modifier = Modifier.fillMaxSize(),
             state = state
         )
-       /* RichTextBottomToolBar(
-            modifier = Modifier.fillMaxWidth(),
-            state = state,
-            onClose = { }
-        )*/
+        /* RichTextBottomToolBar(
+             modifier = Modifier.fillMaxWidth(),
+             state = state,
+             onClose = { }
+         )*/
     }
 
 }

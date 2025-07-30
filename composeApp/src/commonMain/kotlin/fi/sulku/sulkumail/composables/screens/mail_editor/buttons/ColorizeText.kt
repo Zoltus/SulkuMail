@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import com.mohamedrejeb.richeditor.model.RichTextState
-import fi.sulku.sulkumail.composables.screens.mail_editor.RichTextToolButton
 
 @Composable
 fun ColorizeText(
@@ -17,6 +16,7 @@ fun ColorizeText(
         onClick = { state.toggleSpanStyle(SpanStyle(color = selectedColor)) },
         isSelected = state.currentSpanStyle.color == selectedColor,
         icon = Icons.Default.FormatColorText,
+        tint = selectedColor,
         contentDescription = ""
     )
 }

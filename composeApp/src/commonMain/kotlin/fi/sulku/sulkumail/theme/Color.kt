@@ -1,13 +1,13 @@
 package fi.sulku.sulkumail.theme
 
 import androidx.compose.ui.graphics.Color
-import fi.sulku.sulkumail.theme.CustomColor.discordBlue
+import fi.sulku.sulkumail.theme.CustomColor.discordBlue2
 
 val onSurfaceVariant = Color(0xFFC8CAD4)        // Texts/checkbox/Search
 val outlineVariant = Color(0xFF80838C)          // Divider
-val primary = discordBlue                       // Button/Tab bar
+val primary = discordBlue2                       // Button/Tab bar
 val primaryContainer = Color(0xFF7491C7)        // Button text
-val surface = CustomColor.discordDarkest                // Background
+val surface = CustomColor.discordDark1                // Background
 val secondaryContainer = Color(0xFF8891A5)      // Drawer text
 val onSecondaryContainer = Color(0xFF000000)    // Drawer SelectedButtonBG
 val surfaceContainerHighest = Color(0xFF33353A) // Drawer Selected text
