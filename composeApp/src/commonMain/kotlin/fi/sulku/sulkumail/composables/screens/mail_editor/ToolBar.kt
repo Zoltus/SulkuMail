@@ -7,9 +7,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
-import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.FormatAlignCenter
 import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import fi.sulku.sulkumail.composables.screens.mail_editor.tools.*
-import fi.sulku.sulkumail.composables.screens.mail_editor.tools.colorpicker.ColorPickerDialog
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.ai.Ai
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.colorpicker.ColorPicker
 import fi.sulku.sulkumail.theme.CustomColor
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -28,19 +29,10 @@ import fi.sulku.sulkumail.theme.CustomColor
 fun RichTextHeaderToolBar(
     modifier: Modifier = Modifier,
     state: RichTextState,
+    isAiOpen : Boolean,
+    onToggleAiPanel: () -> Unit
 ) {
     var activeColor by remember { mutableStateOf(CustomColor.discordBlue2) }
-    val showColorPicker = remember { mutableStateOf(false) }
-
-
-    ColorPickerDialog(
-        show = showColorPicker.value,
-        onDismissRequest = { showColorPicker.value = false },
-        onPickedColor = { color ->
-            activeColor = color
-            println("Active color changed to: ${activeColor.value}")
-        }
-    )
 
     Row(
         modifier = modifier
@@ -56,20 +48,14 @@ fun RichTextHeaderToolBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Bold(state = state)
+        Bold(state)
         Italic(state)
         UnderLine(state)
         StrikeThrought(state)
-        ColorBackground(state = state, selectedColor = activeColor)
-        ColorText(state = state, selectedColor = activeColor)
+        ColorBackground(state, selectedColor = activeColor)
+        ColorText(state, selectedColor = activeColor)
         // Color Picker
-        RichTextToolButton(
-            onClick = { showColorPicker.value = !showColorPicker.value },
-            isSelected = showColorPicker.value,
-            icon = Icons.Filled.Colorize,
-            tint = activeColor,
-            contentDescription = ""
-        )
+        ColorPicker(activeColor, onPickedColor = { activeColor = it })
         ResetFormat(state)
 
         Row(
@@ -130,7 +116,10 @@ fun RichTextHeaderToolBar(
             icon = Icons.Default.FormatListNumbered,
             contentDescription = ""
         )
-        Ai(state)
+        Ai(
+            onTogglePanel = onToggleAiPanel,
+            isAiOpen = isAiOpen
+        )
 
     }
 }
