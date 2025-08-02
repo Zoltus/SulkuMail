@@ -1,9 +1,10 @@
 package fi.sulku.sulkumail.di
 
-import fi.sulku.sulkumail.data.auth.UserViewModel
+import fi.sulku.sulkumail.composables.screens.mail.MailViewModel
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.ai.AiViewModel
 import fi.sulku.sulkumail.composables.sidebar.DrawerViewModel
 import fi.sulku.sulkumail.data.auth.AuthViewModel
-import fi.sulku.sulkumail.composables.screens.mail.MailViewModel
+import fi.sulku.sulkumail.data.auth.UserViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val sharedModule = module {
+    viewModel { AiViewModel() }
     viewModel { DrawerViewModel() }
     viewModel { AuthViewModel(userRepo = get()) }
     single { UserViewModel(userRepo = get()) } // Shared user across the app so singleton.

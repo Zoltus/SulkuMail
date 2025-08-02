@@ -11,7 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
-import fi.sulku.sulkumail.composables.screens.mail_editor.tools.ai.AiSidePanel
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.AiSidePanel
 import kotlinx.coroutines.launch
 
 /*
@@ -27,13 +27,7 @@ fun MailEditorScreen() {
     val aiDrawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    AiSidePanel(
-        aiDrawerState = aiDrawerState,
-        onConfirm = { inputText ->
-            // Handle AI generation here
-            println("AI Prompt: $inputText")
-        }
-    ) {
+    AiSidePanel(aiDrawerState = aiDrawerState) {
         Column(modifier = Modifier.fillMaxSize()) {
             val state = rememberRichTextState()
 

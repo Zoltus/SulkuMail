@@ -38,11 +38,11 @@ shared = []
 
 common = [
     "kotlinx-coroutines-core",
-    "kotlinx-datetime",
     "ktor-serialization-kotlinx-json",
 ]
 
 frontend = [
+    "kotlinx-datetime",
     "compose-colorpicker",
     "compose-webview",
     "compose-rich-editor",
@@ -105,7 +105,7 @@ android-googleid = { module = "com.google.android.libraries.identity.googleid:go
 android-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "play-services-auth" }
 ## Ktor
 # Server
-koog-agent= { module = "ai.koog:koog-agents", version.ref = "koog" }
+koog-agent = { module = "ai.koog:koog-agents", version.ref = "koog" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }

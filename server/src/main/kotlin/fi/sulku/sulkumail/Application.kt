@@ -60,7 +60,7 @@ fun Application.module() {
 
             //todo ratelimit
             post("/ai/summarize") { // todo lateinit/ dont recreate agent every time
-                val req = call.receive<SummaryRequest>()
+                val req = call.receive<AiInputRequest>()
                 val agent = AIAgent(
                     executor = simpleOllamaAIExecutor(baseUrl = BuildConfig.AI_AGENT_URL),
                     llmModel = OllamaModels.Alibaba.QWEN_3_06B,
@@ -68,9 +68,21 @@ fun Application.module() {
                             "Summarize the given text clearly and concisely. " +
                             "Give as a result only summary without any additional text. /no_think"
                 )
-                val result = agent.run(req.textToSummarize)
+                val result = agent.run(req.prompt)
                 agent.close()
-                call.respond(Summary(result.substringAfterLast("</think>")))
+                call.respond(AiResponse(result.substringAfterLast("</think>")))
+            }
+
+            post("/ai/write") {
+                val req = call.receive<AiInputRequest>()
+                val agent = AIAgent(
+                    executor = simpleOllamaAIExecutor(baseUrl = BuildConfig.AI_AGENT_URL),
+                    llmModel = OllamaModels.Alibaba.QWEN_3_06B,
+                    systemPrompt = "You are Email writing assistant. /no_think"
+                )
+                val result = agent.run(req.prompt)
+                call.respond(AiResponse(result.substringAfterLast("</think>")))
+                agent.close()
             }
 
             /*            post("/auth/refresh") {

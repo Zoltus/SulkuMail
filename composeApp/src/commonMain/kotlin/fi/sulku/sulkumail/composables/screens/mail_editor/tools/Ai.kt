@@ -1,4 +1,4 @@
-package fi.sulku.sulkumail.composables.screens.mail_editor.tools.ai
+package fi.sulku.sulkumail.composables.screens.mail_editor.tools
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
