@@ -1,15 +1,12 @@
 package fi.sulku.sulkumail.composables.screens.mail_editor
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FormatAlignCenter
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import fi.sulku.sulkumail.composables.screens.mail_editor.tools.*
-import fi.sulku.sulkumail.composables.screens.mail_editor.tools.ai.Ai
+import fi.sulku.sulkumail.composables.screens.mail_editor.tools.Ai
 import fi.sulku.sulkumail.composables.screens.mail_editor.tools.colorpicker.ColorPicker
 import fi.sulku.sulkumail.theme.CustomColor
 
@@ -29,23 +26,22 @@ import fi.sulku.sulkumail.theme.CustomColor
 fun RichTextHeaderToolBar(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    isAiOpen : Boolean,
+    isAiOpen: Boolean,
     onToggleAiPanel: () -> Unit
 ) {
     var activeColor by remember { mutableStateOf(CustomColor.discordBlue2) }
 
-    Row(
+    FlowRow(
         modifier = modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
+            // .horizontalScroll(rememberScrollState())
             //.horizontalWindowInsetsPadding()
             // .topWindowInsetsPadding()
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(
             space = 12.dp,
             alignment = Alignment.CenterHorizontally
-        ),
-        verticalAlignment = Alignment.CenterVertically
+        )
     ) {
 
         Bold(state)
