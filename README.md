@@ -44,12 +44,14 @@ Roadmap
 
 **Mail Functionality**
   - [X] Fetching mail logic
+  - [X] Display html mails.
   - [X] Delete mail Logic
-  - [ ] Ai agent to summarize & generate mails
+  - [X] Ai agent to generate mails
+  - [ ] Ai agent to summarize
   - [ ] Batch delete mails
   - [ ] Mail paginator/infinity scrolling
   - [ ] Background tasks for fetching mails
-  - [ ] Store mails
+  - [X] Store mails
 
 **User Interface**
   - [X] Siderbar containing users mail folders, Manage Accounts & Settings at the bottom
