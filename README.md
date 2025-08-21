@@ -26,9 +26,9 @@ Roadmap
    <img src="https://github.com/user-attachments/assets/f86cb548-6dd3-4d24-b117-159e74db3d45" width="20%">
    <img src="https://github.com/user-attachments/assets/a144c132-fc21-4dae-a560-f7ec74bd9347" width="20%">
    <img src="https://github.com/user-attachments/assets/3d0c0951-7963-44fd-a7b0-3e22259236d6" width="20%">
-
+   <img src="https://github.com/user-attachments/assets/caec22b1-4fc6-48ef-a015-a4d9c13ef904" width="61%">
+   <img src="https://github.com/user-attachments/assets/89965864-36b9-43c4-a267-e1b5a339e7b5" width="61%">
 </div>
- <img src="https://github.com/user-attachments/assets/89965864-36b9-43c4-a267-e1b5a339e7b5" width="61%">
 
 ## Currently under work
 **Account Management (Google)**
