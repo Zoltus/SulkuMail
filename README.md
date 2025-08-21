@@ -49,6 +49,7 @@ Roadmap
   - [X] Delete mail Logic
   - [X] Ai agent to generate mails
   - [ ] Ai agent to summarize
+  - [ ] Sending mails
   - [ ] Batch delete mails
   - [ ] Mail paginator/infinity scrolling
   - [ ] Background tasks for fetching mails
