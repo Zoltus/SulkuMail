@@ -45,6 +45,7 @@ Roadmap
 
 **Mail Functionality**
   - [X] Fetching mail logic
+  - [ ] Fetching latest mails & scheduling fetching
   - [X] Display html mails.
   - [X] Delete mail Logic
   - [X] Ai agent to generate mails
